@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Grid() {
   return (
-    <div>
+    <div className="map-grid">
       
     </div>
   )
