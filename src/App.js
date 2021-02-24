@@ -1,11 +1,13 @@
 import './App.css';
+import Sidebar from './components/Sidebar'
+import Tile from './components/Tile'
+import Grid from './components/Grid'
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <h1 className="text-2xl text-header">DUNGEN: JUNK WIZARDS</h1>
-      </header>
+      <Sidebar />
+      <Grid />
     </div>
   );
 }
