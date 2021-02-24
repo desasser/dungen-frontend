@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import API from "../../utils/API"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,14 +32,13 @@ export default function Login() {
       name: user.name,
       password: user.password
     })
-    // NOTE FROM CALVIN: I wrote an API route, but I wanted to wait before creating a "utils" & "API" files.
-    // API.saveUser({
-    //   userName: user.userName,
-    //   name: user.name,
-    //   password: user.password
-    // })
-    //   .then(res.status(200))
-    //   .catch(error => console.log(error));
+    API.saveUser({
+      userName: user.userName,
+      name: user.name,
+      password: user.password
+    })
+      .then(console.log("sent"))
+      .catch(error => console.log(error));
   }
 
   return (
