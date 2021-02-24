@@ -16,12 +16,12 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const [user, setUser] = useState({})
   const classes = useStyles();
-  
-  
-  
+
+
+
   function handleInputChange(event) {
     const { name, value } = event.target;
-    setUser({...user, [name]: value})
+    setUser({ ...user, [name]: value })
   };
 
   function handleSubmit(event) {
@@ -43,27 +43,30 @@ export default function Login() {
 
   return (
     <div>
-    
-    <form className={classes.root} noValidate autoComplete="off">
-    <div>
-    <TextField id="standard-basic" type="text" label="User Name" name="userName" onChange={handleInputChange} 
-    />
-    </div>
-    <div>
-    <TextField id="standard-basic" type="text" label="Name" name="name"onChange={handleInputChange} 
-    />
-    </div>
-    <div>
-    <TextField id="standard-basic" type="text" label="Password" name="password"onChange={handleInputChange}
-    />
-    </div>
-    <Button type="submit" color="primary" variant="contained" onClick={handleSubmit}>
-      Get 'er Dun(..gen) Why is this in all caps?
-      </Button>  
-      
-    </form>
+      <header className="App-header">
+        <h1>DUNGEN: JUNK WIZARDS</h1>
 
-    
+        <form className={classes.root} noValidate autoComplete="off">
+          <div>
+            <TextField id="standard-basic" type="text" label="User Name" name="userName" onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <TextField id="standard-basic" type="text" label="Name" name="name" onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <TextField id="standard-basic" type="text" label="Password" name="password" onChange={handleInputChange}
+            />
+          </div>
+          <Button type="submit" color="primary" variant="contained" onClick={handleSubmit}>
+            Get 'er Dun(..gen) Why is this in all caps?
+      </Button>
+
+        </form>
+
+
+      </header>
     </div>
   );
 }
