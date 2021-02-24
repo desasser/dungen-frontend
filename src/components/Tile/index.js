@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import SVG from './SVG'
 import Rectangle from './Rectangle'
-// import Moveable from 'react-moveable'
 
 export default function Tile(props) {
+  const color = props.color !== undefined ? props.color : "#000";
+
   return (
-    <SVG title="square" height="100" width="100">
-      <Rectangle height="50" width="50" x="25" y="25" />
-    </SVG>
+    <div>
+      <SVG title="square" desc="a tile" width="100%" height="100%" minX={50} minY={50} style={{display: "block"}}>
+        <Rectangle width="100" height="100" fill={color} x={0} y={0} />
+      </SVG>
+    </div>
   )
 }
