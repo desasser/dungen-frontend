@@ -12,7 +12,7 @@ export default class Grid extends React.Component {
       {i: 'c', x: 4, y: 0, w: 1, h: 2}
     ];
     return (
-      <GridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200}>
+      <GridLayout className="layout" layout={layout} cols={12} rowHeight={30} width={1200} style={{backgroundColor: "gainsboro"}}>
         <div key="a" style={{backgroundColor: "salmon"}}>a</div>
         <div key="b" style={{backgroundColor: "yellowgreen"}}>b</div>
         <div key="c" style={{backgroundColor: "dodgerblue"}}>c</div>
