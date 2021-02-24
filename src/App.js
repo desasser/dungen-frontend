@@ -1,10 +1,15 @@
 import './App.css';
-import Login from "./pages/Login/Login.js"
+import NavBar from "./components/NavBar/index"
+import Login from "./pages/Login/Login";
 
 function App() {
   return (
-    <div>
-      <Login />
+    <div className="App">
+      <NavBar />
+      <header className="App-header">
+        <h1 className="text-2xl text-header">DUNGEN: JUNK WIZARDS</h1>
+        <Login />
+      </header>
     </div>
   );
 }
