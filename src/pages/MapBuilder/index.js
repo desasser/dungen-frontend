@@ -1,5 +1,6 @@
 
 import SliderDrawer from '../../components/SliderDrawer'
+import Grid from '../../components/Grid'
 
 export default function MapBuilder() {
 
@@ -7,6 +8,7 @@ export default function MapBuilder() {
     <div>
       <h1>This is where we build maps!</h1>
       <SliderDrawer />
+      <Grid />
     </div>
   )
 }
