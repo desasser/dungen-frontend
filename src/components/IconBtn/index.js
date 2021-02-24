@@ -1,7 +1,7 @@
 import React from 'react'
 import IconButton from '@material-ui/core/IconButton';
 
-export default function IconButton(props) {
+export default function IconBtn(props) {
     return (
         <div>
             <IconButton aria-label={props.label}>

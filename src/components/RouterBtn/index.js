@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 
-export default function RouterButton(props) {
+export default function RouterBtn(props) {
   return (
     <Router>
       <div>
