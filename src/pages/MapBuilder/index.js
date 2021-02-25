@@ -37,6 +37,7 @@ const useStyles = makeStyles({
 })
 
 //black and pink #232E21 #F42272
+import Grid from '../../components/Grid'
 
 export default function MapBuilder() {
   const [lockState, setLockState] = useState(false);
@@ -81,6 +82,7 @@ export default function MapBuilder() {
         <Tile />
         <Tile />
       </div> */}
+      {/* <Grid /> */}
     </div>
   )
 }
