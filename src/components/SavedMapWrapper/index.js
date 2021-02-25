@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import SavedMapThumbnail from '../SavedMapThumbnail';
 import SavedMapSummary from '../SavedMapSummary';
 
+
 const useStyles = makeStyles({
   savedWrapper: {
     width: 400,
