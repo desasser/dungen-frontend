@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import API from "../../utils/API"
+import Form from "../../components/Form/index"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -14,59 +15,88 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+//Start The Hard Part Here
 export default function Login() {
-  const [user, setUser] = useState({})
   const classes = useStyles();
+  const [user, setUserState] = useState({
+    id: "",
+    userName: "",
+    token: "",
+    isLoggedIn: false
+  })
+
+const [loginState, setLoginState] = useState ({
+  userName: "",
+  password: "",
+})
+
+const [signUpState, setSignUpState] = useState({
+  userName: "",
+  password: ""
+})
+
+useEffect(() =>{
+  const token = localStorage.getItem("token")
+  API.getAuthToken(token).then(res => {
+    console.log("got the token!")
+    setUserState({
+      id: res.data.id,
+      userName: res.data.userName,
+      token: token,
+      isLoggedIn: true
+    })
+  }).catch(err => {
+    localStorage.removeItem("token");
+    console.log("not properly Authed")
+  })
+}, [])
+
+const handleInputChange = event => {
+  const { name, value } = event.target;
+  setLoginState({
+    ...loginState,
+    [name]:value
+  })
+}
 
 
-
-  function handleInputChange(event) {
-    const { name, value } = event.target;
-    setUser({ ...user, [name]: value })
+//Using the "HandleSubmit" as temple
+const handleSubmit = event => {
+    event.preventDefault()
+    console.log("this is the login page.")
+    console.log(event)
+    API.login(loginState).then(res=> {
+      console.log("so far so good on the API login call.");
+      console.log(res);
+      localStorage.setItem("token", res.token)
+        setUserState({
+          id: res.id,
+          userName: res.userName,
+          token: "",
+          isLoggedIn:true
+        })
+          setLoginState({
+            userName: "",
+            password: ""
+          })     
+    }).catch(error=> {
+      console.log(error);
+      localStorage.removeItem("token");
+      console.log("token has been removed. Error Login.line: 83")
+    })
   };
 
-  function handleSubmit(event) {
-    event.preventDefault()
-    console.log({
-      userName: user.userName,
-      name: user.name,
-      password: user.password
-    })
-    API.saveUser({
-      userName: user.userName,
-      name: user.name,
-      password: user.password
-    })
-      .then(console.log("sent"))
-      .catch(error => console.log(error));
-  }
+
+
 
   return (
     <div>
       <header className="App-header">
         <h1>DUNGEN: JUNK WIZARDS</h1>
-
-        <form className={classes.root} noValidate autoComplete="off">
-          <div>
-            <TextField id="standard-basic" type="text" label="User Name" name="userName" onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <TextField id="standard-basic" type="text" label="Name" name="name" onChange={handleInputChange}
-            />
-          </div>
-          <div>
-            <TextField id="standard-basic" type="text" label="Password" name="password" onChange={handleInputChange}
-            />
-          </div>
-          <Button type="submit" color="primary" variant="contained" onClick={handleSubmit}>
-            Get 'er Dun(..gen) Why is this in all caps?
-      </Button>
-
-        </form>
-
-
+        <Form  handleSubmit= {handleSubmit} handleInputChange = {handleInputChange} userName = {loginState.userName} password = {loginState.password} />
+        New to the site?
       </header>
+      
     </div>
   );
 }

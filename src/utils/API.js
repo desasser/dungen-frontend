@@ -1,18 +1,24 @@
 const axios = require ("axios")
 
-// import axios from "axios"
 
-//new token-oriented route
-// const API = {
-//     login:newUser=>{
-//         returnaxios.post(`http:localhost:3030/`, newUser)
-//     }
-// }
+const API = {
 
-export default {
-    saveUser: function(newUser) {
+    signup: newUser => {
         console.log(newUser)
         return axios.post("http://localhost:3030/api/newUser", newUser)
+    },
+    login: userData => {
+        console.log(userData)
+        return axios.post("http://localhost:3030/login", userData)
+    },
+    getAuthToken: token =>{
+        return axios.get("http://localhost:3030/auth", {
+            headers: {
+                authorization: `Bearer: ${token}`
+            }
+        })
     }
 
 }
+
+export default API
