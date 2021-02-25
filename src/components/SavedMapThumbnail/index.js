@@ -1,4 +1,6 @@
 import React from 'react'
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 
 export default function SavedMapThumbnail() {
   let placeholderStyle = {
@@ -10,8 +12,8 @@ export default function SavedMapThumbnail() {
   }
 
   return (
-    <div style={placeholderStyle}>
-      <p>I am a map!</p>
-    </div>
+    <Container style={placeholderStyle}>
+      <Typography variant='body1'>I am a map!</Typography>
+    </Container>
   )
 }

@@ -1,10 +1,11 @@
 import React from 'react';
-import SavedMapWrapper from '../../components/SavedMapWrapper';
+import SavedMapCard from '../../components/SavedMapCard';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
-  savedMapWrapper: {
+  savedMapCard: {
       display: 'flex',
       flexWrap: 'wrap',
       justifyContent: 'center'
@@ -16,22 +17,22 @@ export default function SavedMaps() {
 
   return (
     <Container >
-      <h1>This is where we view maps!</h1>
-      <Container className={classes.savedMapWrapper} maxWidth={false}>
+      <Typography variant='h1'>This is where we view maps!</Typography>
+      <Container className={classes.savedMapCard} maxWidth={false}>
         {/* Map over saved maps array return from the database and create these cards */}
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
-        <SavedMapWrapper />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
+        <SavedMapCard />
       </Container>
     </Container>
   )
