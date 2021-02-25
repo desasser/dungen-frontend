@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import SavedMapThumbnail from '../SavedMapThumbnail';
 import SavedMapSummary from '../SavedMapSummary';
 
@@ -12,6 +12,7 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    margin: 25,
   }
 })
 
