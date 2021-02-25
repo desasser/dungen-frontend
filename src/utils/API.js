@@ -4,6 +4,7 @@ const URL_PREFIX = "http://localhost:3030"
 //When ready, the deployed site will use the following:
 //const URL_PREFIX = "http://$SITE_NAME$.herokuapp.com"
 
+
 const API = {
 
     signup: newUser => {
@@ -20,8 +21,11 @@ const API = {
                 authorization: `Bearer: ${token}`
             }
         })
+    },
+    getTiles: tiles => {
+        console.log(tiles)
+        return axios.get("http://localhost:3030/api/tiles")
     }
-
 }
 
 export default API
