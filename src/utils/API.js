@@ -1,4 +1,4 @@
-const axios = require ("axios")
+const axios = require("axios")
 
 
 const API = {
@@ -11,14 +11,17 @@ const API = {
         console.log(userData)
         return axios.post("http://localhost:3030/login", userData)
     },
-    getAuthToken: token =>{
+    getAuthToken: token => {
         return axios.get("http://localhost:3030/auth", {
             headers: {
                 authorization: `Bearer: ${token}`
             }
         })
+    },
+    getTiles: tiles => {
+        console.log(tiles)
+        return axios.get("http://localhost:3030/api/tiles")
     }
-
 }
 
 export default API
