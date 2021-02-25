@@ -8,6 +8,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
+import Grid from '../../components/Grid'
 
 const useStyles = makeStyles({
   tileGrid: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles({
 })
 
 //black and pink #232E21 #F42272
-import Grid from '../../components/Grid'
+
 
 export default function MapBuilder() {
   const [lockState, setLockState] = useState(false);
