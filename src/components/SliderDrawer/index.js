@@ -8,16 +8,17 @@ import { Link } from 'react-router-dom';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import Tile from '../Tile';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
     top: 80,
     zIndex: 3,
     right: 20,
-    position: 'fixed',
+    position: 'absolute',
   },
   paper: {
-    width: '30%',
+    width: '30%'
     // backgroundColor: 'pink',
   },
   link: {
@@ -31,6 +32,14 @@ const useStyles = makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-start',
+    position:'fixed'
+  },
+  tileGrid: {
+    marginLeft: 25,
+    marginTop:25,
+    display: 'flex',
+    flexWrap: 'wrap',
+    width: '100%',
   }
 }));
 
@@ -47,10 +56,14 @@ const StyledButton = withStyles({
 const TileDrawer = withStyles({
   root: {
     "& .MuiDrawer-paper": {
-    backgroundColor: '#bada55',
-    width: '30%'
+      backgroundColor: '#bada55',
+      width: 350,
+      marginTop: 64,
+      position: 'absolute',
+      overflowX: 'hidden'
+    }
   }
-}})(Drawer)
+})(Drawer)
 
 export default function SliderDrawer() {
   const classes = useStyles();
@@ -75,7 +88,7 @@ export default function SliderDrawer() {
   return (
     <div>
       <div className={classes.sideNav}>
-      {/* className={classes.sideNav} */}
+        {/* className={classes.sideNav} */}
         <IconButton onClick={handleDrawerOpen}>
           {!isDrawerOpened ? <ReorderIcon /> : null}
         </IconButton>
@@ -86,31 +99,43 @@ export default function SliderDrawer() {
         variant='persistent'
         open={isDrawerOpened}
         onClose={handleDrawerClose}
-        // classes={{ paper: classes.paper }}
+      // classes={{ paper: classes.paper }}
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </div>
-        <Link to='/about' classes={classes.link}>
-          <List>
-            <ListItem button key='About Us'>
-              <ListItemIcon><AccountCircleIcon />
-              </ListItemIcon>
-              <ListItemText primary='About Us' />
-            </ListItem>
-          </List>
-        </Link>
-        <Link to='/contact' classes={classes.link}>
-          <List>
-            <ListItem button key='Contact Us'>
-              <ListItemIcon><PermContactCalendarIcon />
-              </ListItemIcon>
-              <ListItemText primary='Contact Us' />
-            </ListItem>
-          </List>
-        </Link>
+        {/* Fetch all tile URLs from db */}
+        {/* Map over the array and create a tile for each one */}
+        {/* Render the top 18 until scroll down, then render more, etc */}
+        <div className={classes.tileGrid}>
+          {/* Set this as {children} to handle whether its nav or tiles */}
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+          <Tile />
+        </div>
       </TileDrawer>
     </div>
   );
