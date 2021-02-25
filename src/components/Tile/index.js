@@ -12,7 +12,7 @@ let placeholderStyle = {
   margin:25
 }
 
-export default function Tile() {
+// export default function Tile() {
   return (
     <div style={placeholderStyle}>
      </div> 
@@ -23,4 +23,4 @@ export default function Tile() {
   //     </SVG>
   //   </div>
   // )
-  )}}
+  )}
