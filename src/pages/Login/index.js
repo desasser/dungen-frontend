@@ -67,16 +67,17 @@ const handleSubmit = event => {
     console.log(event)
     API.login(loginState).then(res=> {
       console.log("so far so good on the API login call.");
-      console.log(res);
-      localStorage.setItem("token", res.token)
+      console.log(res.data);
+      localStorage.setItem("token", res.data.token)
         setUserState({
-          id: res.id,
-          userName: res.userName,
-          token: "",
+          id: res.data.id,
+          userName: res.data.userName,
+          token: res.data.token,
           isLoggedIn:true
         })
           setLoginState({
             userName: "",
+            name:"",
             password: ""
           })     
     }).catch(error=> {
