@@ -1,8 +1,8 @@
 const axios = require ("axios")
 //local url communication
-const URL_PREFIX = "http://localhost:3030"
+//const URL_PREFIX = "http://localhost:3030"
 //When ready, the deployed site will use the following:
-//const URL_PREFIX = "http://$SITE_NAME$.herokuapp.com"
+const URL_PREFIX = "https://quiet-caverns-20153.herokuapp.com"
 
 
 const API = {
@@ -24,7 +24,7 @@ const API = {
     },
     getTiles: tiles => {
         console.log(tiles)
-        return axios.get("http://localhost:3030/api/tiles")
+        return axios.get(`${URL_PREFIX}/api/tiles`)
     }
 }
 
