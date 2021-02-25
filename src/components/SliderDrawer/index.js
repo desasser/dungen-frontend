@@ -59,7 +59,7 @@ const TileDrawer = withStyles({
       backgroundColor: '#bada55',
       width: 350,
       marginTop: 64,
-      position: 'absolute',
+      // position: 'absolute',
       overflowX: 'hidden'
     }
   }
