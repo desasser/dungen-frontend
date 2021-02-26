@@ -1,61 +1,63 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import SavedMapThumbnail from '../SavedMapThumbnail';
 import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import CssBaseline from '@material-ui/core/CssBaseline';
-
+import {Redirect} from 'react-router-dom';
 
 const useStyles = makeStyles({
-  savedWrapper: {
-    width: 400,
-    height: 150,
-    borderRadius: '0.5em',
-    backgroundColor: '#3777FF',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
   root: {
-    minWidth: 275,
+    maxWidth: 300,
+    margin: '20px',
+    backgroundColor: 'olivedrab',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+    justifyContent: 'space-between'
   },
-  summaryWrapper: {
-    width: '20%',
-    textAlign: 'right'
+  media: {
+    height: 300,
   },
-  cardStyle: {
-    padding: 0,
-    margin: 20,
-  }
-})
+});
 
-export default function SavedMapCard() {
+export default function SavedMapCard(props) {
   const classes = useStyles();
 
+
+
   return (
-    <Card className={classes.root} elevation={0}>
-      <CardContent className={classes.cardStyle}>
-        <Container className={classes.savedWrapper} maxWidth={false}>
-          <SavedMapThumbnail></SavedMapThumbnail>
-          <Container maxWidth={false} className={classes.summaryWrapper}>
-            <Typography variant="h6" style={{ display: 'block', flex: 0 }}>
-              Name
-            </Typography>
-            <Typography variant="body2" style={{ display: 'block', flex: 0 }}>
-              Summary
-            </Typography>
-            <Typography variant="body2" style={{ display: 'block', flex: 0 }}>
-              Environment
-            </Typography>
-            <Typography variant="body2" style={{ display: 'block', flex: 0 }}>
-              Theme
-            </Typography>
-          </Container>
-        </Container>
-      </CardContent>
+    <Card className={classes.root}>
+      <CardActionArea>
+        <CardMedia
+          className={classes.media}
+          image={props.image}
+          title="a tile"
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2" style={{fontFamily:'fantasy'}}>
+            {props.name.toUpperCase()}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            This is a space for a summary that the user can choose to write about their map if they want to.
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+      <CardActions style={{justifyContent:'center'}}>
+        <Button size="small" color="primary" href="/dashboard">
+          {/* TODO: href will end up passing to darhboard page along with a map id */}
+          Edit
+        </Button>
+        <Button size="small" color="primary" onClick={() => props.deleteMap(props.id)}>
+          Delete
+        </Button>
+        <Button size="small" color="primary" href="/dashboard">
+          {/* TODO: href will end up passing to render map page along with a map id */}
+          View
+        </Button>
+      </CardActions>
     </Card>
-  )
+  );
 }
