@@ -60,7 +60,7 @@ const TileDrawer = withStyles({
   root: {
     "& .MuiDrawer-paper": {
       backgroundColor: '#bada55',
-      width: 350,
+      width: 400,
       marginTop: 64,
       overflowX: 'hidden'
     }
