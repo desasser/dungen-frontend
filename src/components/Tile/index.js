@@ -1,17 +1,16 @@
-import { useState, useEffect } from 'react'
-import SVG from './SVG'
-import Rectangle from './Rectangle'
+import { useState, useEffect } from "react";
+// import SVG from "./SVG";
+// import Rectangle from "./Rectangle";
 
-export default function Tile({ color, width, height }) {
-  if(color === undefined) { color = "#000" }
-  if(width === undefined) { width = "100" }
-  if(height === undefined) { height = "100" }
+export default function Tile({item}) {
 
   return (
-    <div>
-      <SVG title="square" desc="a tile" width="100%" height="100%" minX={50} minY={50} style={{display: "block"}}>
-        <Rectangle width={width} height={width} fill={color} x={0} y={0} />
-      </SVG>
+    <div data-tileid={item.i} data-environment={item.environment} data-orientation={item.orientation} style={{ transform: `rotate(${item.orientation}deg)`, backgroundColor: `${item.bg}`}} >
+      <span className="tileName">{item.i}</span>
+      <span className="top">(0deg)</span>
+      <span className="right">(90deg)</span>
+      <span className="bottom">(180deg)</span>
+      <span className="left">(270deg)</span>
     </div>
-  )
+  );
 }

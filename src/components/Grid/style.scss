@@ -41,8 +41,8 @@
 }
 
 .react-grid-item.react-grid-placeholder {
-  background: red;
-  opacity: 0.2;
+  background: #e0815e;
+  // opacity: 0.2;
   transition-duration: 100ms;
   z-index: 2;
   -webkit-user-select: none;
@@ -58,4 +58,47 @@
   background-color: tomato;
   color: white;
   font-weight: bold;
+}
+
+$fromSide: "-6px";
+#mapGrid .react-grid-item {
+  color: white;
+
+  &:hover {
+    z-index: 100;
+    & div {
+      position: relative;
+      top: -2px;
+      left: -2px;
+      border: 2px solid yellow;
+      // transform: scale(1.3) !important;
+    }
+  }
+
+  &.active {
+    border: inset 2px solid red;
+    transform: scale(1) !important;
+  }
+
+  & > div { position: relative; width: 100%; height: 100%; }
+
+  & > div span { position: absolute; font-size: x-small; }
+
+  & > div .tileName {
+    top: 30%;
+    left: 35%;
+    font-size: xx-large;
+    border: 1px solid white;
+    border-radius: 4px;
+    padding: 0 6px;
+  }
+
+  & > div .top { top: 6px; left: 35%; }
+
+  & > div .right,
+  & > div .left { top: 40%; }
+
+  & > div .right { right: unquote($fromSide); transform: rotate(90deg) }
+  & > div .bottom { bottom: 6px; left: 35%; transform: rotate(180deg) }
+  & > div .left { left: unquote($fromSide); transform: rotate(270deg) }
 }

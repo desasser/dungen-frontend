@@ -1,77 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import GridLayout from 'react-grid-layout';
-import './style.css'
+import './style.scss'
+import DraggableTile from '../Tile/DraggableTile'
 import Tile from '../Tile';
  
 export default function Grid() {
-  const [currentTile, setCurrentTile] = useState({
-    i: 'tile0',
-    x: 0,
-    y: 0,
-    orientation: 1
-  });
 
-  // layout is an array of objects, see the demo for more complete usage
-  const tileLayout = [
-    {i: '1', environment: 'swamp', x: 0, y: 0, w: 1, h: 1, bg: "#a63a50"},
-    {i: '2', environment: 'swamp', x: 1, y: 0, w: 1, h: 1, bg: "#5941a9"},
-    {i: '3', environment: 'swamp', x: 0, y: 1, w: 1, h: 1, bg: "#dcf763"},
-    {i: '4', environment: 'swamp', x: 1, y: 1, w: 1, h: 1, bg: "#435058"},
-  ];
+  let [mapLayout, setMapLayout] = useState([
+    {i: '0', environment: 'swamp', x: 0, y: 0, w: 1, h: 1, bg: "#a63a50", orientation: 0},
+    {i: '1', environment: 'swamp', x: 1, y: 0, w: 1, h: 1, bg: "#5941a9", orientation: 0},
+    {i: '2', environment: 'swamp', x: 0, y: 1, w: 1, h: 1, bg: "#4c0827", orientation: 0},
+    {i: '3', environment: 'swamp', x: 1, y: 1, w: 1, h: 1, bg: "#435058", orientation: 0},
+  ]);
 
-  const handleDraggableDragStart = (e) => {
-    e.dataTransfer.setData("text/plain", "");
+  const handleOnDragStop = (layout) => {
+    console.log(layout)
+    // let newMap = layout.map(mapTile => {
+    //   mapTile.orientation = mapTile.style.transform
+    // });
+
+    // setMapLayout(newMap);
   }
 
   const handleOnDrop = (layoutItem, e) => {
-    console.log(e);
-    let targetGrid = document.querySelectorAll(".mapGrid")[0];
-    setCurrentTile({
-      ...currentTile,
-      i: layoutItem.i,
-      x: layoutItem.x,
-      y: layoutItem.y
-    });
+    if(e.i == "__dropping-elem__") {
+      let lastTile = mapLayout.pop();
+      mapLayout.push(lastTile);
+      let bgColor = Math.floor(Math.random()*16777215).toString(16);
+      console.log(bgColor);
+      // bg hex generator from https://www.paulirish.com/2009/random-hex-color-code-snippets/
+      let newTile = {
+        i: (parseInt(lastTile.i) + 1).toString(),
+        environment: 'swamp',
+        x: e.x,
+        y: e.y,
+        h: 1,
+        w: 1,
+        orientation: 90,
+        bg: `#${bgColor}`
+      }
+      setMapLayout(mapLayout => [...mapLayout, newTile]);
+    }
+  }
 
-    console.log(currentTile);
-    // let newTile = React.createElement("div", {key: })
+  const handleTileClick = (e) => {
+    e.preventDefault();
+    
+    // let tile = e.target;
+    // let rotation = tile.dataset.orientation === "270" ? 0 : parseInt(tile.dataset.orientation) + 90;
+    // tile.setAttribute("data-orientation", rotation.toString());
 
-    // targetGrid.appendChild(newTile);
+    // console.log(mapLayout);
   }
 
   return (
     <div style={{display: "flex", flexFlow: "row wrap"}}>
       <div id="mapGrid" style={{flex: "1 0 70%"}}>
         <GridLayout 
-          className="mapGrid" 
-          layout={tileLayout}
+          className="mapGrid"
           colWidth={100} 
           rowHeight={100}
           width={1200}
           compactType={null} 
-          preventCollision={false}
+          preventCollision={true}
           margin={[0,0]} 
           isDroppable={true}
+          isDraggable={true}
+          isResizable={false}
           onDrop={handleOnDrop}
-          style={{backgroundColor: "gainsboro", minHeight: "400px", minWidth: "400px"}}
+          // onLayoutChange={handleOnLayoutChange}
+          onDragStop={handleOnDragStop}
+          style={{backgroundColor: "gainsboro", minHeight: "400px"}}
         >
-          {tileLayout.map(item => <div key={item.i} data-key={item.i} data-environment={item.environment} data-orientation={1} style={{backgroundColor: `${item.bg}`}} draggable={true} droppable="true"><span className="top">{item.i} (1)</span> <span className="right">(2)</span> <span className="bottom">(3)</span> <span className="left">(4)</span></div>)}
+        {mapLayout.map((item, idx) => <div key={idx} data-grid={{...item}} orientation={item.orientation} onClick={(e) => handleTileClick(e)} ><Tile item={item} /></div> )}
         </GridLayout>
       </div>
       <div style={{flex: "1 0 20%"}}>
-        <div 
-          className="droppable-element"
-          key="tile0"
-          tile="1"
-          environment="swamp"
-          orientation="1"
-          draggable={true}
-          unselectable="on"
-          // Firefox hack
-          onDragStart={e => handleDraggableDragStart(e)}
-        >
-          DRAG ME
-        </div>
+        <DraggableTile key="tile0" itemKey="tile0" environment="swamp" orientation={0}></DraggableTile>
       </div>
     </div>
   )
