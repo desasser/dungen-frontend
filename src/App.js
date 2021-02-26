@@ -129,7 +129,7 @@ function App() {
       {/* <header className="App-header">
         <h1 className="text-2xl text-header">DUNGEN: JUNK WIZARDS</h1>
       </header> */}
-      <NavBar />
+      <NavBar user={users} click/>
       <Router>
         <Switch>
           {/* <Route exact path="/" component={Home} />
