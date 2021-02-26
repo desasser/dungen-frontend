@@ -7,12 +7,8 @@ import {
 
 export default function RouterBtn(props) {
   return (
-
-      <div>
-        <Button color="primary" href={props.to}>
-          {props.name}
-        </Button>
-      </div>
-
+    <Button href={props.to} className={props.classes}>
+      {props.name}
+    </Button>
   )
 }
