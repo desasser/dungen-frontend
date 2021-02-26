@@ -8,7 +8,9 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
-import Grid from '../../components/Grid'
+import Grid from '../../components/Grid';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   tileGrid: {
@@ -54,10 +56,10 @@ export default function MapBuilder() {
   }
 
   return (
-    <div>
-      <h1>This is where we build maps!</h1>
+    <Container>
+      <Typography variant='h2'>This is where we build maps!</Typography>
       <SliderDrawer />
-      <div className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}></div>
+      <Container className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}></Container>
       <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
         {/* <LockOutlinedIcon /> */}
         {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
@@ -66,7 +68,7 @@ export default function MapBuilder() {
       <RouterBtn name='router' classes={classes.routerBtn} />
       {/* Comment in the below section if we need a static display instead of drawer */}
       {/* Can also target this for the media query to flip based on screen size */}
-      {/* <div className={classes.tileGrid}>
+      {/* <Container className={classes.tileGrid}>
         <Tile />
         <Tile />
         <Tile />
@@ -82,9 +84,9 @@ export default function MapBuilder() {
         <Tile />
         <Tile />
         <Tile />
-      </div> */}
+      </Container> */}
       {/* <Grid /> */}
-    </div>
+    </Container>
   )
 }
 
