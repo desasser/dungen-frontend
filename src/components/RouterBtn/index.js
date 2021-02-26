@@ -10,7 +10,7 @@ export default function RouterBtn(props) {
   return (
     <Router>
       <div>
-        <Button color="primary" component={props.component} to={props.route}>
+        <Button color="primary" component={props.component} to={props.route} className={props.classes}>
           {props.name}
         </Button>
       </div>
