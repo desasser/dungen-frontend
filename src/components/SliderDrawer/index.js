@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Drawer, Divider, IconButton, Button } from '@material-ui/core';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
@@ -9,13 +9,16 @@ import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Tile from '../Tile';
+import API from '../../utils/API';
+import Container from '@material-ui/core/Container';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
     top: 80,
     zIndex: 3,
-    right: 20,
+    right: 40,
     position: 'absolute',
+    width: 10,
   },
   paper: {
     width: '30%'
@@ -66,9 +69,30 @@ const TileDrawer = withStyles({
 
 export default function SliderDrawer() {
   const classes = useStyles();
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     isDrawerOpened: false
   })
+  const [tileState, setTileState] = useState([]);
+  const [loadState, setLoadState] = useState(false);
+
+  useEffect(() => {
+    loadTiles()
+  }, [])
+
+
+  const loadTiles = () => {
+    API.getTiles()
+      .then(res => {
+        console.log('response', res.data);
+        setLoadState(true)
+        setTileState(res.data);
+        // check length of response and render No Maps! or All maps!
+      }).catch(err => {
+        console.log(err);
+        // add a simple snackbar that says 'sorry, we failed you, try again!'
+        // setErrorState(true);
+      })
+  }
 
   const handleDrawerOpen = () => {
     setState({
@@ -85,13 +109,13 @@ export default function SliderDrawer() {
   const { isDrawerOpened } = state;
   const theme = useTheme();
   return (
-    <div>
-      <div className={classes.sideNav}>
+    <Container>
+      <Container className={classes.sideNav} maxWidth={false}>
         {/* className={classes.sideNav} */}
         <IconButton onClick={handleDrawerOpen}>
           {!isDrawerOpened ? <ReorderIcon /> : null}
         </IconButton>
-      </div>
+      </Container>
       <Divider />
       <TileDrawer
         anchor='right'
@@ -100,15 +124,15 @@ export default function SliderDrawer() {
         onClose={handleDrawerClose}
       // classes={{ paper: classes.paper }}
       >
-        <div className={classes.drawerHeader}>
+        <Container className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
-        </div>
+        </Container>
         {/* Fetch all tile URLs from db */}
         {/* Map over the array and create a tile for each one */}
         {/* Render the top 18 until scroll down, then render more, etc */}
-        <div className={classes.tileGrid}>
+        <Container className={classes.tileGrid}>
           {/* Set this as {children} to handle whether its nav or tiles */}
           <Tile />
           <Tile />
@@ -134,8 +158,8 @@ export default function SliderDrawer() {
           <Tile />
           <Tile />
           <Tile />
-        </div>
+        </Container>
       </TileDrawer>
-    </div>
+    </Container>
   );
 }
