@@ -16,15 +16,23 @@ function App() {
     isLoggedIn: false
   })
 
+  const [formSwitch, setFormSwitch] = useState({
+    login: true
+  })
+
+  const [formMsg, setFormMsg] = useState({
+    Msg: "Please Login",
+  })
+
+  const [hapticBtn, setHapticBtn] = useState({
+    Btn: "Sign Up",
+  })
+
   const [loginState, setLoginState] = useState({
     userName: "",
     password: "",
   })
 
-  const [signUpState, setSignUpState] = useState({
-    userName: "",
-    password: ""
-  })
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -56,28 +64,64 @@ function App() {
     event.preventDefault()
     console.log("this is the login page.")
     console.log(event)
-    
-    API.login(loginState).then(res => {
-      console.log("so far so good on the API login call.");
-      console.log(res.data);
-      localStorage.setItem("token", res.data.token)
-      setUserState({
-        id: res.data.id,
-        userName: res.data.userName,
-        token: res.data.token,
-        isLoggedIn: true
+
+    if (formSwitch.login === true) {
+      API.login(loginState).then(res => {
+        console.log("so far so good on the API login call.");
+        console.log(res.data);
+        localStorage.setItem("token", res.data.token)
+        setUserState({
+          id: res.data.id,
+          userName: res.data.userName,
+          token: res.data.token,
+          isLoggedIn: true
+        })
+        setLoginState({
+          userName: "",
+          name: "",
+          password: ""
+        })
+      }).catch(error => {
+        console.log(error);
+        localStorage.removeItem("token");
+        console.log("token has been removed. Error Login.line: 83")
       })
-      setLoginState({
-        userName: "",
-        name: "",
-        password: ""
+    } else {
+      API.signup(loginState).then(res => {
+        console.log("so far so good on the API login call.");
+        console.log(res.data);
+        localStorage.setItem("token", res.data.token)
+        setUserState({
+          id: res.data.id,
+          userName: res.data.userName,
+          token: res.data.token,
+          isLoggedIn: true
+        })
+        setLoginState({
+          userName: "",
+          name: "",
+          password: ""
+        })
+      }).catch(error => {
+        console.log(error);
+        localStorage.removeItem("token");
+        console.log("token has been removed. Error Login.line: 83")
       })
-    }).catch(error => {
-      console.log(error);
-      localStorage.removeItem("token");
-      console.log("token has been removed. Error Login.line: 83")
-    })
+    }
   };
+
+  const signUpBtn = click => {
+    console.log(click)
+    if(formSwitch.login===true){
+      setFormSwitch({ login: false })
+      setFormMsg({Msg:"Creat an Account"})
+      setHapticBtn({Btn:"Login"})
+    }else{
+      setFormMsg({Msg:"Please Login"})
+      setHapticBtn({Btn:"Sign Up"})
+      setFormSwitch({login:true})
+    }
+  }
 
 
   return (
@@ -91,9 +135,9 @@ function App() {
           {/* <Route exact path="/" component={Home} />
         <Route exact path="/home" component={Home} /> */}
           <Route exact path="/">
-            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} />
-        </Route>
- 
+            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} />
+          </Route>
+
           <Route exact path="/dashboard" component={MapBuilder} />
           <Route exact path="/usermaps" component={SavedMaps} />
         </Switch>
