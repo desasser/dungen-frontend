@@ -10,6 +10,7 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
+import RouterBtn from "../../components/RouterBtn"
 import Menu from '@material-ui/core/Menu';
 import {Link} from "react-router-dom"
 
@@ -45,22 +46,23 @@ export default function MenuAppBar(props) {
     setAnchorEl(null);
   };
 
+  const logInPopUp = () => {
+    console.log("ummm...click")
+  }
+
   return (
     <div className={classes.root}>
 
       <AppBar position="static">
         <Toolbar>
-        {!props.user.isLoggedIn ? <span> <MenuItem edge="start" onClick={handleClose}>Login</MenuItem> </span>: null}
-          {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton> */}
+        {!props.user.isLoggedIn ? <span> <MenuItem edge="start" onClick={logInPopUp}>Login</MenuItem> </span>: null}
           <Typography variant="h4" className={classes.title}>
             DunGen
           </Typography>
           <FormGroup>
             <FormControlLabel
               control={<Switch checked={auth} onChange={handleChange} aria-label="login switch" />}
-              label={auth ? 'Logout' : 'Login'}
+              label={auth ? 'Logout' : null}
             />
           </FormGroup>
           {auth && (
@@ -89,9 +91,10 @@ export default function MenuAppBar(props) {
                 open={open}
                 onClose={handleClose}
               >
-                {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Dashboard</MenuItem> </span>: null}
+                <MenuItem onClick={handleClose}> <Link to ="/dashboard">Dashboard </Link></MenuItem> 
                 {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
                 {/* <MenuItem onClick={handleClose}>Saved Maps</MenuItem> */}
+                {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}><Link to ="/dashboard">Dashboard </Link></MenuItem> </span> : null}
               </Menu>
             </div>
           )}
