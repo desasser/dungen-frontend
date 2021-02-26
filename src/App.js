@@ -5,9 +5,12 @@ import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
 import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";
+// import Splash from "./pages/Splash/index"
 import API from "./utils/API.js"
 
 function App() {
+
+  // let history = useHistory()
 
   const [users, setUserState] = useState({
     id: "",
@@ -58,6 +61,11 @@ function App() {
     })
   }
 
+  // const redirect = ()=>history.push("/dashboard")
+
+  const handleLogin = (data)=> {
+    setUserState({...users,isLoggedIn:data})
+  }
 
   //Using the "HandleSubmit" as temple
   const handleSubmit = event => {
@@ -112,14 +120,14 @@ function App() {
 
   const signUpBtn = click => {
     console.log(click)
-    if(formSwitch.login===true){
+    if (formSwitch.login === true) {
       setFormSwitch({ login: false })
-      setFormMsg({Msg:"Creat an Account"})
-      setHapticBtn({Btn:"Login"})
-    }else{
-      setFormMsg({Msg:"Please Login"})
-      setHapticBtn({Btn:"Sign Up"})
-      setFormSwitch({login:true})
+      setFormMsg({ Msg: "Creat an Account" })
+      setHapticBtn({ Btn: "Login" })
+    } else {
+      setFormMsg({ Msg: "Please Login" })
+      setHapticBtn({ Btn: "Sign Up" })
+      setFormSwitch({ login: true })
     }
   }
 
@@ -135,7 +143,7 @@ function App() {
           {/* <Route exact path="/" component={Home} />
         <Route exact path="/home" component={Home} /> */}
           <Route exact path="/">
-            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} />
+            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}/>
           </Route>
 
           <Route exact path="/dashboard" component={MapBuilder} />

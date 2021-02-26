@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useEffect} from 'react';
+import {useHistory} from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import Form from "../../components/Form/index"
 import ActionBtn from "../../components/ActionBtn/index"
@@ -16,7 +17,15 @@ const useStyles = makeStyles((theme) => ({
 
 //Start The Hard Part Here
 export default function Login(props) {
-  const classes = useStyles();
+  const history = useHistory();
+useEffect(()=>{
+if(props.isLoggedIn){
+  history.push("/dashboard")
+}
+const handleFormSubmit= (e =>{
+  props.handleSubmit(e,history)
+})
+},[props.isLoggedIn])
 
   return (
     <div>
