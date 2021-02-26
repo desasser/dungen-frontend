@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Form from "../../components/Form/index"
+import ActionBtn from "../../components/ActionBtn/index"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -19,11 +20,11 @@ export default function Login(props) {
   return (
     <div>
       <header className="App-header">
-        <h1>DUNGEN: JUNK WIZARDS</h1>
-        <Form  handleSubmit= {props.handleSubmit} handleInputChange = {props.handleInputChange} />
-        New to the site?
+        <h1>{props.formMsg}</h1>
+        <Form handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
+        <ActionBtn action={props.switch} name={props.formBtn} />
       </header>
-      
+
     </div>
   );
 }
