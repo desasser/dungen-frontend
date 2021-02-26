@@ -37,7 +37,7 @@ export default function SavedMapCard() {
 
   return (
     <Card className={classes.root} elevation={0}>
-      <CardContent class={classes.cardStyle}>
+      <CardContent className={classes.cardStyle}>
         <Container className={classes.savedWrapper} maxWidth={false}>
           <SavedMapThumbnail></SavedMapThumbnail>
           <Container maxWidth={false} className={classes.summaryWrapper}>
