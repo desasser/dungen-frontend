@@ -13,6 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import RouterBtn from "../../components/RouterBtn"
 import Menu from '@material-ui/core/Menu';
 import {Link} from "react-router-dom"
+import LoginModal from "../LoginModal"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +56,7 @@ export default function MenuAppBar(props) {
 
       <AppBar position="static">
         <Toolbar>
-        {!props.user.isLoggedIn ? <span> <MenuItem edge="start" onClick={logInPopUp}>Login</MenuItem> </span>: null}
+        {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}></LoginModal> </span>: null}
           <Typography variant="h4" className={classes.title}>
             DunGen
           </Typography>
