@@ -1,5 +1,5 @@
-import React,{useEffect} from 'react';
-import {useHistory} from 'react-router-dom'
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import Form from "../../components/Form/index"
 import ActionBtn from "../../components/ActionBtn/index"
@@ -18,14 +18,11 @@ const useStyles = makeStyles((theme) => ({
 //Start The Hard Part Here
 export default function Login(props) {
   const history = useHistory();
-useEffect(()=>{
-if(props.isLoggedIn){
-  history.push("/dashboard")
-}
-const handleFormSubmit= (e =>{
-  props.handleSubmit(e,history)
-})
-},[props.isLoggedIn])
+  useEffect(() => {
+    if (props.isLoggedIn) {
+      history.push("/dashboard")
+    }
+  }, [props.isLoggedIn])
 
   return (
     <div>
@@ -35,5 +32,6 @@ const handleFormSubmit= (e =>{
         <ActionBtn action={props.switch} name={props.formBtn} />
       </header>
     </div>
+
   );
 }
