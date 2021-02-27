@@ -77,6 +77,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
   const [state, setState] = React.useState({
     isDrawerOpened: false
   })
+  const [tileList, setTileList] = React.useState([]);
 
   const handleDrawerOpen = () => {
     setState({
@@ -92,7 +93,12 @@ export default function SliderDrawer({ handleDraggableItem }) {
 
   const { isDrawerOpened } = state;
 
-  const tileList = API.getTiles();
+  React.useEffect(() => {
+    API.getTiles()
+    .then(tiles => {
+      console.log(tiles);
+    })
+  },[]);
   
   return (
     <div>
@@ -120,7 +126,6 @@ export default function SliderDrawer({ handleDraggableItem }) {
         {/* Render the top 18 until scroll down, then render more, etc */}
         <div className={classes.tileGrid}>
           {/* Set this as {children} to handle whether its nav or tiles */}
-
           <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnDragStart={handleDraggableItem} />
           <DraggableTile key="1" tileId="1" environment="swamp" imageURL="https://picsum.photos/seed/alligator/100" handleOnDragStart={handleDraggableItem} />
           <DraggableTile key="2" tileId="2" environment="swamp" imageURL="https://picsum.photos/seed/gharial/100" handleOnDragStart={handleDraggableItem} />
