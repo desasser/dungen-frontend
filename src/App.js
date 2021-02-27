@@ -12,8 +12,6 @@ import LoginModal from "./components/LoginModal"
 
 function App() {
 
-  // let history = useHistory()
-
   const [users, setUserState] = useState({
     id: "",
     userName: "",
@@ -66,8 +64,8 @@ function App() {
 
   // const redirect = ()=>history.push("/dashboard")
 
-  const handleLogin = (data)=> {
-    setUserState({...users,isLoggedIn:data})
+  const handleLogin = (data) => {
+    setUserState({ ...users, isLoggedIn: data })
   }
 
   //Using the "HandleSubmit" as temple
@@ -141,17 +139,17 @@ function App() {
         <h1 className="text-2xl text-header">DUNGEN: JUNK WIZARDS</h1>
       </header> */}
       <Router>
-      <NavBar user={users}/>
+        <NavBar user={users} />
         <Switch>
           {/* <Route exact path="/" component={Home} />
         <Route exact path="/home" component={Home} /> */}
           <Route exact path="/login">
-            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}/>
-            
+            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
+
           </Route>
 
-          <Route exact path="/dashboard" component={MapBuilder} />
-          <Route exact path="/usermaps" component={SavedMaps} />
+          <SavedMaps users={users} />
+          <Route exact path="/builder" component={MapBuilder} />
         </Switch>
       </Router>
     </div>
