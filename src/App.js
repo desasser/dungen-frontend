@@ -7,6 +7,7 @@ import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";
 // import Splash from "./pages/Splash/index"
 import API from "./utils/API.js"
+import LoginModal from "./components/LoginModal"
 
 
 function App() {
@@ -143,8 +144,9 @@ function App() {
         <Switch>
           {/* <Route exact path="/" component={Home} />
         <Route exact path="/home" component={Home} /> */}
-          <Route exact path="/">
+          <Route exact path="/login">
             <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}/>
+            
           </Route>
 
           <Route exact path="/dashboard" component={MapBuilder} />
