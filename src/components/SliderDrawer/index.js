@@ -11,6 +11,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Tile from '../Tile';
 import API from '../../utils/API';
 import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
@@ -134,30 +136,18 @@ export default function SliderDrawer() {
         {/* Render the top 18 until scroll down, then render more, etc */}
         <Container className={classes.tileGrid}>
           {/* Set this as {children} to handle whether its nav or tiles */}
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
+          {tileState ?
+          tileState.map(tile => (
+            // TODO: Check this on deploy
+            <Tile key={tile.id} id={tile.id} image={tile.image_url} />
+          )) : (
+            (!loadState ? (
+              <CircularProgress />
+            ) : (
+                <Typography variant='h3'>
+                  No tiles!
+                </Typography>))
+          )}
         </Container>
       </TileDrawer>
     </Container>

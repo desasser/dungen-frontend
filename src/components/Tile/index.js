@@ -1,21 +1,14 @@
-import { useState, useEffect } from 'react'
-import SVG from './SVG'
-import Rectangle from './Rectangle'
+import { useState, useEffect } from 'react';
+import SVG from './SVG';
+import Rectangle from './Rectangle';
+import Container from '@material-ui/core/Container';
 
 export default function Tile(props) {
   const color = props.color !== undefined ? props.color : "#000";
 
-  let placeholderStyle = {
-    width: 100,
-    height: 100,
-    backgroundColor: 'tomato',
-    margin: 25
-  }
-
   // export default function Tile() {
   return (
-    <div style={placeholderStyle}>
-    </div>
+      <img src={props.image} alt='a tile' style={{height:100,width:100,margin:25}}/>
     //  return (
     //   <div>
     //     <SVG title="square" desc="a tile" width="100%" height="100%" minX={50} minY={50} style={{display: "block"}}>
