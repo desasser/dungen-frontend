@@ -7,6 +7,8 @@ import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";
 // import Splash from "./pages/Splash/index"
 import API from "./utils/API.js"
+import LoginModal from "./components/LoginModal"
+
 
 function App() {
 
@@ -137,13 +139,14 @@ function App() {
       {/* <header className="App-header">
         <h1 className="text-2xl text-header">DUNGEN: JUNK WIZARDS</h1>
       </header> */}
-      <NavBar user={users} click/>
       <Router>
+      <NavBar user={users}/>
         <Switch>
           {/* <Route exact path="/" component={Home} />
         <Route exact path="/home" component={Home} /> */}
-          <Route exact path="/">
+          <Route exact path="/login">
             <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}/>
+            
           </Route>
 
           <Route exact path="/dashboard" component={MapBuilder} />
