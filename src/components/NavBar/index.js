@@ -15,16 +15,21 @@ import Menu from '@material-ui/core/Menu';
 import {Link} from "react-router-dom"
 import LoginModal from "../LoginModal"
 import API from "../../utils/API"
+import { useHistory } from 'react-router-dom'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     position: 'sticky',
     top: 0,
-    zIndex: 9999,
+    zIndex: 10,
   },
   menuButton: {
     marginRight: theme.spacing(2),
+  },
+  menu: {
+    zIndex: 9999,
   },
   title: {
     flexGrow: 1,
@@ -32,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function MenuAppBar(props) {
+  const history = useHistory();
   const classes = useStyles();
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -188,6 +194,11 @@ export default function MenuAppBar(props) {
   const logInPopUp = () => {
     console.log("ummm...click")
   }
+  const logout = () => {
+    console.log("ummm...click-out")
+    localStorage.removeItem("token")
+    history.push("/")
+  }
 
   return (
     <div className={classes.root}>
@@ -201,10 +212,9 @@ export default function MenuAppBar(props) {
             DunGen
           </Typography>
           <FormGroup>
-            <FormControlLabel
-              control={<Switch checked={auth} onChange={handleChange} aria-label="login switch" />}
-              label={auth ? 'Logout' : null}
-            />
+          {props.user.isLoggedIn ? <span> <MenuItem onClick={logout}>
+              Logout
+              </MenuItem></span>: null}
           </FormGroup>
           {auth && (
             <div>
@@ -232,10 +242,9 @@ export default function MenuAppBar(props) {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}> <Link to ="/dashboard">Dashboard </Link></MenuItem> 
+                <MenuItem onClick={handleClose}> <Link to ="/builder">Map Builder </Link></MenuItem> 
                 {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
-                {/* <MenuItem onClick={handleClose}>Saved Maps</MenuItem> */}
-                {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}><Link to="/dashboard">Dashboard </Link>
+                {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}><Link to="/dashboard"> Saved Maps </Link>
                 </MenuItem> </span> : null}
               </Menu>
             </div>
