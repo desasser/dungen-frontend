@@ -9,6 +9,7 @@ import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import DraggableTile from '../Tile/DraggableTile';
+import API from '../../utils/API';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
@@ -90,6 +91,8 @@ export default function SliderDrawer({ handleDraggableItem }) {
   }
 
   const { isDrawerOpened } = state;
+
+  const tileList = API.getTiles();
   
   return (
     <div>
@@ -117,6 +120,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
         {/* Render the top 18 until scroll down, then render more, etc */}
         <div className={classes.tileGrid}>
           {/* Set this as {children} to handle whether its nav or tiles */}
+
           <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnDragStart={handleDraggableItem} />
           <DraggableTile key="1" tileId="1" environment="swamp" imageURL="https://picsum.photos/seed/alligator/100" handleOnDragStart={handleDraggableItem} />
           <DraggableTile key="2" tileId="2" environment="swamp" imageURL="https://picsum.photos/seed/gharial/100" handleOnDragStart={handleDraggableItem} />

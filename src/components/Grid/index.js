@@ -50,7 +50,77 @@ export default function Grid({ addThisTile }) {
     { i: 'al', w: 1, h: 1, x: 2, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
     { i: 'am', w: 1, h: 1, x: 2, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
     { i: 'an', w: 1, h: 1, x: 2, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
-    // { i: 'ao', w: 1, h: 1, x: 1, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'ao', w: 1, h: 1, x: 2, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ap', w: 1, h: 1, x: 3, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'aq', w: 1, h: 1, x: 3, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ar', w: 1, h: 1, x: 3, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'as', w: 1, h: 1, x: 3, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'at', w: 1, h: 1, x: 3, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'au', w: 1, h: 1, x: 3, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'av', w: 1, h: 1, x: 3, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'aw', w: 1, h: 1, x: 3, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ax', w: 1, h: 1, x: 3, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'ao', w: 1, h: 1, x: 3, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ay', w: 1, h: 1, x: 4, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'az', w: 1, h: 1, x: 4, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ba', w: 1, h: 1, x: 4, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bb', w: 1, h: 1, x: 4, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bc', w: 1, h: 1, x: 4, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bd', w: 1, h: 1, x: 4, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'be', w: 1, h: 1, x: 4, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bf', w: 1, h: 1, x: 4, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bg', w: 1, h: 1, x: 4, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'bh', w: 1, h: 1, x: 4, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bi', w: 1, h: 1, x: 5, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bj', w: 1, h: 1, x: 5, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bk', w: 1, h: 1, x: 5, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bl', w: 1, h: 1, x: 5, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bm', w: 1, h: 1, x: 5, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bn', w: 1, h: 1, x: 5, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bo', w: 1, h: 1, x: 5, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bp', w: 1, h: 1, x: 5, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bq', w: 1, h: 1, x: 5, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'br', w: 1, h: 1, x: 5, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bs', w: 1, h: 1, x: 6, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bt', w: 1, h: 1, x: 6, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bu', w: 1, h: 1, x: 6, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bv', w: 1, h: 1, x: 6, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bw', w: 1, h: 1, x: 6, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bx', w: 1, h: 1, x: 6, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'by', w: 1, h: 1, x: 6, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'bz', w: 1, h: 1, x: 6, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ca', w: 1, h: 1, x: 6, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'cb', w: 1, h: 1, x: 6, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cc', w: 1, h: 1, x: 7, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cd', w: 1, h: 1, x: 7, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ce', w: 1, h: 1, x: 7, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cf', w: 1, h: 1, x: 7, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cg', w: 1, h: 1, x: 7, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ch', w: 1, h: 1, x: 7, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ci', w: 1, h: 1, x: 7, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cj', w: 1, h: 1, x: 7, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ck', w: 1, h: 1, x: 7, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'cl', w: 1, h: 1, x: 7, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cm', w: 1, h: 1, x: 8, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cn', w: 1, h: 1, x: 8, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'co', w: 1, h: 1, x: 8, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cp', w: 1, h: 1, x: 8, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cq', w: 1, h: 1, x: 8, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cr', w: 1, h: 1, x: 8, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cs', w: 1, h: 1, x: 8, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ct', w: 1, h: 1, x: 8, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cu', w: 1, h: 1, x: 8, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'cv', w: 1, h: 1, x: 8, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cw', w: 1, h: 1, x: 9, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cx', w: 1, h: 1, x: 9, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cy', w: 1, h: 1, x: 9, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'cz', w: 1, h: 1, x: 9, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'da', w: 1, h: 1, x: 9, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'db', w: 1, h: 1, x: 9, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'dc', w: 1, h: 1, x: 9, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'dd', w: 1, h: 1, x: 9, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'de', w: 1, h: 1, x: 9, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'df', w: 1, h: 1, x: 9, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
   ]
 
   /**
@@ -60,9 +130,9 @@ export default function Grid({ addThisTile }) {
    * 'item', however, returns the new x,y coords so it is useful and needs to be passed to createNewTile()
    */
   const handleOnDrop = (layout, item, e) => {
-    console.log(item);
+    let droppedItem = typeof item === "Array" ? item[0] : item;
     if(addThisTile !== undefined && addThisTile.tileid !== undefined) {
-      createNewTile(item[0]);
+      createNewTile(droppedItem);
     }
   }
 
@@ -78,13 +148,14 @@ export default function Grid({ addThisTile }) {
       i: newIndex.toString(), // GridLayout expects this to be a string!
       tileId: addThisTile.tileid,
       environment: addThisTile.environment,
-      x: droppedItemData.y,
-      y: droppedItemData.x,
+      orientation: 0,
+      x: droppedItemData.x,
+      y: droppedItemData.y,
       bg: addThisTile.bg,
       w: 1,
       h: 1
     };
-    console.log(newTileObj);
+    // console.log(newTileObj);
 
     if(newTileObj.tileId != null && newTileObj.tileId !== undefined && newTileObj.tileId !== "") {
       setMapLayout([...mapLayout, newTileObj]);
@@ -118,10 +189,11 @@ export default function Grid({ addThisTile }) {
   }
 
   const handleWidgetButtonClick = (action, item) => {
+    // console.log(action, item);
     // we're using opacity: 0 for the control widget to give it that fancy "imploding anim"
     // but that means the buttons are still *there* to be clicked! so we're checking to make
     // sure the control widget is actually being displayed before we take any action 
-    if(item.displayControlWidget == "true") {
+    if(item.displayControlWidget === true) {
       const itemKey = item.i;
 
       if(action === "closeWidget") {
@@ -143,11 +215,11 @@ export default function Grid({ addThisTile }) {
   const rotateTile = (tileKey, direction) => {
     mapLayout.map(mapTile => {
       if(mapTile.i.toString() === tileKey.toString()) {
-        mapTile.bg = Math.floor(Math.random()*16777215).toString(16);
+        
         if( parseInt(mapTile.orientation) === 270 || parseInt(mapTile.orientation)  === -270 ) {
           mapTile.orientation = 0;
         } else {
-          mapTile.orientation = direction === "right" ? mapTile.orientation + 90 : mapTile.orientation - 90;
+          mapTile.orientation = direction === "right" ? parseInt(mapTile.orientation) + 90 : parseInt(mapTile.orientation) - 90;
         }
       }
     });

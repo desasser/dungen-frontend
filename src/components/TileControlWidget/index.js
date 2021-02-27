@@ -72,7 +72,7 @@ const useStyles = makeStyles({
     "& .rotateTileRight": {
       left: "-33px",
       top: "50%",
-      transform: "rotate(-90deg)",
+      transform: "rotate(90deg)",
       color: "dodgerblue",
 
       "&:hover .MuiSvgIcon-root": {
@@ -83,7 +83,7 @@ const useStyles = makeStyles({
     "& .rotateTileLeft": {
       left: "33px",
       top: "50%",
-      transform: "rotate(90deg)",
+      transform: "rotate(-90deg)",
       color: "hotpink",
 
       "&:hover .MuiSvgIcon-root": {
