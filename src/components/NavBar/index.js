@@ -11,12 +11,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import {Link} from "react-router-dom"
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     position: 'sticky',
     top: 0,
+    zIndex: 9999,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuAppBar() {
+export default function MenuAppBar(props) {
   const classes = useStyles();
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -49,6 +51,7 @@ export default function MenuAppBar() {
 
       <AppBar position="static">
         <Toolbar>
+        {!props.user.isLoggedIn ? <span> <MenuItem edge="start" onClick={handleClose}>Login</MenuItem> </span>: null}
           {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                         <MenuIcon />
                     </IconButton> */}
@@ -87,9 +90,9 @@ export default function MenuAppBar() {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Dashboard</MenuItem>
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Saved Maps</MenuItem>
+                {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Dashboard</MenuItem> </span>: null}
+                {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
+                {/* <MenuItem onClick={handleClose}>Saved Maps</MenuItem> */}
               </Menu>
             </div>
           )}
