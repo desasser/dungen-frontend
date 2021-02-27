@@ -6,20 +6,52 @@ import Tile from '../Tile';
 import TileControlWidget from '../TileControlWidget'
  
 export default function Grid({ addThisTile }) {
-
   const [mapLayout, setMapLayout] = useState([]);
-  const [newTile, setNewTile] = useState({
-    i: '0',
-    tileId: null,
-    environment: null,
-    x: 0,
-    y: 0,
-    bg: "#f00",
-    orientation: 0,
-    displayControlWidget: false,
-    w: 1,
-    h: 1
-  });
+  const [prevTileIndex, setPrevTileIndex] = useState(0);
+
+  const gridCellCoords = [
+    { i: 'a', w: 1, h: 1, x: 0, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'b', w: 1, h: 1, x: 1, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'c', w: 1, h: 1, x: 2, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'd', w: 1, h: 1, x: 3, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'e', w: 1, h: 1, x: 4, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'f', w: 1, h: 1, x: 5, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'g', w: 1, h: 1, x: 6, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'h', w: 1, h: 1, x: 7, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'i', w: 1, h: 1, x: 8, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'j', w: 1, h: 1, x: 9, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'k', w: 1, h: 1, x: 10, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'l', w: 1, h: 1, x: 0, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'm', w: 1, h: 1, x: 0, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'n', w: 1, h: 1, x: 0, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'o', w: 1, h: 1, x: 0, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'p', w: 1, h: 1, x: 0, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'q', w: 1, h: 1, x: 0, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'r', w: 1, h: 1, x: 0, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 's', w: 1, h: 1, x: 0, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 't', w: 1, h: 1, x: 0, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'u', w: 1, h: 1, x: 0, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'v', w: 1, h: 1, x: 1, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'w', w: 1, h: 1, x: 1, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'x', w: 1, h: 1, x: 1, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'y', w: 1, h: 1, x: 1, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'z', w: 1, h: 1, x: 1, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'aa', w: 1, h: 1, x: 1, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ab', w: 1, h: 1, x: 1, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ac', w: 1, h: 1, x: 1, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ad', w: 1, h: 1, x: 1, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'ae', w: 1, h: 1, x: 1, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'af', w: 1, h: 1, x: 2, y: 1, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ag', w: 1, h: 1, x: 2, y: 2, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ah', w: 1, h: 1, x: 2, y: 3, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ai', w: 1, h: 1, x: 2, y: 4, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'aj', w: 1, h: 1, x: 2, y: 5, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'ak', w: 1, h: 1, x: 2, y: 6, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'al', w: 1, h: 1, x: 2, y: 7, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'am', w: 1, h: 1, x: 2, y: 8, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    { i: 'an', w: 1, h: 1, x: 2, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+    // { i: 'ao', w: 1, h: 1, x: 1, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
+  ]
 
   /**
    * 'onDrop' is a prop for a callback function provided by react-grid-layout for the GridLayout component
@@ -27,33 +59,36 @@ export default function Grid({ addThisTile }) {
    * and the 'e' event returned is for the GridLayout rather than the draggable item being added
    * 'item', however, returns the new x,y coords so it is useful and needs to be passed to createNewTile()
    */
-  const handleOnDrop = (item) => {
-    // console.log(addThisTile);
+  const handleOnDrop = (layout, item, e) => {
+    console.log(item);
     if(addThisTile !== undefined && addThisTile.tileid !== undefined) {
       createNewTile(item[0]);
     }
   }
 
   const createNewTile = (droppedItemData) => {
-    let newIndex = parseInt(newTile.i) > 0 ? parseInt(newTile.i) + 1 : 0;
-    console.log("addThisTile", addThisTile, "droppedItemData", droppedItemData);
+    let newIndex = parseInt(prevTileIndex) > 0 ? parseInt(prevTileIndex) + 1 : 0;
+    if(mapLayout.length > 0) {
+      newIndex = parseInt(newIndex) + 1;
+    }
+
+    // console.log("addThisTile", addThisTile, "droppedItemData", droppedItemData);
 
     const newTileObj = {
-      ...newTile,
       i: newIndex.toString(), // GridLayout expects this to be a string!
       tileId: addThisTile.tileid,
       environment: addThisTile.environment,
-      x: droppedItemData.x,
-      y: droppedItemData.y,
-      bg: addThisTile.bg
+      x: droppedItemData.y,
+      y: droppedItemData.x,
+      bg: addThisTile.bg,
+      w: 1,
+      h: 1
     };
-    
-    setNewTile(newTileObj);
+    console.log(newTileObj);
 
-    console.log(newTile);
-
-    if(newTile.tileId != null && newTile.tileId !== undefined && newTile.tileId !== "") {
-      setMapLayout([...mapLayout, newTile]);
+    if(newTileObj.tileId != null && newTileObj.tileId !== undefined && newTileObj.tileId !== "") {
+      setMapLayout([...mapLayout, newTileObj]);
+      setPrevTileIndex(newIndex);
     }
   }
 
@@ -128,6 +163,22 @@ export default function Grid({ addThisTile }) {
 
   return (
     <div id="mapGrid" style={{flex: "1 0 70%"}}>
+      <GridLayout
+        className="mapCoordsGrid"
+        colWidth={100}
+        rowHeight={100}
+        width={1200}
+        compactType={null}
+        margin={[0,0]}
+        isDraggable={false}
+        isDroppable={false}
+        isResizable={false}
+        style={{height: "100%"}}
+      >
+      {/* GRID NUMBERS */}
+      {gridCellCoords.map( cell => <div key={cell.i} className="grid-cell-coords" data-grid={{...cell}} resizable="false">{cell.x},{cell.y}</div> )} 
+      </GridLayout>
+
       <GridLayout 
         className="mapGrid"
         colWidth={100} 
@@ -141,7 +192,7 @@ export default function Grid({ addThisTile }) {
         onDrop={handleOnDrop}
         // onLayoutChange={handleOnLayoutChange}
         // onDragStop={handleOnDragStop}
-        style={{backgroundColor: "gainsboro", minHeight: "400px"}}
+        style={{height: "100%"}}
       >
       {mapLayout.map((item, idx) => <div key={idx} className="tile-wrapper" data-grid={{...item}} data-environment={item.environment} data-tileid={item.tileId} data-tilekey={item.i} data-displaywidget={item.displayControlWidget} resizable="false"><Tile item={item} handleDoubleClick={handleDoubleClick} /> <TileControlWidget item={item} handleDoubleClick={handleDoubleClick} handleWidgetButtonClick={handleWidgetButtonClick} /> </div> )}
       </GridLayout>

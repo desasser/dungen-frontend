@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     width: '100%',
+
+    "& .droppable-element": {
+      margin: "0.75rem"
+    }
   }
 }));
 
@@ -114,6 +118,9 @@ export default function SliderDrawer({ handleDraggableItem }) {
         <div className={classes.tileGrid}>
           {/* Set this as {children} to handle whether its nav or tiles */}
           <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnDragStart={handleDraggableItem} />
+          <DraggableTile key="1" tileId="1" environment="swamp" imageURL="https://picsum.photos/seed/alligator/100" handleOnDragStart={handleDraggableItem} />
+          <DraggableTile key="2" tileId="2" environment="swamp" imageURL="https://picsum.photos/seed/gharial/100" handleOnDragStart={handleDraggableItem} />
+          <DraggableTile key="3" tileId="3" environment="swamp" imageURL="https://picsum.photos/seed/flamingo/100" handleOnDragStart={handleDraggableItem} />
         </div>
       </TileDrawer>
     </div>
