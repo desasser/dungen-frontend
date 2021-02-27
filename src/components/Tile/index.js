@@ -1,27 +1,25 @@
-import { useState, useEffect } from 'react'
-import SVG from './SVG'
-import Rectangle from './Rectangle'
+import { useState, useEffect } from "react";
+import './style.scss'
 
-export default function Tile(props) {
-  const color = props.color !== undefined ? props.color : "#000";
+export default function Tile({item, handleDoubleClick, handleWidgetButtonClick}) {
 
-  let placeholderStyle = {
+  let tileStyles = {
     width: 100,
     height: 100,
-    backgroundColor: 'tomato',
-    margin: 25
+    backgroundColor: `${item.bg}`,
+    transform: `rotate(${item.orientation}deg)`
   }
+
+  // useEffect(() => {
+  //   console.log(item);
+  // },[]);
+
+  
 
   // export default function Tile() {
   return (
-    <div style={placeholderStyle}>
+    <div className="tile" style={tileStyles} onDoubleClick={(e) => handleDoubleClick(e)}>
+      
     </div>
-    //  return (
-    //   <div>
-    //     <SVG title="square" desc="a tile" width="100%" height="100%" minX={50} minY={50} style={{display: "block"}}>
-    //       <Rectangle width="100" height="100" fill={color} x={0} y={0} />
-    //     </SVG>
-    //   </div>
-    // )
-  )
+  );
 }
