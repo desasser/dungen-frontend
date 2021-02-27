@@ -50,6 +50,7 @@ function App() {
         isLoggedIn: true
       })
     }).catch(err => {
+      console.log(err)
       localStorage.removeItem("token");
       console.log("not properly Authed")
     })
@@ -94,7 +95,7 @@ function App() {
       }).catch(error => {
         console.log(error);
         localStorage.removeItem("token");
-        console.log("token has been removed. Error Login.line: 83")
+        console.log("token has been removed. Error Login.line: 98")
       })
     } else {
       API.signup(loginState).then(res => {

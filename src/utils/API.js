@@ -16,6 +16,7 @@ const API = {
         return axios.post(`${URL_PREFIX}/login`, userData)
     },
     getAuthToken: token => {
+        console.log(token)
         return axios.get(`${URL_PREFIX}/auth`, {
             headers: {
                 authorization: `Bearer: ${token}`

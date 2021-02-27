@@ -66,21 +66,22 @@ export default function MenuAppBar(props) {
   })
 
 
-  useEffect(() => {
-    const token = localStorage.getItem("token")
-    API.getAuthToken(token).then(res => {
-      console.log("got the token!")
-      setUserState({
-        id: res.data.id,
-        userName: res.data.userName,
-        token: token,
-        isLoggedIn: true
-      }).then(handleClose())
-    }).catch(err => {
-      localStorage.removeItem("token");
-      console.log("not properly Authed")
-    })
-  }, [])
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token")
+  //   API.getAuthToken(token).then(res => {
+  //     console.log("got the token!")
+  //     setUserState({
+  //       id: res.data.id,
+  //       userName: res.data.userName,
+  //       token: token,
+  //       isLoggedIn: true
+  //     }).then(handleClose())
+  //   }).catch(err => {
+  //     localStorage.removeItem("token");
+  //     console.log("not properly Authed")
+  //     console.log(err)
+  //   })
+  // }, [])
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -120,7 +121,7 @@ export default function MenuAppBar(props) {
       }).catch(error => {
         console.log(error);
         localStorage.removeItem("token");
-        console.log("token has been removed. Error Login.line: 83")
+        console.log("token has been removed. Error Login. NavBar line: 123")
       })
     } else {
       API.signup(loginState).then(res => {
@@ -159,6 +160,7 @@ export default function MenuAppBar(props) {
     }
   }
 
+  
 
   //======================================================================
   // END OF Login/Sign Functions
