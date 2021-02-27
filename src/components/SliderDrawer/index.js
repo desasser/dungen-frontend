@@ -13,6 +13,7 @@ import API from '../../utils/API';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import DraggableTile from '../Tile/DraggableTile';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
   tileGrid: {
     marginLeft: 25,
     marginTop:25,
+    paddingTop: 25,
     display: 'flex',
     flexWrap: 'wrap',
     width: '100%',
@@ -69,13 +71,15 @@ const TileDrawer = withStyles({
   }
 })(Drawer)
 
-export default function SliderDrawer() {
+export default function SliderDrawer({ handleDraggableItem }) {
   const classes = useStyles();
   const [state, setState] = useState({
     isDrawerOpened: false
   })
   const [tileState, setTileState] = useState([]);
   const [loadState, setLoadState] = useState(false);
+
+  const theme = useTheme();
 
   useEffect(() => {
     loadTiles()
@@ -109,7 +113,7 @@ export default function SliderDrawer() {
   }
 
   const { isDrawerOpened } = state;
-  const theme = useTheme();
+  
   return (
     <Container>
       <Container className={classes.sideNav} maxWidth={false}>
@@ -149,6 +153,7 @@ export default function SliderDrawer() {
                 </Typography>))
           )}
         </Container>
+          {/* <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnClick={handleDraggableItem} /> */}
       </TileDrawer>
     </Container>
   );

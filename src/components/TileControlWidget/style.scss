@@ -1,0 +1,22 @@
+.controlButton {
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  width: 0;
+  height: 0;
+  transition: all 0.3s ease-out;
+
+  & .MuiSvgIcon-root {
+    background: white;
+    border-radius: 50%;
+  }
+  &.closeWidget,
+  &.deleteTile,
+  &.rotateTileLeft,
+  &.rotateTileRight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 0.3s ease;
+  }
+}
