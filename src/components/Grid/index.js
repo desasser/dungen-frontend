@@ -5,26 +5,59 @@ import './style.scss'
 import Tile from '../Tile';
 import TileControlWidget from '../TileControlWidget'
  
-export default function Grid() {
-  const [lastTileKey, setLastTileKey] = useState(0);
-  const [mapLayout, setMapLayout] = useState([
-    {i: '0', tileId: '2', environment: 'swamp', x: 0, y: 0, w: 1, h: 1, bg: "#a63a50", orientation: 0, displayControlWidget: false},
-    {i: '1', tileId: '7', environment: 'swamp', x: 1, y: 0, w: 1, h: 1, bg: "#5941a9", orientation: 0, displayControlWidget: false},
-    {i: '2', tileId: '3', environment: 'swamp', x: 0, y: 1, w: 1, h: 1, bg: "#4c0827", orientation: 0, displayControlWidget: false},
-    {i: '3', tileId: '12', environment: 'swamp', x: 1, y: 1, w: 1, h: 1, bg: "#435058", orientation: 0, displayControlWidget: true},
-  ]);
+export default function Grid({ addThisTile }) {
 
-  {/* [
-    {i: '0', tileId: '2', environment: 'swamp', x: 0, y: 0, w: 1, h: 1, bg: "#a63a50", orientation: 0, displayControlWidget: false},
-    {i: '1', tileId: '7', environment: 'swamp', x: 1, y: 0, w: 1, h: 1, bg: "#5941a9", orientation: 0, displayControlWidget: false},
-    {i: '2', tileId: '3', environment: 'swamp', x: 0, y: 1, w: 1, h: 1, bg: "#4c0827", orientation: 0, displayControlWidget: false},
-    {i: '3', tileId: '12', environment: 'swamp', x: 1, y: 1, w: 1, h: 1, bg: "#435058", orientation: 0, displayControlWidget: true},
-  ] */}
+  const [mapLayout, setMapLayout] = useState([]);
+  const [newTile, setNewTile] = useState({
+    i: '0',
+    tileId: null,
+    environment: null,
+    x: 0,
+    y: 0,
+    bg: "#f00",
+    orientation: 0,
+    displayControlWidget: false,
+    w: 1,
+    h: 1
+  });
 
-  const handleOnDrop = (layout, item, e) => {
-    console.log(layout, item, e)
+  /**
+   * 'onDrop' is a prop for a callback function provided by react-grid-layout for the GridLayout component
+   * it returns layout, item, and 'e', but the item returned is stripped of all custom data attributes
+   * and the 'e' event returned is for the GridLayout rather than the draggable item being added
+   * 'item', however, returns the new x,y coords so it is useful and needs to be passed to createNewTile()
+   */
+  const handleOnDrop = (item) => {
+    // console.log(addThisTile);
+    if(addThisTile !== undefined && addThisTile.tileid !== undefined) {
+      createNewTile(item[0]);
+    }
   }
 
+  const createNewTile = (droppedItemData) => {
+    let newIndex = parseInt(newTile.i) > 0 ? parseInt(newTile.i) + 1 : 0;
+    console.log("addThisTile", addThisTile, "droppedItemData", droppedItemData);
+
+    const newTileObj = {
+      ...newTile,
+      i: newIndex.toString(), // GridLayout expects this to be a string!
+      tileId: addThisTile.tileid,
+      environment: addThisTile.environment,
+      x: droppedItemData.x,
+      y: droppedItemData.y,
+      bg: addThisTile.bg
+    };
+    
+    setNewTile(newTileObj);
+
+    console.log(newTile);
+
+    if(newTile.tileId != null && newTile.tileId !== undefined && newTile.tileId !== "") {
+      setMapLayout([...mapLayout, newTile]);
+    }
+  }
+
+  // this is the control widget for each tile, 
   const toggleWidget = (tileKey) => {
     mapLayout.map(mapTile => {
       if(mapTile.i.toString() === tileKey) {
@@ -49,20 +82,26 @@ export default function Grid() {
     toggleWidget(tile.dataset.tilekey);
   }
 
-  const handleWidgetButtonClick = (action, itemKey) => {
-    console.log(action);
-    if(action === "closeWidget") {
-      toggleWidget(itemKey.toString());
+  const handleWidgetButtonClick = (action, item) => {
+    // we're using opacity: 0 for the control widget to give it that fancy "imploding anim"
+    // but that means the buttons are still *there* to be clicked! so we're checking to make
+    // sure the control widget is actually being displayed before we take any action 
+    if(item.displayControlWidget == "true") {
+      const itemKey = item.i;
 
-    } else if(action === "rotateRight") {
-      rotateTile(itemKey, "right");
-
-    } else if(action === "rotateLeft") {
-      rotateTile(itemKey, "left");
-
-    } else if(action === "deleteTile") {
-      removeTile(itemKey);
-      
+      if(action === "closeWidget") {
+        toggleWidget(itemKey.toString());
+  
+      } else if(action === "rotateRight") {
+        rotateTile(itemKey, "right");
+  
+      } else if(action === "rotateLeft") {
+        rotateTile(itemKey, "left");
+  
+      } else if(action === "deleteTile") {
+        removeTile(itemKey);
+        
+      }
     }
   }
 

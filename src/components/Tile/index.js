@@ -6,7 +6,7 @@ export default function Tile({item, handleDoubleClick, handleWidgetButtonClick})
   let tileStyles = {
     width: 100,
     height: 100,
-    backgroundColor: `${item.bg}`,
+    background: item.bg.substring(0,1) === "#" ? item.bg : `url(${item.bg})`,
     transform: `rotate(${item.orientation}deg)`
   }
 

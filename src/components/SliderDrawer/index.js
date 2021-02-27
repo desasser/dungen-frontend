@@ -113,7 +113,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
         {/* Render the top 18 until scroll down, then render more, etc */}
         <div className={classes.tileGrid}>
           {/* Set this as {children} to handle whether its nav or tiles */}
-          <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnClick={handleDraggableItem} />
+          <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnDragStart={handleDraggableItem} />
         </div>
       </TileDrawer>
     </div>

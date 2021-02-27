@@ -103,16 +103,16 @@ export default function TileControlWidget({ item, handleWidgetButtonClick }) {
 
   return (
     <div data-tilekey={item.i} data-tileid={item.tileId} className={item.displayControlWidget ? `${classes.tileControlWidget} ${classes.activeWidget}` : classes.tileControlWidget}>
-    <IconBtn classes={"controlButton closeWidget"} onClick={(e) => handleWidgetButtonClick("closeWidget", item.i)}>
+    <IconBtn classes={"controlButton closeWidget"} onClick={(e) => handleWidgetButtonClick("closeWidget", item)}>
         <CloseIcon />
       </IconBtn>
-      <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item.i)}>
+      <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item)}>
         <RotateRightIcon />
       </IconBtn>
-      <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item.i)}>
+      <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item)}>
         <RotateLeftIcon />
       </IconBtn>
-      <IconBtn classes={"controlButton deleteTile"} onClick={(e) => handleWidgetButtonClick("deleteTile", item.i)}>
+      <IconBtn classes={"controlButton deleteTile"} onClick={(e) => handleWidgetButtonClick("deleteTile", item)}>
         <DeleteIcon />
       </IconBtn>
     </div>

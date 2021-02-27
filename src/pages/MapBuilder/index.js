@@ -42,7 +42,12 @@ const useStyles = makeStyles({
 
 export default function MapBuilder() {
   const [lockState, setLockState] = useState(false);
-  const [newTileId, setNewTileId] = useState();
+  // for adding a new tile to the map grid
+  const [addThisTile, setAddThisTile] = useState({
+    tileid: null,
+    environment: "",
+    bg: ""
+  });
 
   const classes = useStyles();
 
@@ -55,16 +60,23 @@ export default function MapBuilder() {
   }
 
   const handleDraggableItem = (e) => {
-    setNewTileId(e.target.dataset.tileid);
+    // console.log(e.target.dataset.tileid);
+    setAddThisTile({
+      ...addThisTile,
+      tileid: e.target.dataset.tileid,
+      environment: e.target.dataset.environment,
+      bg: e.target.dataset.image
+    });
   }
 
   return (
     <div>
       <h1>This is where we build maps!</h1>
+      {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
       <SliderDrawer handleDraggableItem={handleDraggableItem} />
       {/* GRID BOX */}
       <div className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}>
-        <Grid />
+        <Grid addThisTile={addThisTile} />
       </div>
       <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
         {/* <LockOutlinedIcon /> */}
