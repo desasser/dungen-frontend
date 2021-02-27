@@ -42,6 +42,7 @@ const useStyles = makeStyles({
 
 export default function MapBuilder() {
   const [lockState, setLockState] = useState(false);
+  const [newTileId, setNewTileId] = useState();
 
   const classes = useStyles();
 
@@ -53,11 +54,18 @@ export default function MapBuilder() {
     }
   }
 
+  const handleDraggableItem = (e) => {
+    setNewTileId(e.target.dataset.tileid);
+  }
+
   return (
     <div>
       <h1>This is where we build maps!</h1>
-      <SliderDrawer />
-      <div className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}></div>
+      <SliderDrawer handleDraggableItem={handleDraggableItem} />
+      {/* GRID BOX */}
+      <div className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}>
+        <Grid />
+      </div>
       <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
         {/* <LockOutlinedIcon /> */}
         {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
@@ -67,23 +75,7 @@ export default function MapBuilder() {
       {/* Comment in the below section if we need a static display instead of drawer */}
       {/* Can also target this for the media query to flip based on screen size */}
       {/* <div className={classes.tileGrid}>
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-      </div> */}
-      {/* <Grid /> */}
+      <Grid /> */}
     </div>
   )
 }

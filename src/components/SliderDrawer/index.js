@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import Tile from '../Tile';
+import DraggableTile from '../Tile/DraggableTile';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
   tileGrid: {
     marginLeft: 25,
     marginTop:25,
+    paddingTop: 25,
     display: 'flex',
     flexWrap: 'wrap',
     width: '100%',
@@ -64,8 +65,10 @@ const TileDrawer = withStyles({
   }
 })(Drawer)
 
-export default function SliderDrawer() {
+export default function SliderDrawer({ handleDraggableItem }) {
   const classes = useStyles();
+  const theme = useTheme();
+  
   const [state, setState] = React.useState({
     isDrawerOpened: false
   })
@@ -83,7 +86,7 @@ export default function SliderDrawer() {
   }
 
   const { isDrawerOpened } = state;
-  const theme = useTheme();
+  
   return (
     <div>
       <div className={classes.sideNav}>
@@ -110,30 +113,7 @@ export default function SliderDrawer() {
         {/* Render the top 18 until scroll down, then render more, etc */}
         <div className={classes.tileGrid}>
           {/* Set this as {children} to handle whether its nav or tiles */}
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
-          <Tile />
+          <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnClick={handleDraggableItem} />
         </div>
       </TileDrawer>
     </div>

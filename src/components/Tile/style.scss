@@ -1,0 +1,57 @@
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+.react-grid-item img {
+  pointer-events: none;
+  user-select: none;  
+}
+.react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+.react-grid-item.resizing {
+  z-index: 1;
+  will-change: width, height;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+  position: relative;
+}
+
+.react-grid-item.dropping {
+  visibility: hidden;
+  position: relative;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: #e0815e;
+  // opacity: 0.2;
+  transition-duration: 100ms;
+  z-index: 2;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.droppable-element {
+  width: 100px;
+  height: 100px;
+  background-color: tomato;
+  color: white;
+  font-weight: bold;
+}
+
+$fromSide: "-6px";
+#mapGrid .react-grid-item {
+  overflow: visible;
+  position: relative;
+
+  &.active {
+    border: inset 2px solid red;
+  }
+}

@@ -1,6 +1,7 @@
 import React from "react";
+import './style.scss'
 
-export default function DraggableTile({itemKey, tile, environment, orientation, children}) {
+export default function DraggableTile({ tileId, children, imageURL, handleOnClick }) {
   const handleDraggableDragStart = (e) => {
     e.dataTransfer.setData("text/plain", "");
   }
@@ -8,14 +9,13 @@ export default function DraggableTile({itemKey, tile, environment, orientation, 
   return (
     <div
       className="droppable-element"
-      key={itemKey}
-      data-tile={tile}
-      data-environment={environment}
-      data-orientation={orientation}
+      data-tileid={tileId}
+      data-image={imageURL}
       draggable={true}
       unselectable="on"
+      style={{background: `url(${imageURL})`}}
       // Firefox hack
-      onDragStart={(e) => handleDraggableDragStart(e)}
+      onDragStart={handleOnClick}
     >
       {children}
     </div>
