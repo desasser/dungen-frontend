@@ -148,7 +148,10 @@ function App() {
 
           </Route>
 
+          <Route exact path="/dashboard">
           <SavedMaps users={users} />
+          </Route>
+
           <Route exact path="/builder" component={MapBuilder} />
         </Switch>
       </Router>
