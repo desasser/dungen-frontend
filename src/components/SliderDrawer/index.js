@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Drawer, Divider, IconButton, Button } from '@material-ui/core';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
 import ReorderIcon from '@material-ui/icons/Reorder';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { Link } from 'react-router-dom';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import Tile from '../Tile';
 import API from '../../utils/API';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DraggableTile from '../Tile/DraggableTile';
-import API from '../../utils/API';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
@@ -82,29 +76,10 @@ export default function SliderDrawer({ handleDraggableItem }) {
   const [state, setState] = useState({
     isDrawerOpened: false
   })
-  const [tileState, setTileState] = useState([]);
+  const [tileSet, setTileSet] = useState([]);
   const [loadState, setLoadState] = useState(false);
 
   const theme = useTheme();
-
-  useEffect(() => {
-    loadTiles()
-  }, [])
-
-
-  const loadTiles = () => {
-    API.getTiles()
-      .then(res => {
-        console.log('response', res.data);
-        setLoadState(true)
-        setTileState(res.data);
-        // check length of response and render No Maps! or All maps!
-      }).catch(err => {
-        console.log(err);
-        // add a simple snackbar that says 'sorry, we failed you, try again!'
-        // setErrorState(true);
-      })
-  }
 
   const handleDrawerOpen = () => {
     setState({
@@ -120,12 +95,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
 
   const { isDrawerOpened } = state;
 
-  /**
-   * <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnDragStart={handleDraggableItem} />
-   * key, tileId, environment (name as string), imgURL (for bg)
-   */
-
-  React.useEffect(() => {
+  useEffect(() => {
     API.getTiles()
     .then(tiles => {
       const list = tiles.data;
@@ -139,8 +109,8 @@ export default function SliderDrawer({ handleDraggableItem }) {
         }
         tileList.push(tile);
       }
-      // console.log(tileList)
       setTileSet(tileList);
+      setLoadState(true);
     })
     .catch(err => console.error(err))
   },[]);
@@ -148,7 +118,6 @@ export default function SliderDrawer({ handleDraggableItem }) {
   return (
     <Container>
       <Container className={classes.sideNav} maxWidth={false}>
-        {/* className={classes.sideNav} */}
         <IconButton onClick={handleDrawerOpen}>
           {!isDrawerOpened ? <ReorderIcon /> : null}
         </IconButton>
@@ -166,16 +135,10 @@ export default function SliderDrawer({ handleDraggableItem }) {
             {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </Container>
-        {/* Fetch all tile URLs from db */}
-        {/* Map over the array and create a tile for each one */}
         {/* Render the top 18 until scroll down, then render more, etc */}
         <Container className={classes.tileGrid}>
-          {/* Set this as {children} to handle whether its nav or tiles */}
-          {tileState ?
-          tileState.map(tile => (
-            // TODO: Check this on deploy
-            <Tile key={tile.id} id={tile.id} image={tile.image_url} />
-          )) : (
+          {tileSet ?
+          tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />) : (
             (!loadState ? (
               <CircularProgress />
             ) : (
@@ -184,8 +147,6 @@ export default function SliderDrawer({ handleDraggableItem }) {
                 </Typography>))
           )}
         </Container>
-          {/* <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnClick={handleDraggableItem} /> */}
-          {/* TODO: check this works {tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />)} */}
       </TileDrawer>
     </Container>
   );
