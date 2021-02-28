@@ -72,31 +72,27 @@ export default function MapBuilder() {
   }
 
   return (
-<<<<<<< HEAD
     <Container>
-      <Typography variant='h2'>This is where we build maps!</Typography>
+      {/* <Typography variant='h2'>This is where we build maps!</Typography>
       <SliderDrawer />
-      <Container className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}></Container>
-=======
-    <div>
-      <h1>This is where we build maps!</h1>
-      {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
-      <SliderDrawer handleDraggableItem={handleDraggableItem} />
-      {/* GRID BOX */}
-      <div className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}>
-        <Grid addThisTile={addThisTile} />
-      </div>
->>>>>>> dev
-      <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
-        {/* <LockOutlinedIcon /> */}
-        {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
-      </IconBtn>
-      <ActionBtn name='action' classes={classes.actionBtn} />
-      <RouterBtn name='router' classes={classes.routerBtn} />
-      {/* Comment in the below section if we need a static display instead of drawer */}
-      {/* Can also target this for the media query to flip based on screen size */}
-<<<<<<< HEAD
-      {/* <Container className={classes.tileGrid}>
+      <Container className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}></Container> */}
+      <div>
+        <h1>This is where we build maps!</h1>
+        {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
+        <SliderDrawer handleDraggableItem={handleDraggableItem} />
+        {/* GRID BOX */}
+        <div className="grid-base" style={{ border: 'black 1px solid', height: '1000px', width: '1000px', marginLeft: '25px', marginTop: '25px' }}>
+          <Grid addThisTile={addThisTile} />
+        </div>
+        <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
+          {/* <LockOutlinedIcon /> */}
+          {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
+        </IconBtn>
+        <ActionBtn name='action' classes={classes.actionBtn} />
+        <RouterBtn name='router' classes={classes.routerBtn} />
+        {/* Comment in the below section if we need a static display instead of drawer */}
+        {/* Can also target this for the media query to flip based on screen size */}
+        {/* <Container className={classes.tileGrid}>
         <Tile />
         <Tile />
         <Tile />
@@ -113,13 +109,11 @@ export default function MapBuilder() {
         <Tile />
         <Tile />
       </Container> */}
-      {/* <Grid /> */}
-    </Container>
-=======
-      {/* <div className={classes.tileGrid}>
+        {/* <Grid /> */}
+        {/* <div className={classes.tileGrid}>
       <Grid /> */}
-    </div>
->>>>>>> dev
+      </div>
+    </Container>
   )
 }
 
