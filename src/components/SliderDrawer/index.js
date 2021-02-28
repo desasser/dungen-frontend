@@ -14,6 +14,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import DraggableTile from '../Tile/DraggableTile';
+import API from '../../utils/API';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
@@ -44,9 +45,14 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 25,
     marginTop:25,
     paddingTop: 25,
+    paddingBottom: 100,
     display: 'flex',
     flexWrap: 'wrap',
     width: '100%',
+
+    "& .droppable-element": {
+      margin: "0.75rem"
+    }
   }
 }));
 
@@ -113,6 +119,31 @@ export default function SliderDrawer({ handleDraggableItem }) {
   }
 
   const { isDrawerOpened } = state;
+
+  /**
+   * <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnDragStart={handleDraggableItem} />
+   * key, tileId, environment (name as string), imgURL (for bg)
+   */
+
+  React.useEffect(() => {
+    API.getTiles()
+    .then(tiles => {
+      const list = tiles.data;
+      let tileList = [];
+      for(let i = 0; i < list.length; i++) {
+        const tile = {
+          key: i,
+          tileId: list[i].id,
+          environment: list[i].Environment.name,
+          imageURL:  list[i].image_url
+        }
+        tileList.push(tile);
+      }
+      // console.log(tileList)
+      setTileSet(tileList);
+    })
+    .catch(err => console.error(err))
+  },[]);
   
   return (
     <Container>
@@ -154,6 +185,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
           )}
         </Container>
           {/* <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnClick={handleDraggableItem} /> */}
+          {/* TODO: check this works {tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />)} */}
       </TileDrawer>
     </Container>
   );

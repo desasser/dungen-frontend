@@ -4,28 +4,71 @@ import './style.scss'
 // import DraggableTile from '../Tile/DraggableTile'
 import Tile from '../Tile';
 import TileControlWidget from '../TileControlWidget'
+import GridCoordsOverlay from './GridCoordsOverlay'
  
-export default function Grid() {
-  const [lastTileKey, setLastTileKey] = useState(0);
-  const [mapLayout, setMapLayout] = useState([
-    {i: '0', tileId: '2', environment: 'swamp', x: 0, y: 0, w: 1, h: 1, bg: "#a63a50", orientation: 0, displayControlWidget: false},
-    {i: '1', tileId: '7', environment: 'swamp', x: 1, y: 0, w: 1, h: 1, bg: "#5941a9", orientation: 0, displayControlWidget: false},
-    {i: '2', tileId: '3', environment: 'swamp', x: 0, y: 1, w: 1, h: 1, bg: "#4c0827", orientation: 0, displayControlWidget: false},
-    {i: '3', tileId: '12', environment: 'swamp', x: 1, y: 1, w: 1, h: 1, bg: "#435058", orientation: 0, displayControlWidget: true},
-  ]);
+export default function Grid({ addThisTile }) {
+  const [mapLayout, setMapLayout] = useState([]);
+  const [prevTileIndex, setPrevTileIndex] = useState(0);
 
-  {/* [
-    {i: '0', tileId: '2', environment: 'swamp', x: 0, y: 0, w: 1, h: 1, bg: "#a63a50", orientation: 0, displayControlWidget: false},
-    {i: '1', tileId: '7', environment: 'swamp', x: 1, y: 0, w: 1, h: 1, bg: "#5941a9", orientation: 0, displayControlWidget: false},
-    {i: '2', tileId: '3', environment: 'swamp', x: 0, y: 1, w: 1, h: 1, bg: "#4c0827", orientation: 0, displayControlWidget: false},
-    {i: '3', tileId: '12', environment: 'swamp', x: 1, y: 1, w: 1, h: 1, bg: "#435058", orientation: 0, displayControlWidget: true},
-  ] */}
-
+  /**
+   * 'onDrop' is a prop for a callback function provided by react-grid-layout for the GridLayout component
+   * it returns layout, item, and 'e', but the item returned is stripped of all custom data attributes
+   * and the 'e' event returned is for the GridLayout rather than the draggable item being added
+   * 'item', however, returns the new x,y coords so it is useful and needs to be passed to createNewTile()
+   */
   const handleOnDrop = (layout, item, e) => {
-    console.log(layout, item, e)
+    let droppedItem = typeof item === "Array" ? item[0] : item;
+    if(addThisTile !== undefined && addThisTile.tileid !== undefined) {
+      createNewTile(droppedItem);
+    }
   }
 
+  const createNewTile = (droppedItemData) => {
+    let newIndex = parseInt(prevTileIndex) > 0 ? parseInt(prevTileIndex) + 1 : 0;
+    if(mapLayout.length > 0) {
+      newIndex = parseInt(newIndex) + 1;
+    }
+
+    // console.log("addThisTile", addThisTile, "droppedItemData", droppedItemData);
+
+    const newTileObj = {
+      i: newIndex.toString(), // GridLayout expects this to be a string!
+      tileId: addThisTile.tileid,
+      environment: addThisTile.environment,
+      orientation: 0,
+      mirrored: 1,
+      x: droppedItemData.x,
+      y: droppedItemData.y,
+      bg: addThisTile.bg,
+      w: 1,
+      h: 1
+    };
+    // console.log(newTileObj);
+
+    if(newTileObj.tileId != null && newTileObj.tileId !== undefined && newTileObj.tileId !== "") {
+      setMapLayout([...mapLayout, newTileObj]);
+      setPrevTileIndex(newIndex);
+    }
+  }
+
+  // const handleOnLayoutChange = (layout) => {
+  //   setMapLayout([...mapLayout]);
+  // }
+  const handleOnDragStop = (layout, oldItem, newItem, placeholder, e, element) => {
+    mapLayout.map(tile => {
+      if(tile.i === newItem.i) {
+        tile.x = newItem.x
+        tile.y = newItem.y
+        console.log(tile);
+      }
+    });
+
+    setMapLayout([...mapLayout]);
+  }
+
+  // this is the control widget for each tile, 
   const toggleWidget = (tileKey) => {
+
     mapLayout.map(mapTile => {
       if(mapTile.i.toString() === tileKey) {
         mapTile.displayControlWidget = !mapTile.displayControlWidget
@@ -49,31 +92,40 @@ export default function Grid() {
     toggleWidget(tile.dataset.tilekey);
   }
 
-  const handleWidgetButtonClick = (action, itemKey) => {
-    console.log(action);
-    if(action === "closeWidget") {
-      toggleWidget(itemKey.toString());
+  const handleWidgetButtonClick = (action, item) => {
+    // console.log(action, item);
+    // we're using opacity: 0 for the control widget to give it that fancy "imploding anim"
+    // but that means the buttons are still *there* to be clicked! so we're checking to make
+    // sure the control widget is actually being displayed before we take any action 
+    if(item.displayControlWidget === true) {
+      const itemKey = item.i;
 
-    } else if(action === "rotateRight") {
-      rotateTile(itemKey, "right");
-
-    } else if(action === "rotateLeft") {
-      rotateTile(itemKey, "left");
-
-    } else if(action === "deleteTile") {
-      removeTile(itemKey);
-      
+      if(action === "closeWidget") {
+        toggleWidget(itemKey.toString());
+  
+      } else if(action === "rotateRight") {
+        rotateTile(itemKey, "right");
+  
+      } else if(action === "rotateLeft") {
+        rotateTile(itemKey, "left");
+  
+      } else if(action === "deleteTile") {
+        removeTile(itemKey);
+        
+      } else if(action === "mirrorTile") {
+        mirrorTile(itemKey);
+      }
     }
   }
 
   const rotateTile = (tileKey, direction) => {
     mapLayout.map(mapTile => {
       if(mapTile.i.toString() === tileKey.toString()) {
-        mapTile.bg = Math.floor(Math.random()*16777215).toString(16);
+        
         if( parseInt(mapTile.orientation) === 270 || parseInt(mapTile.orientation)  === -270 ) {
           mapTile.orientation = 0;
         } else {
-          mapTile.orientation = direction === "right" ? mapTile.orientation + 90 : mapTile.orientation - 90;
+          mapTile.orientation = direction === "right" ? parseInt(mapTile.orientation) + 90 : parseInt(mapTile.orientation) - 90;
         }
       }
     });
@@ -81,14 +133,26 @@ export default function Grid() {
     setMapLayout([...mapLayout]);
   }
 
+  const mirrorTile = (tileKey) => {
+    mapLayout.map(mapTile => {
+      if(mapTile.i.toString() === tileKey.toString()) {
+        mapTile.mirrored = mapTile.mirrored === 1 ? -1 : 1;
+      }
+    });
+
+    setMapLayout([...mapLayout]);
+  }
+
   const removeTile = (tileKey) => {
-    const newMapLayout = mapLayout.filter(mapTile => mapTile.i !== tileKey);
+    let newMapLayout = mapLayout.filter(mapTile => mapTile.i !== tileKey);
 
     setMapLayout([...newMapLayout]);
   }
 
   return (
     <div id="mapGrid" style={{flex: "1 0 70%"}}>
+      <GridCoordsOverlay />
+
       <GridLayout 
         className="mapGrid"
         colWidth={100} 
@@ -101,10 +165,28 @@ export default function Grid() {
         isResizable={false}
         onDrop={handleOnDrop}
         // onLayoutChange={handleOnLayoutChange}
-        // onDragStop={handleOnDragStop}
-        style={{backgroundColor: "gainsboro", minHeight: "400px"}}
+        onDragStop={handleOnDragStop}
+        // onDragStart={handleOnDragStart}
+        style={{height: "100%"}}
       >
-      {mapLayout.map((item, idx) => <div key={idx} className="tile-wrapper" data-grid={{...item}} data-environment={item.environment} data-tileid={item.tileId} data-tilekey={item.i} data-displaywidget={item.displayControlWidget} resizable="false"><Tile item={item} handleDoubleClick={handleDoubleClick} /> <TileControlWidget item={item} handleDoubleClick={handleDoubleClick} handleWidgetButtonClick={handleWidgetButtonClick} /> </div> )}
+      {mapLayout.map(item => 
+        <div
+          key={item.i} 
+          className="tile-wrapper" 
+          data-grid={{...item}} 
+          data-environment={item.environment} 
+          data-tileid={item.tileId} 
+          data-tilekey={item.i} 
+          data-displaywidget={item.displayControlWidget}
+          resizable="false"
+        >
+          
+          <Tile item={item} handleDoubleClick={handleDoubleClick} />
+
+          <TileControlWidget item={item} handleDoubleClick={handleDoubleClick} handleWidgetButtonClick={handleWidgetButtonClick} /> 
+
+        </div>
+      )}
       </GridLayout>
     </div>
   )

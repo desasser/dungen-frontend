@@ -6,17 +6,19 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import RotateRightIcon from '@material-ui/icons/RotateRight'
 import RotateLeftIcon from '@material-ui/icons/RotateLeft'
 import CloseIcon from '@material-ui/icons/Close'
+import FlipIcon from '@material-ui/icons/Flip'
 
 const useStyles = makeStyles({
   tileControlWidget: {
+    zIndex: "-999",
     position: "absolute",
-    left: "40px",
-    top: "40px",
+    left: "5%",
+    top: "5%",
     opacity: 0,
     width: 0,
     height: 0,
     borderRadius: "50%",
-    border: "10px solid rgba(255,255,255,0.5)",
+    border: "10px solid rgba(230,230,230,0.5)",
     transition: "all 0.3s ease",
   },
   activeWidget: {
@@ -29,6 +31,7 @@ const useStyles = makeStyles({
     transition: "all 0.3s ease",
 
     "& .controlButton": {
+      display: "flex",
       padding: 0,
       margin: 0,
       left: 0,
@@ -69,7 +72,7 @@ const useStyles = makeStyles({
         color: "white"
       }
     },
-    "& .rotateTileRight": {
+    "& .rotateTileLeft": {
       left: "-33px",
       top: "50%",
       transform: "rotate(-90deg)",
@@ -80,7 +83,7 @@ const useStyles = makeStyles({
         color: "white"
       }
     },
-    "& .rotateTileLeft": {
+    "& .rotateTileRight": {
       left: "33px",
       top: "50%",
       transform: "rotate(90deg)",
@@ -88,6 +91,16 @@ const useStyles = makeStyles({
 
       "&:hover .MuiSvgIcon-root": {
         background: "hotpink",
+        color: "white"
+      }
+    },
+    "& .mirrorTile": {
+      left: 0,
+      top: "50%",
+      color: "rebeccapurple",
+
+      "&:hover .MuiSvgIcon-root": {
+        background: "rebeccapurple",
         color: "white"
       }
     }
@@ -103,18 +116,26 @@ export default function TileControlWidget({ item, handleWidgetButtonClick }) {
 
   return (
     <div data-tilekey={item.i} data-tileid={item.tileId} className={item.displayControlWidget ? `${classes.tileControlWidget} ${classes.activeWidget}` : classes.tileControlWidget}>
-    <IconBtn classes={"controlButton closeWidget"} onClick={(e) => handleWidgetButtonClick("closeWidget", item.i)}>
-        <CloseIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item.i)}>
-        <RotateRightIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item.i)}>
-        <RotateLeftIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton deleteTile"} onClick={(e) => handleWidgetButtonClick("deleteTile", item.i)}>
-        <DeleteIcon />
-      </IconBtn>
-    </div>
+
+    {item.displayControlWidget === true &&
+      <>
+        <IconBtn classes={"controlButton closeWidget"} onClick={(e) => handleWidgetButtonClick("closeWidget", item)}>
+          <CloseIcon />
+        </IconBtn>
+        <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item)}>
+          <RotateRightIcon />
+        </IconBtn>
+        <IconBtn classes={"controlButton mirrorTile"} onClick={(e) => handleWidgetButtonClick("mirrorTile", item)}>
+          <FlipIcon />
+        </IconBtn>
+        <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item)}>
+          <RotateLeftIcon />
+        </IconBtn>
+        <IconBtn classes={"controlButton deleteTile"} onClick={(e) => handleWidgetButtonClick("deleteTile", item)}>
+          <DeleteIcon />
+        </IconBtn>
+      </>
+    }
+  </div>
   )
 }

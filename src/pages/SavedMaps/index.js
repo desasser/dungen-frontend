@@ -14,6 +14,7 @@ const useStyles = makeStyles({
   }
 })
 
+//NOTE FROM CALVIN added pass-down of "users" state to the function.
 export default function SavedMaps() {
   const [userMaps, setUserMaps] = useState([])
   const [loadState, setLoadState] = useState(false)
@@ -24,7 +25,8 @@ export default function SavedMaps() {
   }, [])
 
   const loadUserMaps = () => {
-    API.getMaps()
+    //NOTE FROM CALVIN included props.users.id to the parameter
+    API.getUserMaps()
       .then(res => {
         // console.log('response', res.data);
         setUserMaps(res.data);

@@ -1,7 +1,7 @@
 .controlButton {
-  top: 50%;
-  left: 50%;
-  position: absolute;
+  display: none;
+  top: "-50%";
+  left: "-50%";
   width: 0;
   height: 0;
   transition: all 0.3s ease-out;
@@ -14,9 +14,6 @@
   &.deleteTile,
   &.rotateTileLeft,
   &.rotateTileRight {
-    position: absolute;
-    top: 0;
-    left: 0;
     transition: all 0.3s ease;
   }
 }
