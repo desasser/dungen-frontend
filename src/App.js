@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
+import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";
 // import Splash from "./pages/Splash/index"
@@ -146,6 +147,7 @@ function App() {
           </Route>
 
           <Route exact path="/builder" component={MapBuilder} />
+          <Route exact path="/render" component={RenderedMap} />
         </Switch>
       </Router>
     </div>
