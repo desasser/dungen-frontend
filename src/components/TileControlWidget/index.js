@@ -9,9 +9,10 @@ import CloseIcon from '@material-ui/icons/Close'
 
 const useStyles = makeStyles({
   tileControlWidget: {
+    zIndex: "-999",
     position: "absolute",
-    left: "40px",
-    top: "40px",
+    left: "5%",
+    top: "5%",
     opacity: 0,
     width: 0,
     height: 0,
@@ -29,6 +30,7 @@ const useStyles = makeStyles({
     transition: "all 0.3s ease",
 
     "& .controlButton": {
+      display: "flex",
       padding: 0,
       margin: 0,
       left: 0,
@@ -69,10 +71,10 @@ const useStyles = makeStyles({
         color: "white"
       }
     },
-    "& .rotateTileRight": {
+    "& .rotateTileLeft": {
       left: "-33px",
       top: "50%",
-      transform: "rotate(90deg)",
+      transform: "rotate(-90deg)",
       color: "dodgerblue",
 
       "&:hover .MuiSvgIcon-root": {
@@ -80,10 +82,10 @@ const useStyles = makeStyles({
         color: "white"
       }
     },
-    "& .rotateTileLeft": {
+    "& .rotateTileRight": {
       left: "33px",
       top: "50%",
-      transform: "rotate(-90deg)",
+      transform: "rotate(90deg)",
       color: "hotpink",
 
       "&:hover .MuiSvgIcon-root": {
@@ -103,18 +105,23 @@ export default function TileControlWidget({ item, handleWidgetButtonClick }) {
 
   return (
     <div data-tilekey={item.i} data-tileid={item.tileId} className={item.displayControlWidget ? `${classes.tileControlWidget} ${classes.activeWidget}` : classes.tileControlWidget}>
-    <IconBtn classes={"controlButton closeWidget"} onClick={(e) => handleWidgetButtonClick("closeWidget", item)}>
-        <CloseIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item)}>
-        <RotateRightIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item)}>
-        <RotateLeftIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton deleteTile"} onClick={(e) => handleWidgetButtonClick("deleteTile", item)}>
-        <DeleteIcon />
-      </IconBtn>
-    </div>
+
+    {item.displayControlWidget === true &&
+      <>
+        <IconBtn classes={"controlButton closeWidget"} onClick={(e) => handleWidgetButtonClick("closeWidget", item)}>
+          <CloseIcon />
+        </IconBtn>
+        <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item)}>
+          <RotateRightIcon />
+        </IconBtn>
+        <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item)}>
+          <RotateLeftIcon />
+        </IconBtn>
+        <IconBtn classes={"controlButton deleteTile"} onClick={(e) => handleWidgetButtonClick("deleteTile", item)}>
+          <DeleteIcon />
+        </IconBtn>
+      </>
+    }
+  </div>
   )
 }

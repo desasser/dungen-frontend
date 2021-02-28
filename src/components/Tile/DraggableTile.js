@@ -15,7 +15,7 @@ export default function DraggableTile({ tileId, children, imageURL, handleOnDrag
       data-image={imageURL}
       draggable={true}
       unselectable="on"
-      style={{background: `url(${imageURL})`}}
+      style={{background: `url(${imageURL})`, borderRight: "8px solid sienna", borderBottom: "8px solid sienna", borderTop: "8px solid burlywood", borderLeft: "8px solid burlywood"}}
       // Firefox hack
       onDragStart={handleOnDragStart}
     >

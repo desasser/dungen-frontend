@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import './style.scss'
 
-export default function Tile({item, handleDoubleClick, handleWidgetButtonClick}) {
+export default function Tile({item, handleDoubleClick}) {
 
   let tileStyles = {
     width: 100,
@@ -14,12 +14,8 @@ export default function Tile({item, handleDoubleClick, handleWidgetButtonClick})
   //   console.log(item);
   // },[]);
 
-  
-
   // export default function Tile() {
   return (
-    <div className="tile" style={tileStyles} onDoubleClick={(e) => handleDoubleClick(e)}>
-      
-    </div>
+    <div className={item.displayControlWidget ? "tile activeTile" : "tile"} style={tileStyles} onDoubleClick={(e) => handleDoubleClick(e)}></div>
   );
 }
