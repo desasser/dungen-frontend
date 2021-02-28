@@ -1,6 +1,7 @@
 .react-grid-item {
   transition: all 200ms ease;
   transition-property: left, top;
+  box-sizing: border-box;
 }
 .react-grid-item img {
   pointer-events: none;
@@ -53,5 +54,33 @@ $fromSide: "-6px";
 
   &.active {
     border: inset 2px solid red;
+  }
+}
+
+.mapGrid .tile {
+  &::after {
+    display: block;
+    position: relative;
+    content: "";
+    margin: 0;
+    padding: 0;
+    left: -2px;
+    top: -2px;
+    width: 100px;
+    height: 100px;
+    border: 2px inset transparent;
+    transition: all 0.3s ease;
+  }
+
+  &.activeTile::after,
+  &:hover::after {
+    z-index: 100;
+    border-color: firebrick;
+    transition: all 0.3s ease;
+  }
+
+  &.activeTile::after {
+    border-color: greenyellow;
+    transition: all 0.3s ease;
   }
 }
