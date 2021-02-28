@@ -5,7 +5,7 @@ import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
 import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";
-// import Splash from "./pages/Splash/index"
+import Splash from "./pages/Splash/index"
 import API from "./utils/API.js"
 import LoginModal from "./components/LoginModal"
 
@@ -141,8 +141,8 @@ function App() {
       <Router>
         <NavBar user={users} />
         <Switch>
-          {/* <Route exact path="/" component={Home} />
-        <Route exact path="/home" component={Home} /> */}
+          <Route exact path="/" component={Splash} />
+        
           <Route exact path="/login">
             <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
 
