@@ -36,6 +36,7 @@ export default function Grid({ addThisTile }) {
       tileId: addThisTile.tileid,
       environment: addThisTile.environment,
       orientation: 0,
+      mirrored: 1,
       x: droppedItemData.x,
       y: droppedItemData.y,
       bg: addThisTile.bg,
@@ -111,6 +112,8 @@ export default function Grid({ addThisTile }) {
       } else if(action === "deleteTile") {
         removeTile(itemKey);
         
+      } else if(action === "mirrorTile") {
+        mirrorTile(itemKey);
       }
     }
   }
@@ -130,16 +133,18 @@ export default function Grid({ addThisTile }) {
     setMapLayout([...mapLayout]);
   }
 
+  const mirrorTile = (tileKey) => {
+    mapLayout.map(mapTile => {
+      if(mapTile.i.toString() === tileKey.toString()) {
+        mapTile.mirrored = mapTile.mirrored === 1 ? -1 : 1;
+      }
+    });
+
+    setMapLayout([...mapLayout]);
+  }
+
   const removeTile = (tileKey) => {
     let newMapLayout = mapLayout.filter(mapTile => mapTile.i !== tileKey);
-    // let newMapLayout = [];
-    // for(var i = 0; i < mapLayout.length; i++) {
-    //   if(mapLayout[i].i !== tileKey) {
-    //     newMapLayout.push(mapLayout[i]);
-    //   }
-    // }
-
-    console.log(newMapLayout);
 
     setMapLayout([...newMapLayout]);
   }

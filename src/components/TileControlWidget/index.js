@@ -6,6 +6,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import RotateRightIcon from '@material-ui/icons/RotateRight'
 import RotateLeftIcon from '@material-ui/icons/RotateLeft'
 import CloseIcon from '@material-ui/icons/Close'
+import FlipIcon from '@material-ui/icons/Flip'
 
 const useStyles = makeStyles({
   tileControlWidget: {
@@ -17,7 +18,7 @@ const useStyles = makeStyles({
     width: 0,
     height: 0,
     borderRadius: "50%",
-    border: "10px solid rgba(255,255,255,0.5)",
+    border: "10px solid rgba(230,230,230,0.5)",
     transition: "all 0.3s ease",
   },
   activeWidget: {
@@ -92,6 +93,16 @@ const useStyles = makeStyles({
         background: "hotpink",
         color: "white"
       }
+    },
+    "& .mirrorTile": {
+      left: 0,
+      top: "50%",
+      color: "rebeccapurple",
+
+      "&:hover .MuiSvgIcon-root": {
+        background: "rebeccapurple",
+        color: "white"
+      }
     }
   }
 });
@@ -113,6 +124,9 @@ export default function TileControlWidget({ item, handleWidgetButtonClick }) {
         </IconBtn>
         <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item)}>
           <RotateRightIcon />
+        </IconBtn>
+        <IconBtn classes={"controlButton mirrorTile"} onClick={(e) => handleWidgetButtonClick("mirrorTile", item)}>
+          <FlipIcon />
         </IconBtn>
         <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item)}>
           <RotateLeftIcon />
