@@ -63,7 +63,6 @@ function App() {
   }
 
   // const redirect = ()=>history.push("/dashboard")
-
   const handleLogin = (data) => {
     setUserState({ ...users, isLoggedIn: data })
   }
@@ -135,21 +134,15 @@ function App() {
 
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <h1 className="text-2xl text-header">DUNGEN: JUNK WIZARDS</h1>
-      </header> */}
       <Router>
         <NavBar user={users} />
         <Switch>
-          {/* <Route exact path="/" component={Home} />
-        <Route exact path="/home" component={Home} /> */}
           <Route exact path="/login">
             <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
-
           </Route>
 
           <Route exact path="/dashboard">
-          <SavedMaps users={users} />
+            <SavedMaps users={users} />
           </Route>
 
           <Route exact path="/builder" component={MapBuilder} />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import Container from '@material-ui/core/Container';
 import './style.scss'
 
 export default function Tile({item, handleDoubleClick}) {
@@ -15,12 +15,7 @@ export default function Tile({item, handleDoubleClick}) {
     transform: `rotate(${item.orientation}deg) ${scaleIt}`
   }
 
-  // useEffect(() => {
-  //   console.log(item);
-  // },[]);
-
-  // export default function Tile() {
   return (
-    <div className={item.displayControlWidget ? "tile activeTile" : "tile"} style={tileStyles} onDoubleClick={(e) => handleDoubleClick(e)}></div>
+    <Container className={item.displayControlWidget ? "tile activeTile" : "tile"} style={tileStyles} onDoubleClick={(e) => handleDoubleClick(e)}></Container>
   );
 }

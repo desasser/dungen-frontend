@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import SliderDrawer from '../../components/SliderDrawer'
-import Tile from '../../components/Tile'
 import IconBtn from '../../components/IconBtn'
 import ActionBtn from '../../components/ActionBtn'
 import RouterBtn from '../../components/RouterBtn'
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { pink } from '@material-ui/core/colors'
+import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
-import Grid from '../../components/Grid'
+import Grid from '../../components/Grid';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   tileGrid: {
@@ -70,40 +70,21 @@ export default function MapBuilder() {
   }
 
   return (
-    <div>
-      <h1>This is where we build maps!</h1>
-      {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
-      <SliderDrawer handleDraggableItem={handleDraggableItem} />
-      {/* GRID BOX */}
-      <div className="grid-base" style={{border:'black 1px solid', height:'1000px', width:'1000px', marginLeft:'25px', marginTop:'25px'}}>
-        <Grid addThisTile={addThisTile} />
-      </div>
-      <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
-        {/* <LockOutlinedIcon /> */}
-        {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
-      </IconBtn>
-      <ActionBtn name='action' classes={classes.actionBtn} />
-      <RouterBtn name='router' classes={classes.routerBtn} />
-      {/* Comment in the below section if we need a static display instead of drawer */}
-      {/* Can also target this for the media query to flip based on screen size */}
-      {/* <div className={classes.tileGrid}>
-      <Grid /> */}
-    </div>
+    <Container>
+      <Container>
+        <Typography variant='h2'>This is where we build maps!</Typography>
+        {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
+        <SliderDrawer handleDraggableItem={handleDraggableItem} />
+        {/* GRID BOX */}
+        <Container className="grid-base" style={{ border: 'black 1px solid', height: '1000px', width: '1000px', marginLeft: '25px', marginTop: '25px' }}>
+          <Grid addThisTile={addThisTile} />
+        </Container>
+        <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
+          {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
+        </IconBtn>
+        <ActionBtn name='SAVE' classes={classes.actionBtn} />
+        <RouterBtn name='VIEW' classes={classes.routerBtn} />
+      </Container>
+    </Container>
   )
 }
-
-// import Grid from '../../components/Grid';
-// import Drawer from '../../components/Drawer';
-// import Button from '../../components/Button';
-// {/* <StyledDrawer /> for side navigation */}
-// {/* <Navbar /> */}
-// <Grid />
-// <Drawer show={tileDrawerState.drawerOpen} />
-// {/* Tile Drawer Button */}
-// <Button /> 
-// {/* Reset Map Button */}
-// <Button />
-// {/* Lock Map Button */}
-// <Button />
-// {/* Render/Save/Export Button */}
-// <Button />
