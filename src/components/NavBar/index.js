@@ -197,7 +197,7 @@ export default function MenuAppBar(props) {
   const logout = () => {
     console.log("ummm...click-out")
     localStorage.removeItem("token")
-    history.push("/")
+    history.push("/login")
   }
 
   return (
