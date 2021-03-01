@@ -15,18 +15,24 @@ const useStyles = makeStyles({
 })
 
 //NOTE FROM CALVIN added pass-down of "users" state to the function.
-export default function SavedMaps() {
+export default function SavedMaps(props) {
   const [userMaps, setUserMaps] = useState([])
   const [loadState, setLoadState] = useState(false)
   const classes = useStyles();
 
-  useEffect(() => {
-    loadUserMaps()
-  }, [])
+   useEffect(() => {
+    if(props){
+      loadUserMaps()
+     }
+
+   }, [props])
+  
 
   const loadUserMaps = () => {
     //NOTE FROM CALVIN included props.users.id to the parameter
-    API.getUserMaps(1)
+    API.getUserMaps(6)
+    // console.log(props)
+    // API.getUserMaps(props.users.id)
       .then(res => {
         // console.log('response', res.data);
         setUserMaps(res.data);
@@ -52,7 +58,7 @@ export default function SavedMaps() {
         {/* Map over saved maps array return from the database and create these cards */}
         {/* Conditional render, if error, render error message */}
         {console.log('state', userMaps.data)}
-        {userMaps ?
+        {userMaps.length > 0 ?
           userMaps.map(map => (
             // TODO: Check this on deploy
             <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} deleteMap={deleteMap} />

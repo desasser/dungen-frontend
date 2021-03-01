@@ -30,7 +30,7 @@ export default function SavedMapCard(props) {
 
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea href={`/builder/${props.id}`}>
         <CardMedia
           className={classes.media}
           image={props.image}
@@ -46,14 +46,14 @@ export default function SavedMapCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions style={{justifyContent:'center'}}>
-        <Button size="small" color="primary" href="/dashboard">
+        <Button size="small" color="primary"  href={`/builder/${props.id}`}>
           {/* TODO: href will end up passing to darhboard page along with a map id */}
           Edit
         </Button>
         <Button size="small" color="primary" onClick={() => props.deleteMap(props.id)}>
           Delete
         </Button>
-        <Button size="small" color="primary" href="/dashboard">
+        <Button size="small" color="primary" href="/render">
           {/* TODO: href will end up passing to render map page along with a map id */}
           View
         </Button>
