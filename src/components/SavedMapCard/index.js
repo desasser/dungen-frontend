@@ -30,11 +30,11 @@ export default function SavedMapCard(props) {
 
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea href={`/builder/${props.id}`}>
         <CardMedia
           className={classes.media}
           image={props.image}
-          title="a tile"
+          alt="a tile"
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2" style={{fontFamily:'fantasy'}}>

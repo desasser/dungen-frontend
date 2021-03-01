@@ -162,6 +162,7 @@ const userAuth = () => {
           </Route>
 
           <Route exact path="/builder" component={MapBuilder} />
+          <Route exact path="/builder/:id" component={MapBuilder} />
           <Route exact path="/render" component={RenderedMap} />
         </Switch>
       </Router>
