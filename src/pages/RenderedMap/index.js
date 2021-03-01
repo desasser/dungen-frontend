@@ -1,9 +1,11 @@
-import React from 'react';
+
+import React, {useEffect} from 'react';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import ActionBtn from '../../components/ActionBtn'
 import RouterBtn from '../../components/RouterBtn'
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+// import mergeImg from 'merge-img';
 
 const useStyles = makeStyles({
   largeMap: {
@@ -46,7 +48,14 @@ const useStyles = makeStyles({
 
 export default function RenderedMap() {
   const classes = useStyles();
-
+  
+  // TODO: Maybe can't be done front side?
+  // useEffect(() => {
+  //   mergeImg(['../../../public/2EDC02', '../../../public/2EDC03', '../../../public/2EDC04', '../../../public/2EDC05']).then((img) => {
+  //     img.toFile('output.png', () => console.log('done'))
+  //   })
+  // }, [])
+  
   return (
     <Container>
       <Typography variant='h2'>
