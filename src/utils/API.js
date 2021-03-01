@@ -8,15 +8,15 @@ const URL_PREFIX = "http://localhost:3030"
 const API = {
 
     signup: newUser => {
-        console.log(newUser)
+        // console.log(newUser)
         return axios.post(`${URL_PREFIX}/api/newUser`, newUser)
     },
     login: userData => {
-        console.log(userData)
+        // console.log(userData)
         return axios.post(`${URL_PREFIX}/login`, userData)
     },
     getAuthToken: token => {
-        console.log(token)
+        // console.log(token)
         return axios.get(`${URL_PREFIX}/auth`, {
             headers: {
                 authorization: `Bearer: ${token}`
@@ -24,13 +24,25 @@ const API = {
         })
     },
     getTiles: tiles => {
-        console.log(tiles)
+        // console.log(tiles)
         return axios.get(`${URL_PREFIX}/api/tiles`)
     },
     // add USER ID into the query
     getUserMaps: userId => {
-        console.log(userId);
+        // console.log(userId);
         return axios.get(`${URL_PREFIX}/api/usermaps/${userId}`)
+    },
+    getSingleMap: mapId => {
+        console.log(mapId);
+        return axios.get(`${URL_PREFIX}/api/map/${mapId}`)
+    },
+    saveMap: title => {
+        // console.log(map);
+        return axios.post(`${URL_PREFIX}/api/newMap`, title)
+    },
+    saveMapTile: tile => {
+        // console.log(tile);
+        return axios.post(`${URL_PREFIX}/api/maptile`, tile)
     },
     deleteMap: mapId => {
         // console.log(URL_PREFIX);

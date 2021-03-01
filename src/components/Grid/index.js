@@ -7,33 +7,78 @@ import TileControlWidget from '../TileControlWidget'
 import GridCoordsOverlay from './GridCoordsOverlay'
  
 export default function Grid({ addThisTile, loadThisMap }) {
+  const [loadedMapId, setLoadedMapId] = useState(null);
   const [mapLayout, setMapLayout] = useState([]);
   const [prevTileIndex, setPrevTileIndex] = useState(0);
   const [mapWidth, setMapWidth] = useState(0);
+  const [todaysDate, setTodaysDate] = useState();
 
   React.useEffect(() => {
-    let savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+    const today = new Date();
+    setTodaysDate(today.getFullYear() +''+ (today.getMonth() + 1) +''+ today.getDate());
 
-    if(mapLayout.length === 0 && savedMap !== null && savedMap.layout.length > 0) {
-      // "re-index" the tiles so the 'i' key is in numeric order;
-      // the 'i' key/value is *only* for the grid display, and has no effect on the map itself
-      // also setting the displayControlWidget to false so when a map is loaded
-      // from localStorage, no control widgets are shown on load
-      savedMap.layout.map(tile => {
-        tile.i = savedMap.layout.indexOf(tile).toString()
-        tile.displayControlWidget = false
-      });
-      setMapLayout(savedMap.layout);
-      // this works because we're essentially re-indexing all the tiles for the map, from 0
-      // so the length (-1) === the index of the last tile object === lastTile.i
-      setPrevTileIndex( savedMap.layout.length - 1 );
+    let savedMap = getMapFromLocalStorage();
 
+    if(loadThisMap === null || loadThisMap === undefined) {
+      if(mapLayout.length === 0 && savedMap !== null && savedMap !== undefined && savedMap.layout.length > 0) {
+        // "re-index" the tiles so the 'i' key is in numeric order;
+        // the 'i' key/value is *only* for the grid display, and has no effect on the map itself
+        // also setting the displayControlWidget to false so when a map is loaded
+        // from localStorage, no control widgets are shown on load
+        savedMap.layout.map((tile) => {
+          tile.i = savedMap.layout.indexOf(tile).toString()
+          tile.displayControlWidget = false
+        });
+        setMapLayout(savedMap.layout);
+        setMapWidth(savedMap.mapWidth);
+        // this works because we're essentially re-indexing all the tiles for the map, from 0
+        // so the length (-1) === the index of the last tile object === lastTile.i
+        setPrevTileIndex( savedMap.layout.length - 1 );
+  
+      }
     } else {
-      localStorage.setItem('dungen_map', JSON.stringify({ date: "20200301", userid: 1, layout: mapLayout }));
-
+      setLoadedMapId(loadThisMap.mapId);
+      setMapLayout([...loadThisMap.layout]);
     }
 
-  },[mapLayout]);
+  },[]);
+
+  const getMapFromLocalStorage = () => {
+    return localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+  }
+
+  const sortMapTiles = (asc) => {
+    let sortedMapLayout = mapLayout;
+
+    if(asc) {
+      sortedMapLayout = sortedMapLayout.sort( (a, b) => (a.x < b.x) ? 1 : -1);
+    } else {
+      sortedMapLayout = sortedMapLayout.sort((a, b) => (a.x > b.x) ? 1 : -1);
+    }
+    
+    sortedMapLayout.map( obj => obj.i = sortedMapLayout.indexOf(obj).toString() );
+
+    // console.log(sortedMapLayout);
+    return sortedMapLayout;
+  }
+
+  const updateMapLayout = (layout) => {
+    if(mapLayout !== layout || mapLayout.length === 0) {
+      setMapLayout([...layout]);
+    }
+
+    const sortedMapLayout = sortMapTiles(true);
+    console.log(sortedMapLayout)
+    // setMapLayout(sortedMapLayout);
+    // getMapWidth();
+
+    localStorage.setItem('dungen_map', JSON.stringify({ date: todaysDate, userid: 1, layout: mapLayout, mapWidth: mapWidth, mapId: loadedMapId }));
+  }
+
+  const getMapWidth = () => {
+    const tilesSorted = sortMapTiles(true);
+    console.log(tilesSorted[0].x, tilesSorted[tilesSorted.length - 1].x);
+  }
 
   /**
    * 'onDrop' is a prop for a callback function provided by react-grid-layout for the GridLayout component
@@ -55,8 +100,6 @@ export default function Grid({ addThisTile, loadThisMap }) {
       newIndex = parseInt(newIndex) + 1;
     }
 
-    // console.log("addThisTile", addThisTile, "droppedItemData", droppedItemData);
-
     const newTileObj = {
       i: newIndex.toString(), // GridLayout expects this to be a string!
       tileId: addThisTile.tileid,
@@ -69,11 +112,19 @@ export default function Grid({ addThisTile, loadThisMap }) {
       w: 1,
       h: 1
     };
-    // console.log(newTileObj);
 
     if(newTileObj.tileId != null && newTileObj.tileId !== undefined && newTileObj.tileId !== "") {
-      setMapLayout([...mapLayout, newTileObj]);
+      // setMapLayout([...mapLayout, newTileObj]);
+      updateMapLayout([...mapLayout, newTileObj]);
       setPrevTileIndex(newIndex);
+
+      if(mapLayout.length === 1) {
+        setMapWidth(1);
+      }
+
+      if(newTileObj.x > 0 && mapLayout.length > 1) {
+        getMapWidth();
+      }
     }
   }
 
@@ -85,7 +136,6 @@ export default function Grid({ addThisTile, loadThisMap }) {
       if(tile.i === newItem.i) {
         tile.x = newItem.x
         tile.y = newItem.y
-        // console.log(tile);
       }
     });
 
@@ -109,7 +159,6 @@ export default function Grid({ addThisTile, loadThisMap }) {
   const handleDoubleClick = (e) => {
     e.preventDefault();
     let tile = e.target;
-    // console.log(tile.closest(".tile-wrapper"));
 
     if(tile.dataset === undefined || tile.dataset.tilekey === undefined) {
       tile = e.target.closest(".tile-wrapper");
