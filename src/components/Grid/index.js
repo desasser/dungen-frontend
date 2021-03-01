@@ -9,6 +9,7 @@ import GridCoordsOverlay from './GridCoordsOverlay'
 export default function Grid({ addThisTile, loadThisMap }) {
   const [mapLayout, setMapLayout] = useState([]);
   const [prevTileIndex, setPrevTileIndex] = useState(0);
+  const [mapWidth, setMapWidth] = useState(0);
 
   React.useEffect(() => {
     let savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;

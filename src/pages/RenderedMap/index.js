@@ -45,7 +45,6 @@ const useStyles = makeStyles({
   }
 })
 
-
 export default function RenderedMap() {
   const classes = useStyles();
   
@@ -55,7 +54,7 @@ export default function RenderedMap() {
   //     img.toFile('output.png', () => console.log('done'))
   //   })
   // }, [])
-
+  
   return (
     <Container>
       <Typography variant='h2'>
