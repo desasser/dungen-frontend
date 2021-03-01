@@ -6,9 +6,22 @@ import Tile from '../Tile';
 import TileControlWidget from '../TileControlWidget'
 import GridCoordsOverlay from './GridCoordsOverlay'
  
-export default function Grid({ addThisTile }) {
+export default function Grid({ addThisTile, loadThisMap }) {
   const [mapLayout, setMapLayout] = useState([]);
   const [prevTileIndex, setPrevTileIndex] = useState(0);
+
+  React.useEffect(() => {
+    let savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+
+    if(mapLayout.length === 0 && savedMap !== null && savedMap.layout.length > 0) {
+      setMapLayout(savedMap.layout);
+      
+    } else {
+      localStorage.setItem('dungen_map', JSON.stringify({ date: "20200301", userid: 1, layout: mapLayout }));
+
+    }
+
+  },[mapLayout]);
 
   /**
    * 'onDrop' is a prop for a callback function provided by react-grid-layout for the GridLayout component
