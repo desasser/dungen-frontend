@@ -1,12 +1,13 @@
 import React from 'react'
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import './style.scss'
-import IconBtn from '../IconBtn'
+import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import RotateRightIcon from '@material-ui/icons/RotateRight'
 import RotateLeftIcon from '@material-ui/icons/RotateLeft'
 import CloseIcon from '@material-ui/icons/Close'
 import FlipIcon from '@material-ui/icons/Flip'
+import Tooltip from '@material-ui/core/Tooltip'
 
 const useStyles = makeStyles({
   tileControlWidget: {
@@ -107,35 +108,52 @@ const useStyles = makeStyles({
   }
 });
 
-export default function TileControlWidget({ item, handleWidgetButtonClick }) {
+export default function TileControlWidget({ item, handleWidgetButtonClick, handleClickOutsideTile }) {
   const classes = useStyles();
 
-  // React.useEffect(() => {
-  //   console.log(item);
-  // },[]);
+  const outsideClickClosesTileControlWidget = React.useRef();
+
+  React.useEffect(() => {
+    document.addEventListener( 'click', handleClickOutsideTile );
+    // if(item.displayControlWidget) {
+    //   document.addEventListener( 'click', handleClickOutsideTile );
+    // } else {
+    //   document.removeEventListener( 'click', handleClickOutsideTile );
+    // }
+  }, []);
 
   return (
     <div data-tilekey={item.i} data-tileid={item.tileId} className={item.displayControlWidget ? `${classes.tileControlWidget} ${classes.activeWidget}` : classes.tileControlWidget}>
 
-    {item.displayControlWidget === true &&
-      <>
-        <IconBtn classes={"controlButton closeWidget"} onClick={(e) => handleWidgetButtonClick("closeWidget", item)}>
-          <CloseIcon />
-        </IconBtn>
-        <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item)}>
-          <RotateRightIcon />
-        </IconBtn>
-        <IconBtn classes={"controlButton mirrorTile"} onClick={(e) => handleWidgetButtonClick("mirrorTile", item)}>
-          <FlipIcon />
-        </IconBtn>
-        <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item)}>
-          <RotateLeftIcon />
-        </IconBtn>
-        <IconBtn classes={"controlButton deleteTile"} onClick={(e) => handleWidgetButtonClick("deleteTile", item)}>
-          <DeleteIcon />
-        </IconBtn>
-      </>
-    }
-  </div>
+      {item.displayControlWidget === true &&
+        <>
+          <Tooltip title="Close Controls" placement="top">
+            <IconButton ref={outsideClickClosesTileControlWidget} data-action="closeControls" aria-label="close" className="controlButton closeWidget">
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Rotate Clockwise" placement="right">
+            <IconButton ref={outsideClickClosesTileControlWidget} data-action="rotateTileRight" aria-label="rotate clockwise" className="controlButton rotateTileRight">
+              <RotateRightIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Mirror" placement="top">
+            <IconButton ref={outsideClickClosesTileControlWidget} data-action="mirrorTile" aria-label="mirror" className="controlButton mirrorTile">
+              <FlipIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Rotate Counterclockwise" placement="left">
+            <IconButton ref={outsideClickClosesTileControlWidget} data-action="rotateTileLeft" aria-label="rotate counterclockwise" className="controlButton rotateTileLeft">
+              <RotateLeftIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete" placement="bottom">
+            <IconButton ref={outsideClickClosesTileControlWidget} data-action="deleteTile" aria-label="delete" className="controlButton deleteTile">
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      }
+    </div>
   )
 }

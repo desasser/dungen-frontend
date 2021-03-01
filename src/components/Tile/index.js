@@ -1,21 +1,17 @@
-import Container from '@material-ui/core/Container';
+import React from 'react'
 import './style.scss'
 
-export default function Tile({item, handleDoubleClick}) {
+export default function Tile({item, handleDoubleClick }) {
+  const scaleIt = (item.orientation == 90 || item.orientation == -90 || item.orientation == 270 || item.orientation == -270) ? `scaleY(${item.mirrored})` : `scaleX(${item.mirrored})`
 
-  let scaleIt = `scaleX(${item.mirrored})`;
-  if(item.orientation == 90 || item.orientation == -90 || item.orientation == 270 || item.orientation == -270) {
-    scaleIt = `scaleY(${item.mirrored})`;
-  }
-
-  let tileStyles = {
-    width: 100,
-    height: 100,
+  const inlineStyle = {
+    width: "100px",
+    height: "100px",
     background: item.bg.substring(0,1) === "#" ? item.bg : `url(${item.bg})`,
-    transform: `rotate(${item.orientation}deg) ${scaleIt}`
-  }
-
+    transform: `rotate(${item.orientation}) ${scaleIt}`
+  };
+    
   return (
-    <Container className={item.displayControlWidget ? "tile activeTile" : "tile"} style={tileStyles} onDoubleClick={(e) => handleDoubleClick(e)}></Container>
+    <div className={item.displayControlWidget ? `tile activeTile` : `tile`} style={inlineStyle} onDoubleClick={(e) => handleDoubleClick(e)}></div>
   );
 }
