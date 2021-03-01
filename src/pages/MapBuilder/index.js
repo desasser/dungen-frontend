@@ -83,7 +83,7 @@ export default function MapBuilder() {
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
         </IconBtn>
         <ActionBtn name='SAVE' classes={classes.actionBtn} />
-        <RouterBtn name='VIEW' classes={classes.routerBtn} />
+        <RouterBtn name='VIEW' classes={classes.routerBtn} to="/render"/>
       </Container>
     </Container>
   )
