@@ -44,15 +44,13 @@ function App() {
     
   }, [])
 
-  // const logout = () => {
-  //   console.log("ummm...click-out")
-  //   localStorage.removeItem("token")
-  //   setUserState({
-  //     isLoggedIn: false
-  //   })
-    
-
-  // }
+  const logout = () => {
+    console.log("ummm...click-out")
+    localStorage.removeItem("token")
+    setUserState({
+      isLoggedIn: false
+    })
+  }
 
 const userAuth = () => {
   API.getAuthToken(token).then(res => {
