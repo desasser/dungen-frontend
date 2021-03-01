@@ -6,7 +6,7 @@ import SavedMaps from './pages/SavedMaps';
 import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";
-// import Splash from "./pages/Splash/index"
+import Splash from "./pages/Splash/index"
 import API from "./utils/API.js"
 import LoginModal from "./components/LoginModal"
 
@@ -41,32 +41,34 @@ function App() {
 
   useEffect(() => {
     userAuth()
-    
+
   }, [])
 
-  const logout = () => {
-    console.log("ummm...click-out")
-    localStorage.removeItem("token")
-    setUserState({
-      isLoggedIn: false
+  // const logout = () => {
+  //   console.log("ummm...click-out")
+  //   localStorage.removeItem("token")
+  //   setUserState({
+  //     isLoggedIn: false
+  //   })
+
+
+  // }
+
+  const userAuth = () => {
+    API.getAuthToken(token).then(res => {
+      console.log("got the token!")
+      setUserState({
+        id: res.data.id,
+        userName: res.data.userName,
+        token: token,
+        isLoggedIn: true
+      })
+    }).catch(err => {
+      console.log(err)
+      localStorage.removeItem("token");
+      console.log("not properly Authed")
     })
   }
-
-const userAuth = () => {
-  API.getAuthToken(token).then(res => {
-  console.log("got the token!")
-  setUserState({
-    id: res.data.id,
-    userName: res.data.userName,
-    token: token,
-    isLoggedIn: true
-  })
-}).catch(err => {
-  console.log(err)
-  localStorage.removeItem("token");
-  console.log("not properly Authed")
-})
-}
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -151,6 +153,9 @@ const userAuth = () => {
       <Router>
         <NavBar user={users} />
         <Switch>
+          <Route exact path="/">
+            <Splash />
+          </Route>
           <Route exact path="/login">
             <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
           </Route>
