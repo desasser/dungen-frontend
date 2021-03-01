@@ -69,6 +69,12 @@ export default function MapBuilder() {
     });
   }
 
+  const saveMapToDB = (e) => {
+    console.log(e.target);
+    // const mapLayout = localStorage.getItem('dungen_map');
+    // console.log(mapLayout);
+  }
+
   return (
     <Container>
       <Container>
@@ -82,7 +88,7 @@ export default function MapBuilder() {
         <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
         </IconBtn>
-        <ActionBtn name='SAVE' classes={classes.actionBtn} />
+        <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
         <RouterBtn name='VIEW' classes={classes.routerBtn} />
       </Container>
     </Container>
