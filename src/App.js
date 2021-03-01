@@ -37,23 +37,38 @@ function App() {
     password: "",
   })
 
+  const token = localStorage.getItem("token")
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    API.getAuthToken(token).then(res => {
-      console.log("got the token!")
-      setUserState({
-        id: res.data.id,
-        userName: res.data.userName,
-        token: token,
-        isLoggedIn: true
-      })
-    }).catch(err => {
-      console.log(err)
-      localStorage.removeItem("token");
-      console.log("not properly Authed")
-    })
+    userAuth()
+    
   }, [])
+
+  // const logout = () => {
+  //   console.log("ummm...click-out")
+  //   localStorage.removeItem("token")
+  //   setUserState({
+  //     isLoggedIn: false
+  //   })
+    
+
+  // }
+
+const userAuth = () => {
+  API.getAuthToken(token).then(res => {
+  console.log("got the token!")
+  setUserState({
+    id: res.data.id,
+    userName: res.data.userName,
+    token: token,
+    isLoggedIn: true
+  })
+}).catch(err => {
+  console.log(err)
+  localStorage.removeItem("token");
+  console.log("not properly Authed")
+})
+}
 
   const handleInputChange = event => {
     const { name, value } = event.target;
