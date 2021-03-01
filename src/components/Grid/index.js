@@ -14,7 +14,14 @@ export default function Grid({ addThisTile, loadThisMap }) {
     let savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
 
     if(mapLayout.length === 0 && savedMap !== null && savedMap.layout.length > 0) {
-      savedMap.layout.map(tile => tile.i = savedMap.layout.indexOf(tile).toString() );
+      // "re-index" the tiles so the 'i' key is in numeric order;
+      // the 'i' key/value is *only* for the grid display, and has no effect on the map itself
+      // also setting the displayControlWidget to false so when a map is loaded
+      // from localStorage, no control widgets are shown on load
+      savedMap.layout.map(tile => {
+        tile.i = savedMap.layout.indexOf(tile).toString()
+        tile.displayControlWidget = false
+      });
       setMapLayout(savedMap.layout);
       // this works because we're essentially re-indexing all the tiles for the map, from 0
       // so the length (-1) === the index of the last tile object === lastTile.i
