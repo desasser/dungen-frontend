@@ -4,9 +4,7 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import RouterBtn from '../../components/RouterBtn'
-
 import HomeIcon from '@material-ui/icons/Home';
-
 import { motion } from "framer-motion"
 
 const useStyles = makeStyles((theme) => ({
