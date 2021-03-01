@@ -51,6 +51,8 @@ $fromSide: "-6px";
 #mapGrid .react-grid-item {
   overflow: visible;
   position: relative;
+  width: 100px;
+  height: 100px;
 
   &.active {
     border: inset 2px solid red;
