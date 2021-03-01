@@ -1,4 +1,5 @@
 import React from "react";
+import Container from '@material-ui/core/Container';
 import './style.scss'
 
 export default function DraggableTile({ tileId, children, imageURL, handleOnDragStart }) {
