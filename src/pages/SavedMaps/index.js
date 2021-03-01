@@ -35,7 +35,6 @@ export default function SavedMaps() {
       }).catch(err => {
         console.log(err);
         // add a simple snackbar that says 'sorry, we failed you, try again!'
-        // setErrorState(true);
       })
   }
 
@@ -44,14 +43,6 @@ export default function SavedMaps() {
       .then(res => loadUserMaps())
       .catch(err => console.log(err));
   }
-
-  // const handleError = () => {
-  //   return (<Container>
-  //     <Typography variant='h4'>
-  //       You have no saved maps right now, go create a map!
-  //     </Typography>
-  //   </Container>);
-  // }
 
   return (
     <Container >
