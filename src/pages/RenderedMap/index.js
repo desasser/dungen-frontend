@@ -1,3 +1,4 @@
+
 import React, {useEffect} from 'react';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -45,7 +46,6 @@ const useStyles = makeStyles({
   }
 })
 
-
 export default function RenderedMap() {
   const classes = useStyles();
   
@@ -55,7 +55,7 @@ export default function RenderedMap() {
   //     img.toFile('output.png', () => console.log('done'))
   //   })
   // }, [])
-
+  
   return (
     <Container>
       <Typography variant='h2'>
