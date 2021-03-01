@@ -1,22 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Drawer, Divider, IconButton, Button } from '@material-ui/core';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
 import ReorderIcon from '@material-ui/icons/Reorder';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import { Link } from 'react-router-dom';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import DraggableTile from '../Tile/DraggableTile';
 import API from '../../utils/API';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import DraggableTile from '../Tile/DraggableTile';
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
     top: 80,
     zIndex: 3,
-    right: 20,
+    right: 40,
     position: 'absolute',
+    width: 10,
   },
   paper: {
     width: '30%'
@@ -64,7 +64,7 @@ const TileDrawer = withStyles({
   root: {
     "& .MuiDrawer-paper": {
       backgroundColor: '#bada55',
-      width: 350,
+      width: 400,
       marginTop: 64,
       overflowX: 'hidden'
     }
@@ -73,12 +73,13 @@ const TileDrawer = withStyles({
 
 export default function SliderDrawer({ handleDraggableItem }) {
   const classes = useStyles();
-  const theme = useTheme();
-  
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     isDrawerOpened: false
   })
-  const [tileSet, setTileSet] = React.useState([]);
+  const [tileSet, setTileSet] = useState([]);
+  const [loadState, setLoadState] = useState(false);
+
+  const theme = useTheme();
 
   const handleDrawerOpen = () => {
     setState({
@@ -94,12 +95,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
 
   const { isDrawerOpened } = state;
 
-  /**
-   * <DraggableTile key="0" tileId="0" environment="swamp" imageURL="https://picsum.photos/seed/crocodile/100" handleOnDragStart={handleDraggableItem} />
-   * key, tileId, environment (name as string), imgURL (for bg)
-   */
-
-  React.useEffect(() => {
+  useEffect(() => {
     API.getTiles()
     .then(tiles => {
       const list = tiles.data;
@@ -113,20 +109,19 @@ export default function SliderDrawer({ handleDraggableItem }) {
         }
         tileList.push(tile);
       }
-      // console.log(tileList)
       setTileSet(tileList);
+      setLoadState(true);
     })
     .catch(err => console.error(err))
   },[]);
   
   return (
-    <div>
-      <div className={classes.sideNav}>
-        {/* className={classes.sideNav} */}
+    <Container>
+      <Container className={classes.sideNav} maxWidth={false}>
         <IconButton onClick={handleDrawerOpen}>
           {!isDrawerOpened ? <ReorderIcon /> : null}
         </IconButton>
-      </div>
+      </Container>
       <Divider />
       <TileDrawer
         anchor='right'
@@ -135,19 +130,24 @@ export default function SliderDrawer({ handleDraggableItem }) {
         onClose={handleDrawerClose}
       // classes={{ paper: classes.paper }}
       >
-        <div className={classes.drawerHeader}>
+        <Container className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
-        </div>
-        {/* Fetch all tile URLs from db */}
-        {/* Map over the array and create a tile for each one */}
+        </Container>
         {/* Render the top 18 until scroll down, then render more, etc */}
-        <div className={classes.tileGrid}>
-          {/* Set this as {children} to handle whether its nav or tiles */}
-          {tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />)}
-        </div>
+        <Container className={classes.tileGrid}>
+          {tileSet ?
+          tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />) : (
+            (!loadState ? (
+              <CircularProgress />
+            ) : (
+                <Typography variant='h3'>
+                  No tiles!
+                </Typography>))
+          )}
+        </Container>
       </TileDrawer>
-    </div>
+    </Container>
   );
 }
