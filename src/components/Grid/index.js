@@ -14,8 +14,12 @@ export default function Grid({ addThisTile, loadThisMap }) {
     let savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
 
     if(mapLayout.length === 0 && savedMap !== null && savedMap.layout.length > 0) {
+      savedMap.layout.map(tile => tile.i = savedMap.layout.indexOf(tile).toString() );
       setMapLayout(savedMap.layout);
-      
+      // this works because we're essentially re-indexing all the tiles for the map, from 0
+      // so the length (-1) === the index of the last tile object === lastTile.i
+      setPrevTileIndex( savedMap.layout.length - 1 );
+
     } else {
       localStorage.setItem('dungen_map', JSON.stringify({ date: "20200301", userid: 1, layout: mapLayout }));
 
@@ -38,6 +42,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
 
   const createNewTile = (droppedItemData) => {
     let newIndex = parseInt(prevTileIndex) > 0 ? parseInt(prevTileIndex) + 1 : 0;
+
     if(mapLayout.length > 0) {
       newIndex = parseInt(newIndex) + 1;
     }
@@ -72,7 +77,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
       if(tile.i === newItem.i) {
         tile.x = newItem.x
         tile.y = newItem.y
-        console.log(tile);
+        // console.log(tile);
       }
     });
 
