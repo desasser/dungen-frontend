@@ -26,7 +26,7 @@ export default function SavedMaps() {
 
   const loadUserMaps = () => {
     //NOTE FROM CALVIN included props.users.id to the parameter
-    API.getUserMaps()
+    API.getUserMaps(6)
       .then(res => {
         // console.log('response', res.data);
         setUserMaps(res.data);
