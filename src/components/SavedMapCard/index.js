@@ -46,7 +46,7 @@ export default function SavedMapCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions style={{justifyContent:'center'}}>
-        <Button size="small" color="primary" href="/builder">
+        <Button size="small" color="primary"  href={`/builder/${props.id}`}>
           {/* TODO: href will end up passing to darhboard page along with a map id */}
           Edit
         </Button>
