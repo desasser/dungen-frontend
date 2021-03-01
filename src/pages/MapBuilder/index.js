@@ -76,7 +76,7 @@ export default function MapBuilder() {
         {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
-        <Container className="grid-base" style={{ border: 'black 1px solid', height: '1000px', width: '1000px', marginLeft: '25px', marginTop: '25px' }}>
+        <Container className="grid-base" style={{ border: 'black 1px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
           <Grid addThisTile={addThisTile} />
         </Container>
         <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>

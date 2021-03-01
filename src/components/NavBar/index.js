@@ -33,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    "& a": {
+      textDecoration: "none",
+      color: "white"
+    }
   },
 }));
 
@@ -209,7 +213,7 @@ export default function MenuAppBar(props) {
         handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
         /> </span>: null}
           <Typography variant="h4" className={classes.title}>
-            DunGen
+            <Link to ="/">DunGen</Link>
           </Typography>
           <FormGroup>
           {props.user.isLoggedIn ? <span> <MenuItem onClick={logout}>

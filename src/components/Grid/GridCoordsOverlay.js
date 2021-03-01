@@ -1,7 +1,7 @@
 import React from 'react'
 import GridLayout from 'react-grid-layout';
 
-export default function GridCoordsOverlay({ handleOnCoordClick }) {
+export default function GridCoordsOverlay(props) {
   const gridCellCoords = [
     { i: 'a', w: 1, h: 1, x: 0, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
     { i: 'b', w: 1, h: 1, x: 1, y: 0, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
@@ -115,13 +115,15 @@ export default function GridCoordsOverlay({ handleOnCoordClick }) {
     { i: 'de', w: 1, h: 1, x: 9, y: 9, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
     // { i: 'df', w: 1, h: 1, x: 9, y: 10, bg: "#" + Math.floor(Math.random()*16777215).toString(16) },
   ]
+  // doesn't work because of z-index shenanigans
+  const handleOnCoordClick = (e) => {
+    console.log(e)
+  }
 
   return (
     <GridLayout
       className="mapCoordsGrid"
-      colWidth={100}
-      rowHeight={100}
-      width={1200}
+      {...props}
       compactType={null}
       margin={[0,0]}
       isDraggable={false}
@@ -129,7 +131,7 @@ export default function GridCoordsOverlay({ handleOnCoordClick }) {
       isResizable={false}
       style={{height: "100%"}}
     >
-      {gridCellCoords.map( cell => <div key={cell.i} className="grid-cell-coords" data-grid={{...cell}} resizable="false" onClick={handleOnCoordClick}>{cell.x},{cell.y}</div> )} 
+      {gridCellCoords.map( cell => <div key={cell.i} className="grid-cell-coords" data-grid={{...cell}} resizable="false" onClick={(e) => handleOnCoordClick(e)}>{cell.x},{cell.y}</div> )} 
     </GridLayout>
   )
 }
