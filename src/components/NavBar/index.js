@@ -33,11 +33,8 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    "& a": {
-      textDecoration: "none",
-      color: "white"
-    }
   },
+  
 }));
 
 export default function MenuAppBar(props) {
@@ -200,11 +197,8 @@ export default function MenuAppBar(props) {
   }
   const logout = () => {
     console.log("ummm...click-out")
-    
     localStorage.removeItem("token")
-    setUserState({
-      
-    })
+    history.push("/login")
   }
 
   return (
@@ -212,48 +206,28 @@ export default function MenuAppBar(props) {
 
       <AppBar position="static">
         <Toolbar>
-        {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp} 
-        handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
-        /> </span>: null}
+
+        <Link to ="/builder" color="white" variant="body2">Map Builder </Link>
+                {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
+                {props.user.isLoggedIn ? <span><Link to="/dashboard"> Saved Maps </Link>
+                 </span> : null}
+               
           <Typography variant="h4" className={classes.title}>
-            <Link to ="/">DunGen</Link>
+            DunGen
           </Typography>
           <FormGroup>
-          {props.user.isLoggedIn ? <span> <MenuItem onClick={logout}>
+          {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp} 
+        handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
+        /> </span> : <span> <MenuItem onClick={logout}>
               Logout
-              </MenuItem></span>: null}
+              </MenuItem></span>}
           </FormGroup>
           {auth && (
             <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
+              
                 <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}> <Link to ="/builder">Map Builder </Link></MenuItem> 
-                {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
-                {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}><Link to="/dashboard"> Saved Maps </Link>
-                </MenuItem> </span> : null}
-              </Menu>
+              
+              
             </div>
           )}
         </Toolbar>
