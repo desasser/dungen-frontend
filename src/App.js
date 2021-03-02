@@ -119,18 +119,18 @@ function App() {
     }
   };
 
-  const signUpBtn = click => {
-    console.log(click)
-    if (formSwitch.login === true) {
-      setFormSwitch({ login: false })
-      setFormMsg({ Msg: "Create an Account" })
-      setHapticBtn({ Btn: "Switch to: Login" })
-    } else {
-      setFormMsg({ Msg: "Please Login" })
-      setHapticBtn({ Btn: "Switch to: Sign Up" })
-      setFormSwitch({ login: true })
-    }
-  }
+  // const signUpBtn = click => {
+  //   console.log(click)
+  //   if (formSwitch.login === true) {
+  //     setFormSwitch({ login: false })
+  //     setFormMsg({ Msg: "Create an Account" })
+  //     setHapticBtn({ Btn: "Switch to: Login" })
+  //   } else {
+  //     setFormMsg({ Msg: "Please Login" })
+  //     setHapticBtn({ Btn: "Switch to: Sign Up" })
+  //     setFormSwitch({ login: true })
+  //   }
+  // }
 
 
   return (

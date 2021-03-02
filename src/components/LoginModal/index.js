@@ -7,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Form from "../../components/Form/index"
 import ActionBtn from "../../components/ActionBtn/index"
 import { useHistory } from 'react-router-dom'
+import { Snackbar } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LoginModal(props) {
+console.log(props)
+
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
@@ -68,7 +71,7 @@ export default function LoginModal(props) {
 
                         <ActionBtn action={props.switch} name={props.formBtn} />
                         <h1>{props.formMsg}</h1>
-                        <Form handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
+                        <Form login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
 
                     </div>
                 </Fade>
