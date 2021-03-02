@@ -53,7 +53,9 @@ const useStyles = makeStyles({
   title: {
     fontFamily: 'SpaceAndAstronomy',
     fontSize: '40px',
-    marginTop: 20
+    marginTop: 20,
+    // color: '#eb4511',
+    // fontWeight: 900
   },
   titleBtn: {
     // margin: 10,
@@ -172,7 +174,7 @@ export default function MapBuilder() {
         {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
-        <Container className="grid-base" style={{ border: 'black 1px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
+        <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
           <Grid addThisTile={addThisTile} loadThisMap={loadThisMap} />
         </Container>
         {/* TODO: This functionality is for future development */}

@@ -45,12 +45,12 @@ const useStyles = makeStyles((theme) => ({
   },
   buildButton: {
     backgroundColor: '#eb4511',
-    height: '7em',
+    height: '5em',
     padding: '1em',
-    fontSize: '1.2em',
-    margin: '50px',
+    fontSize: '1.5em',
+    margin: '20px',
     fontFamily: 'SpaceAndAstronomy',
-    fontWeight: 'bold'
+    // fontWeight: 'bold'
   },
   splashContent: {
     width: '80%',

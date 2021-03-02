@@ -47,6 +47,13 @@ const useStyles = makeStyles((theme) => ({
     "& .droppable-element": {
       margin: "0.75rem"
     }
+  },
+  tileHeader: {
+    marginLeft: 30,
+    marginBottom: 30,
+    fontFamily: 'SpaceAndAstronomy',
+    fontWeight: 'bold',
+    color: 'white'
   }
 }));
 
@@ -63,10 +70,11 @@ const StyledButton = withStyles({
 const TileDrawer = withStyles({
   root: {
     "& .MuiDrawer-paper": {
-      backgroundColor: '#bada55',
+      backgroundColor: '#36434b',
       width: 400,
       marginTop: 64,
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      border: '1px #707078 solid'
     }
   }
 })(Drawer)
@@ -128,16 +136,18 @@ export default function SliderDrawer({ handleDraggableItem }) {
         variant='persistent'
         open={isDrawerOpened}
         onClose={handleDrawerClose}
-      // classes={{ paper: classes.paper }}
       >
         <Container className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleDrawerClose} style={{color: 'white'}}>
             {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </Container>
         {/* Render the top 18 until scroll down, then render more, etc */}
         <Container className={classes.tileGrid}>
-          {tileSet ?
+        <Typography variant='h5' className={classes.tileHeader}>
+          Dungeon Tiles
+        </Typography>
+          {tileSet.length > 0 ?
           tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />) : (
             (!loadState ? (
               <CircularProgress />
