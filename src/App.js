@@ -5,10 +5,8 @@ import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
 import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
-import Login from "./pages/Login";
 import Splash from "./pages/Splash/index"
 import API from "./utils/API.js"
-import LoginModal from "./components/LoginModal"
 
 
 function App() {
@@ -29,7 +27,7 @@ function App() {
   })
 
   const [hapticBtn, setHapticBtn] = useState({
-    Btn: "Sign Up",
+    Btn: "Switch to: Sign Up",
   })
 
   const [loginState, setLoginState] = useState({
@@ -43,16 +41,6 @@ function App() {
     userAuth()
 
   }, [])
-
-  // const logout = () => {
-  //   console.log("ummm...click-out")
-  //   localStorage.removeItem("token")
-  //   setUserState({
-  //     isLoggedIn: false
-  //   })
-
-
-  // }
 
   const userAuth = () => {
     API.getAuthToken(token).then(res => {
@@ -102,7 +90,6 @@ function App() {
         })
         setLoginState({
           userName: "",
-          name: "",
           password: ""
         })
       }).catch(error => {
@@ -123,7 +110,6 @@ function App() {
         })
         setLoginState({
           userName: "",
-          name: "",
           password: ""
         })
       }).catch(error => {
@@ -138,11 +124,11 @@ function App() {
     console.log(click)
     if (formSwitch.login === true) {
       setFormSwitch({ login: false })
-      setFormMsg({ Msg: "Creat an Account" })
-      setHapticBtn({ Btn: "Login" })
+      setFormMsg({ Msg: "Create an Account" })
+      setHapticBtn({ Btn: "Switch to: Login" })
     } else {
       setFormMsg({ Msg: "Please Login" })
-      setHapticBtn({ Btn: "Sign Up" })
+      setHapticBtn({ Btn: "Switch to: Sign Up" })
       setFormSwitch({ login: true })
     }
   }
@@ -153,11 +139,9 @@ function App() {
       <Router>
         <NavBar user={users} />
         <Switch>
+
           <Route exact path="/">
             <Splash />
-          </Route>
-          <Route exact path="/login">
-            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
           </Route>
 
           <Route exact path="/dashboard">

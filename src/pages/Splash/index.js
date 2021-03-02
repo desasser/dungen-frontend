@@ -51,7 +51,7 @@ export default function Splash() {
                             right: 600,
                             bottom: 175,
                         }}
-                    >Snail</motion.div>
+                    >Gen</motion.div>
                     <motion.div
                         drag
                         dragConstraints={{
