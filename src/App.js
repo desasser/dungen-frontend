@@ -6,6 +6,8 @@ import SavedMaps from './pages/SavedMaps';
 import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
 import Splash from "./pages/Splash/index"
+import Nope from "./pages/503"
+import FourOhNope from "./pages/404"
 import API from "./utils/API.js"
 
 
@@ -144,12 +146,19 @@ function App() {
           </Route>
 
           <Route exact path="/dashboard">
-            <SavedMaps users={users} />
+            {users.isLoggedIn ? <SavedMaps users={users} /> : <Nope />}
           </Route>
-
+          <Route exact path="/503">
+            <Nope />
+          </Route>
           <Route exact path="/builder" component={MapBuilder} />
           <Route exact path="/builder/:id" component={MapBuilder} />
-          <Route exact path="/render" component={RenderedMap} />
+          <Route exact path="/render">
+            {users.isLoggedIn ? <RenderedMap /> : <Nope />}
+          </Route>
+
+          <Route component={FourOhNope} />
+
         </Switch>
       </Router>
     </div>
