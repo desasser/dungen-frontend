@@ -223,7 +223,7 @@ export default function MenuAppBar(props) {
           </Typography>
           {props.user.isLoggedIn ? <Typography variant="h6">{`Welcome ${props.user.userName}`}</Typography> : null}
           <FormGroup>
-            {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
+            {!props.user.isLoggedIn ? <span> <LoginModal login={formSwitch} edge="start" onClick={logInPopUp}
               handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
             /> </span> : <span> <MenuItem onClick={logout}>
               Logout?
