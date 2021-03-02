@@ -8,6 +8,7 @@ import Form from "../../components/Form/index"
 import ActionBtn from "../../components/ActionBtn/index"
 import { useHistory } from 'react-router-dom'
 
+
 const useStyles = makeStyles((theme) => ({
     modal: {
         display: 'flex',
@@ -65,7 +66,7 @@ export default function LoginModal(props) {
                 <Fade in={open}>
                     <div className={classes.paper}>
 
-                        <ActionBtn action={props.switch, email} name={props.formBtn} />
+                        <ActionBtn action={props.switch} name={props.formBtn} />
                         <h1>{props.formMsg}</h1>
                         <Form handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
 

@@ -80,7 +80,7 @@ export default function Splash() {
                     </h3>
                     <p>
 
-                       An approach
+                       An no nonsense approach to making dungens. 
                     </p>
                 </Container>
 
