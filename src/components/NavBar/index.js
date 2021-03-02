@@ -231,8 +231,7 @@ export default function MenuAppBar(props) {
           </FormGroup>
           {auth && (
             <div>
-
-              <AccountCircle />
+               {props.user.isLoggedIn ? <span> <AccountCircle /> </span> : null}
 
 
             </div>

@@ -80,7 +80,7 @@ export default function Splash() {
                     </h3>
                     <p>
 
-                       An no nonsense approach to making dungens. 
+                       An no nonsense approach to making dungens. Because the hardest part of the game, should be keeeping eveyone alive should be the hardest part. You can create an account to save and print your maps, or you can click the button below and get mapping.
                     </p>
                 </Container>
 
