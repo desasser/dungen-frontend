@@ -70,7 +70,7 @@ console.log(props)
 
                         <ActionBtn action={props.switch} name={props.formBtn} />
                         <h1>{props.formMsg}</h1>
-                        <Form login={props.login} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
+                        <Form login={props.login.login} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
 
                     </div>
                 </Fade>

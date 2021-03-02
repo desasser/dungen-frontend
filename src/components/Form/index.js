@@ -21,7 +21,7 @@ useEffect(() => {
         </div>
         {!props.login ? <span>
         <div>
-          <TextField id="standard-basic" type="password" label="test" name="password" value={props.password} onChange={props.handleInputChange} />
+          <TextField id="standard-basic" type="password" label="Verify Password" name="password" value={props.password} onChange={props.handleInputChange} />
         </div> 
         </span> : null}
         <Button type="submit" color="primary" variant="contained" onClick={props.handleSubmit}>
