@@ -7,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Form from "../../components/Form/index"
 import ActionBtn from "../../components/ActionBtn/index"
 import { useHistory } from 'react-router-dom'
+import { Snackbar } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +71,7 @@ console.log(props)
 
                         <ActionBtn action={props.switch} name={props.formBtn} />
                         <h1>{props.formMsg}</h1>
-                        <Form login={props.login.login} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
+                        <Form login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
 
                     </div>
                 </Fade>

@@ -16,6 +16,7 @@ import { Link } from "react-router-dom"
 import LoginModal from "../LoginModal"
 import API from "../../utils/API"
 import { useHistory } from 'react-router-dom'
+import { Snackbar } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -103,7 +104,9 @@ export default function MenuAppBar(props) {
   const handleLogin = (data) => {
     setUserState({ ...users, isLoggedIn: data })
   }
-
+  const [errorState, setErrorState] = useState({
+        error: false
+  });
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -127,8 +130,12 @@ export default function MenuAppBar(props) {
         history.go(0)
       }).catch(error => {
         console.log(error);
+        setErrorState({
+          error: true
+    })
         localStorage.removeItem("token");
         console.log("token has been removed. Error Login. NavBar line: 123")
+        return error
       })
     } else {
       API.signup(loginState).then(res => {
@@ -145,6 +152,7 @@ export default function MenuAppBar(props) {
           userName: "",
           password: ""
         })
+        history.go(0)
       }).catch(error => {
         console.log(error);
         localStorage.removeItem("token");
@@ -223,7 +231,7 @@ export default function MenuAppBar(props) {
           </Typography>
           {props.user.isLoggedIn ? <Typography variant="h6">{`Welcome ${props.user.userName}`}</Typography> : null}
           <FormGroup>
-            {!props.user.isLoggedIn ? <span> <LoginModal login={formSwitch} edge="start" onClick={logInPopUp}
+            {!props.user.isLoggedIn ? <span> <LoginModal user={users} login={formSwitch} error={errorState} edge="start" onClick={logInPopUp}
               handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
             /> </span> : <span> <MenuItem onClick={logout}>
               Logout?
