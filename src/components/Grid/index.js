@@ -19,10 +19,51 @@ export default function Grid({ addThisTile, loadThisMap }) {
     setTodaysDate(today.getFullYear() +''+ (today.getMonth() + 1) +''+ today.getDate());
 
     let savedMap = getMapFromLocalStorage();
+    // console.log(loadThisMap, savedMap);
 
-    if(loadThisMap === null || loadThisMap === undefined || (savedMap !== null && savedMap.mapId !== null && savedMap.mapId !== loadThisMap) ) {
-      if(mapLayout.length === 0 && savedMap !== null && savedMap !== undefined && savedMap.layout.length > 0 && savedMap.mapId === null) {
-        // "re-index" the tiles so the 'i' key is in numeric order;
+    if(loadThisMap !== undefined && loadThisMap !== null) {
+      API.getSingleMap(loadThisMap)
+      .then(results => {
+        // console.log(results.data);
+        const data = results.data;
+
+        const MapTiles = data.MapTiles;
+
+        let loadedTiles = [];
+        if(MapTiles.length > 0) {
+          for(var i = 0; i < MapTiles.length; i++) {
+            let tile = {
+              i: i.toString(),
+              mapTileId: MapTiles[i].id,
+              tileId: MapTiles[i].TileId.toString(),
+              orientation: MapTiles[i].orientation,
+              environment: MapTiles[i].EnvironmentId,
+              bg: MapTiles[i].Tile.image_url,
+              x: MapTiles[i].xCoord,
+              y: MapTiles[i].yCoord,
+              w: 1,
+              h: 1
+            }
+            loadedTiles.push(tile);
+          }
+        }
+
+        const mapData = {
+          mapId: loadThisMap,
+          mapTitle: data.name,
+          layout: loadedTiles
+        }
+
+        setLoadedMapData(mapData);
+        setMapLayout([...loadedTiles]);
+        saveMapToLocalStorage();
+        
+      })
+      .catch(err => console.error(err));
+      
+
+    } else if(savedMap !== null && savedMap.layout.length > 0) {
+      // "re-index" the tiles so the 'i' key is in numeric order;
         // the 'i' key/value is *only* for the grid display, and has no effect on the map itself
         // also setting the displayControlWidget to false so when a map is loaded
         // from localStorage, no control widgets are shown on load
@@ -32,50 +73,13 @@ export default function Grid({ addThisTile, loadThisMap }) {
         });
         setMapLayout(savedMap.layout);
         setMapWidth(savedMap.mapWidth);
+        saveMapToLocalStorage();
         // this works because we're essentially re-indexing all the tiles for the map, from 0
         // so the length (-1) === the index of the last tile object === lastTile.i
         setPrevTileIndex( savedMap.layout.length - 1 );
-      }
-    } else {
-      if(savedMap === null || savedMap.mapId === null) {
-        API.getSingleMap(loadThisMap)
-        .then(results => {
-          const data = results.data;
-          setLoadedMapData(data);
-
-          const MapTiles = data.MapTiles;
-
-          let loadedTiles = [];
-          if(MapTiles.length > 0) {
-            for(var i = 0; i < MapTiles.length; i++) {
-              let tile = {
-                i: i.toString(),
-                mapTileId: MapTiles[i].id,
-                tileId: MapTiles[i].TileId.toString(),
-                orientation: MapTiles[i].orientation,
-                environment: MapTiles[i].EnvironmentId,
-                bg: MapTiles[i].Tile.image_url,
-                x: MapTiles[i].xCoord,
-                y: MapTiles[i].yCoord,
-                w: 1,
-                h: 1
-              }
-              loadedTiles.push(tile);
-            }
-            setMapLayout([...loadedTiles]);
-          }
-
-        })
-        .catch(err => console.error(err));
-
-      }
-      // setLoadedMapId(loadThisMap.mapId);
-      // setMapLayout([...loadThisMap.layout]);
     }
 
-    saveMapToLocalStorage();
-
-  },[mapLayout]);
+  },[]);
 
   const getMapFromLocalStorage = () => {
     return localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
@@ -98,13 +102,12 @@ export default function Grid({ addThisTile, loadThisMap }) {
 
   const saveMapToLocalStorage = () => {
     // getMapWidth();
-
     const mapData = { 
       date: todaysDate, 
-      userid: 1, 
+      userid: 6, 
       layout: mapLayout, 
       mapWidth: mapWidth, 
-      mapId: loadedMapData !== undefined ? loadedMapData.id : "", 
+      mapId: loadThisMap !== undefined ? parseInt(loadThisMap) : "", 
       mapTitle: loadedMapData !== undefined ? loadedMapData.name : "" 
     }
 
@@ -129,6 +132,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
    * 'item', however, returns the new x,y coords so it is useful and needs to be passed to createNewTile()
    */
   const handleOnDrop = (layout, item, e) => {
+    console.log(item);
     let droppedItem = typeof item === "Array" ? item[0] : item;
     if(addThisTile !== undefined && addThisTile.tileid !== undefined) {
       createNewTile(droppedItem);
@@ -136,11 +140,15 @@ export default function Grid({ addThisTile, loadThisMap }) {
   }
 
   const createNewTile = (droppedItemData) => {
-    let newIndex = parseInt(prevTileIndex) > 0 ? parseInt(prevTileIndex) + 1 : 0;
-
-    if(mapLayout.length > 0) {
-      newIndex = parseInt(newIndex) + 1;
+    if(typeof droppedItemData === "Array") {
+      droppedItemData = droppedItemData[droppedItemData.length - 1];
     }
+
+    let newIndex = 1;
+    if(mapLayout.length > 0) {
+      newIndex = mapLayout.length;
+    }
+    // setPrevTileIndex(parseInt(newIndex));
 
     const newTileObj = {
       i: newIndex.toString(), // GridLayout expects this to be a string!
@@ -149,8 +157,8 @@ export default function Grid({ addThisTile, loadThisMap }) {
       environment: addThisTile.environment,
       orientation: 0,
       mirrored: 1,
-      x: droppedItemData.x,
-      y: droppedItemData.y,
+      x: parseInt(droppedItemData.x),
+      y: parseInt(droppedItemData.y),
       bg: addThisTile.bg,
       w: 1,
       h: 1
@@ -159,15 +167,15 @@ export default function Grid({ addThisTile, loadThisMap }) {
     if(newTileObj.tileId != null && newTileObj.tileId !== undefined && newTileObj.tileId !== "") {
       // setMapLayout([...mapLayout, newTileObj]);
       setMapLayout([...mapLayout, newTileObj]);
-      setPrevTileIndex(newIndex);
+      // setPrevTileIndex(newIndex);
 
-      if(mapLayout.length === 1) {
-        setMapWidth(1);
-      }
+      // if(mapLayout.length === 1) {
+      //   setMapWidth(1);
+      // }
 
-      if(newTileObj.x > 0 && mapLayout.length > 1) {
-        getMapWidth();
-      }
+      // if(newTileObj.x > 0 && mapLayout.length > 1) {
+      //   getMapWidth();
+      // }
     }
   }
 
@@ -185,20 +193,6 @@ export default function Grid({ addThisTile, loadThisMap }) {
     setMapLayout([...mapLayout]);
   }
 
-  // this is the control widget for each tile, 
-  const toggleWidget = (tileKey) => {
-
-    mapLayout.map(mapTile => {
-      if(mapTile.i.toString() === tileKey) {
-        mapTile.displayControlWidget = !mapTile.displayControlWidget
-      } else {
-        mapTile.displayControlWidget = false
-      }
-    });
-
-    setMapLayout([...mapLayout]);
-  }
-
   const handleDoubleClick = (e) => {
     e.preventDefault();
     let tile = e.target;
@@ -210,8 +204,21 @@ export default function Grid({ addThisTile, loadThisMap }) {
     toggleWidget(tile.dataset.tilekey);
   }
 
+  // this is the control widget for each tile, 
+  const toggleWidget = (tileKey) => {
+    mapLayout.map(mapTile => {
+      if(mapTile.i.toString() === tileKey) {
+        mapTile.displayControlWidget = !mapTile.displayControlWidget
+      } else {
+        mapTile.displayControlWidget = false
+      }
+    });
+
+    setMapLayout([...mapLayout]);
+  }
+
   const handleWidgetButtonClick = (action, item) => {
-    // console.log(action, item);
+    console.log(action, item);
     // we're using opacity: 0 for the control widget to give it that fancy "imploding anim"
     // but that means the buttons are still *there* to be clicked! so we're checking to make
     // sure the control widget is actually being displayed before we take any action 
@@ -221,10 +228,10 @@ export default function Grid({ addThisTile, loadThisMap }) {
       if(action === "closeWidget") {
         toggleWidget(itemKey.toString());
   
-      } else if(action === "rotateRight") {
+      } else if(action === "rotateTileRight") {
         rotateTile(itemKey, "right");
   
-      } else if(action === "rotateLeft") {
+      } else if(action === "rotateTileLeft") {
         rotateTile(itemKey, "left");
   
       } else if(action === "deleteTile") {

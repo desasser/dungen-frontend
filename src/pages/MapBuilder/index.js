@@ -52,21 +52,22 @@ export default function MapBuilder() {
     bg: ""
   });
 
-  const [loadedMapData, setLoadedMapData] = useState();
+  const [loadedMapData, setLoadedMapData] = useState([]);
 
   const classes = useStyles();
 
   let { id } = useParams();
 
   React.useEffect(() => {
-    if(id !== undefined) {
-      API.getSingleMap(id)
-      .then(singleMap => {
-        setMapTitle(singleMap.data.name);
-        setLoadedMapData(singleMap.data);
-      })
-      .catch(err => console.error(err));
-    }
+    // if(id !== undefined && loadedMapData.length === 0) {
+    //   API.getSingleMap(id)
+    //   .then(singleMap => {
+    //     setMapTitle(singleMap.data.name);
+    //     setLoadedMapData(singleMap.data);
+    //     // console.log(loadedMapData);
+    //   })
+    //   .catch(err => console.error(err));
+    // }
   }, []);
 
   const handleLock = () => {
