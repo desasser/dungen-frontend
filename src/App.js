@@ -40,7 +40,7 @@ function App() {
   const token = localStorage.getItem("token")
 
   useEffect(() => {
-    // userAuth()
+    userAuth()
 
   }, [])
 
