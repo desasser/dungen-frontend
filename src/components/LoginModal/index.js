@@ -8,6 +8,7 @@ import Form from "../../components/Form/index"
 import ActionBtn from "../../components/ActionBtn/index"
 import { useHistory } from 'react-router-dom'
 
+
 const useStyles = makeStyles((theme) => ({
     modal: {
         display: 'flex',
@@ -40,6 +41,10 @@ export default function LoginModal(props) {
             handleClose()
         }
     }, [props.isLoggedIn])
+
+    const email = () => {
+        console.log("this might work")
+    }
 
     return (
         <div>
