@@ -37,7 +37,6 @@ export default function LoginModal(props) {
     const history = useHistory(props);
     useEffect(() => {
         if (props.isLoggedIn) {
-            history.push("/dashboard")
             handleClose()
         }
     }, [props.isLoggedIn])
