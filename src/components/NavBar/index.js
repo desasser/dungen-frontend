@@ -27,7 +27,12 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    fontFamily: 'ESKARGOT'
   },
+  navBar: {
+    backgroundColor: '#8eb1c7',
+    color: 'black'
+  }
 
 }));
 
@@ -203,16 +208,13 @@ export default function MenuAppBar(props) {
 
   return (
     <div className={classes.root}>
-
-      <AppBar position="static">
+      <AppBar position="static" className={classes.navBar} > {/*color='secondary'*/}
         <Toolbar>
-
           <Link to="/builder" color="white" variant="body2">Map Builder </Link>
           {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
           {props.user.isLoggedIn ? <span><Link to="/dashboard"> Saved Maps </Link>
           </span> : null}
-
-          <Typography variant="h4" className={classes.title} onClick={titleClick}>
+          <Typography variant='h3' className={classes.title} onClick={titleClick}>
             DunGen
           </Typography>
           {props.user.isLoggedIn ? <Typography variant="h6">{`Welcome ${props.user.userName}`}</Typography> : null}
@@ -225,10 +227,7 @@ export default function MenuAppBar(props) {
           </FormGroup>
           {auth && (
             <div>
-
               <AccountCircle />
-
-
             </div>
           )}
         </Toolbar>
