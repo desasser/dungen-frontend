@@ -27,6 +27,13 @@ const API = {
         // console.log(tiles)
         return axios.get(`${URL_PREFIX}/api/tiles`)
     },
+    getTilesByEnvironment: environment => {
+      return axios.get(`${URL_PREFIX}/api/tiles/${environment}`)
+  },
+    getEnvironments: () => {
+      // console.log(tiles)
+      return axios.get(`${URL_PREFIX}/api/Environments`)
+    },
     // add USER ID into the query
     getUserMaps: userId => {
         // console.log(userId);

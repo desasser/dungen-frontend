@@ -29,21 +29,23 @@ const useStyles = makeStyles({
   },
   actionBtn: {
     width: 100,
-    height: 50,
-    backgroundColor: '#E52977',
-    color: '#ABC686'
+    height: 60,
+    backgroundColor: '#eb4511',
+    color: '#36434b',
+    margin: 20,
+    fontSize: '18px',
   },
   routerBtn: {
     width: 100,
-    height: 50,
-    backgroundColor: '#ABC686',
-    color: '#E52977'
+    height: 60,
+    backgroundColor: '#36434b',
+    color: '#eb4511',
+    margin: 20,
+    fontSize: '18px',
   },
   titleInput: {
-    // backgroundColor: 'white',
     borderRadius: '0.5em',
     width: '600px',
-    // fullWidth: true,
     '& .MuiFilledInput-input': {
       fontSize: '24px',
       fontFamily: 'SpaceAndAstronomy',
@@ -52,13 +54,12 @@ const useStyles = makeStyles({
   },
   title: {
     fontFamily: 'SpaceAndAstronomy',
-    fontSize: '40px',
+    fontSize: '30px',
     marginTop: 20,
     // color: '#eb4511',
     // fontWeight: 900
   },
   titleBtn: {
-    // margin: 10,
     color: 'white',
     alignSelf: 'flex-end',
     marginRight: 20
@@ -67,6 +68,11 @@ const useStyles = makeStyles({
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'column',
+    width: '80%'
+  },
+  btnWrapper: {
+    display: 'flex',
+    justifyContent: 'flex-end',
     width: '80%'
   }
 })
@@ -181,9 +187,11 @@ export default function MapBuilder() {
         {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
         </IconBtn> */}
-        <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} />
-        <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
-        <RouterBtn name='VIEW' classes={classes.routerBtn} action={viewMap} />
+        <Container className={classes.btnWrapper}>
+          <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} />
+          <RouterBtn name='VIEW' classes={classes.routerBtn} action={viewMap} />
+          <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
+        </Container>
       </Container>
     </Container>
   )
