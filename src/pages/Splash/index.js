@@ -30,8 +30,8 @@ const useStyles = makeStyles((theme) => ({
     height: '50vh'
   },
   synopsis: {
-    width: '40%',
-    marginLeft: '5em',
+    width: '50%',
+    marginLeft: '1em',
     marginTop: '3em',
     border: '0.5em #8eb1c7 solid',
     borderRadius: '0.5em',

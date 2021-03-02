@@ -10,7 +10,8 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import Grid from '../../components/Grid';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import API from '../../utils/API';
 
 const useStyles = makeStyles({
@@ -37,6 +38,20 @@ const useStyles = makeStyles({
     height: 50,
     backgroundColor: '#ABC686',
     color: '#E52977'
+  },
+  titleInput: {
+    // backgroundColor: 'white',
+    borderRadius: '0.5em',
+    width: '600px',
+    // fullWidth: true,
+    '& .MuiFilledInput-input': {
+      fontSize:'24px',
+      fontFamily: 'SpaceAndAstronomy'
+    }
+  },
+  title: {
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '40px'
   }
 })
 
@@ -44,6 +59,7 @@ const useStyles = makeStyles({
 export default function MapBuilder() {
   const [mapTitle, setMapTitle] = useState("Rambo's Throne of Marshmallows");
   const [lockState, setLockState] = useState(false);
+  const [titleState, setTitleState] = useState(false);
   // for adding a new tile to the map grid
   const [addThisTile, setAddThisTile] = useState({
     tileid: null,
@@ -130,7 +146,9 @@ export default function MapBuilder() {
   return (
     <Container>
       <Container>
-        <Typography variant='h2'><input type="text" value={mapTitle} onChange={(e) => updateMapTitle(e)} /></Typography>
+        {!titleState ? <Button onClick={() => setTitleState(true)}>Edit Title</Button>:
+        <TextField id="filled-basic" label="Map Title" variant="filled" value={mapTitle} onChange={(e) => updateMapTitle(e)} className={classes.titleInput} onSubmit={()=> setTitleState(false)}/>}
+        <Typography variant='h2' className={classes.title}>{mapTitle}</Typography>
         {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
