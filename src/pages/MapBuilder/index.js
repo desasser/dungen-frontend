@@ -42,16 +42,20 @@ const useStyles = makeStyles({
 
 //black and pink #232E21 #F42272
 export default function MapBuilder() {
-  const [mapTitle, setMapTitle] = useState("Rambo's Throne of Marshmallows");
+  // for tile "drawer"
   const [lockState, setLockState] = useState(false);
+  // for the map title
+  const [mapTitle, setMapTitle] = useState("Rambo's Throne of Marshmallows");
   // for adding a new tile to the map grid
   const [addThisTile, setAddThisTile] = useState({
     tileid: null,
     mapTileId: null,
     environment: "",
-    bg: ""
+    bg: "",
+    x: null,
+    y: null
   });
-
+  // for the map data to load
   const [loadedMapData, setLoadedMapData] = useState([]);
 
   const classes = useStyles();
@@ -59,15 +63,35 @@ export default function MapBuilder() {
   let { id } = useParams();
 
   React.useEffect(() => {
-    // if(id !== undefined && loadedMapData.length === 0) {
-    //   API.getSingleMap(id)
-    //   .then(singleMap => {
-    //     setMapTitle(singleMap.data.name);
-    //     setLoadedMapData(singleMap.data);
-    //     // console.log(loadedMapData);
-    //   })
-    //   .catch(err => console.error(err));
-    // }
+    if(id !== undefined && loadedMapData.length === 0) {
+      API.getSingleMap(id)
+      .then(singleMap => {
+        setMapTitle(singleMap.data.name);
+        const mapTiles = singleMap.data.MapTiles;
+        let gridTiles = [];
+        for( var i = 0; i < mapTiles; i++ ) {
+          const mapTile = mapTiles[i];
+          const tile = {
+            tileid: mapTile.TileId,
+            maptileid: mapTile.id,
+            environment: mapTile.EnvironmentId,
+            bg: mapTile.Tile.image_url,
+            x: tile.xCoord,
+            y: mapTile.yCoord
+          }
+          gridTiles.push(tile);
+        }
+
+        const loadLayout = {
+          mapId: id,
+          layout: gridTiles,
+          mapTitle: mapTitle
+        }
+
+        setLoadedMapData([...loadLayout]);
+      })
+      .catch(err => console.error(err));
+    }
   }, []);
 
   const handleLock = () => {
@@ -189,7 +213,7 @@ export default function MapBuilder() {
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
         <Container className="grid-base" style={{ border: 'black 1px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
-          <Grid addThisTile={addThisTile} loadThisMap={id} />
+          <Grid addThisTile={addThisTile} loadThisMap={loadedMapData} />
         </Container>
         <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
