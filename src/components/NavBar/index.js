@@ -158,10 +158,10 @@ export default function MenuAppBar(props) {
     if (formSwitch.login === true) {
       setFormSwitch({ login: false })
       setFormMsg({ Msg: "Create an Account" })
-      setHapticBtn({ Btn: "Switch to: Login" })
+      setHapticBtn({ Btn: "Have an Account?" })
     } else {
       setFormMsg({ Msg: "Please Login" })
-      setHapticBtn({ Btn: "Switch to: Sign Up" })
+      setHapticBtn({ Btn: "New to the Site?" })
       setFormSwitch({ login: true })
     }
   }
@@ -172,7 +172,9 @@ export default function MenuAppBar(props) {
   // END OF Login/Sign Functions
   //======================================================================
 
-
+  const titleClick = () => {
+    history.push('/')
+  }
 
 
   const handleChange = (event) => {
@@ -216,7 +218,7 @@ export default function MenuAppBar(props) {
           {props.user.isLoggedIn ? <span><Link to="/dashboard"> Saved Maps </Link>
           </span> : null}
 
-          <Typography variant="h4" className={classes.title}>
+          <Typography variant="h4" className={classes.title} onClick={titleClick}>
             DunGen
           </Typography>
           {props.user.isLoggedIn ? <Typography variant="h6">{`Welcome ${props.user.userName}`}</Typography> : null}

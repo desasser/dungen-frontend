@@ -139,6 +139,7 @@ function App() {
       <Router>
         <NavBar user={users} />
         <Switch>
+
           <Route exact path="/">
             <Splash />
           </Route>
