@@ -47,10 +47,12 @@ export default function MapBuilder() {
   // for adding a new tile to the map grid
   const [addThisTile, setAddThisTile] = useState({
     tileid: null,
+    mapTileId: null,
     environment: "",
     bg: ""
   });
-  const [loadThisMap, setLoadThisMap] = useState(null);
+
+  const [loadedMapData, setLoadedMapData] = useState();
 
   const classes = useStyles();
 
@@ -58,14 +60,13 @@ export default function MapBuilder() {
 
   React.useEffect(() => {
     if(id !== undefined) {
-      console.log(id);
       API.getSingleMap(id)
-      .then(results => {
-        console.log(results.data);
-        // const loadedLayout = results.data
+      .then(singleMap => {
+        setMapTitle(singleMap.data.name);
+        setLoadedMapData(singleMap.data);
       })
       .catch(err => console.error(err));
-      }
+    }
   }, []);
 
   const handleLock = () => {
@@ -81,38 +82,90 @@ export default function MapBuilder() {
     setAddThisTile({
       ...addThisTile,
       tileid: e.target.dataset.tileid,
+      maptileid: e.target.dataset.maptileid,
       environment: e.target.dataset.environment,
       bg: e.target.dataset.image
     });
   }
 
   const saveMapToDB = (e) => {
-    // console.log(e.target);
-    const mapLayout = JSON.parse(localStorage.getItem('dungen_map')).layout;
-    
-    API.saveMap({UserId: 1, name: mapTitle, image_url: ""})
-    .then(savedMap => {
-      console.log(savedMap.data);
-      const newMapId = savedMap.data.id;
-      
-      for(var i = 0; i < mapLayout.length; i++) {
-        let tile = {
-          MapId: newMapId,
-          TileId: parseInt(mapLayout[i].tileId),
-          xCoord: mapLayout[i].x,
-          yCoord: mapLayout[i].y,
-          orientation: mapLayout[i].orientation
-        }
+    let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
 
-        API.saveMapTile(tile)
-        .then(savedMapTile => {
-          console.log(savedMapTile.data);
+    if( id === null || id === undefined ) {
+      // console.log(e.target);
+      const mapLayout = savedMap.layout;
+      
+      API.saveMap({UserId: 1, name: mapTitle, image_url: ""})
+      .then(savedMap => {
+        // console.log(savedMap.data);
+        const newMapId = savedMap.data.id;
+        
+        const newMapTiles = createMapTiles();
+
+        for(var i = 0; i < newMapTiles.length; i++) {
+          API.saveMapTile(newMapTiles[i])
+          .then(savedMapTile => {
+            // console.log(savedMapTile.data);
+          })
+          .catch(err => console.error(err));
+        }
+        
+      })
+      .catch(err => console.error(err));
+
+    } else {
+      // we should probably ask the user if they want to save a NEW map
+      // or save over the existing map
+      // but that's a "later guy" problem, imho
+      if( loadedMapData.name !== mapTitle ) {
+        API.updateMap({id: id, name: mapTitle})
+        .then(results => {
+          // console.log(results);
         })
         .catch(err => console.error(err));
-        }
 
-    })
-    .catch(err => console.error(err));
+      }
+      
+      for(var i = 0; i < savedMap.layout.length; i++) {
+        // console.log(savedMap.layout[i]);
+        let tile = newMapTile(id, savedMap.layout[i]);
+        if(tile.mapTileId === undefined || tile.mapTileId === null) {
+          API.saveMapTile(tile)
+          .then(results => {
+            console.log(results);
+          })
+          .catch(err => console.error(err));
+
+        } else {
+          API.updateMapTile(tile)
+          .then(results => {
+            console.log(results.data);
+          })
+          .catch(err => console.error(err));
+        }
+      }
+    }
+  }
+
+  const newMapTile = (mapId, tileData) => {
+    return {
+      MapId: mapId,
+      TileId: parseInt(tileData.tileId),
+      xCoord: tileData.x,
+      yCoord: tileData.y,
+      orientation: tileData.orientation
+    }
+  }
+
+  const createMapTiles = (mapId) => {
+    const mapLayout = JSON.parse(localStorage.getItem('dungen_map')).layout;
+    let mapTiles = [];
+    for(var i = 0; i < mapLayout.length; i++) {
+      const tile = newMapTile(mapId, mapLayout[i]);
+      mapTiles.push(tile);
+    }
+
+    return mapTiles;
   }
 
   const viewMap = (e) => {
@@ -135,7 +188,7 @@ export default function MapBuilder() {
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
         <Container className="grid-base" style={{ border: 'black 1px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
-          <Grid addThisTile={addThisTile} loadThisMap={loadThisMap} />
+          <Grid addThisTile={addThisTile} loadThisMap={id} />
         </Container>
         <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}

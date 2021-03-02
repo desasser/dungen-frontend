@@ -5,9 +5,10 @@ import './style.scss'
 import Tile from '../Tile';
 import TileControlWidget from '../TileControlWidget'
 import GridCoordsOverlay from './GridCoordsOverlay'
+import API from '../../utils/API'
  
 export default function Grid({ addThisTile, loadThisMap }) {
-  const [loadedMapId, setLoadedMapId] = useState(null);
+  const [loadedMapData, setLoadedMapData] = useState([]);
   const [mapLayout, setMapLayout] = useState([]);
   const [prevTileIndex, setPrevTileIndex] = useState(0);
   const [mapWidth, setMapWidth] = useState(0);
@@ -19,8 +20,8 @@ export default function Grid({ addThisTile, loadThisMap }) {
 
     let savedMap = getMapFromLocalStorage();
 
-    if(loadThisMap === null || loadThisMap === undefined) {
-      if(mapLayout.length === 0 && savedMap !== null && savedMap !== undefined && savedMap.layout.length > 0) {
+    if(loadThisMap === null || loadThisMap === undefined || (savedMap !== null && savedMap.mapId !== null && savedMap.mapId !== loadThisMap) ) {
+      if(mapLayout.length === 0 && savedMap !== null && savedMap !== undefined && savedMap.layout.length > 0 && savedMap.mapId === null) {
         // "re-index" the tiles so the 'i' key is in numeric order;
         // the 'i' key/value is *only* for the grid display, and has no effect on the map itself
         // also setting the displayControlWidget to false so when a map is loaded
@@ -34,26 +35,59 @@ export default function Grid({ addThisTile, loadThisMap }) {
         // this works because we're essentially re-indexing all the tiles for the map, from 0
         // so the length (-1) === the index of the last tile object === lastTile.i
         setPrevTileIndex( savedMap.layout.length - 1 );
-  
       }
     } else {
-      setLoadedMapId(loadThisMap.mapId);
-      setMapLayout([...loadThisMap.layout]);
+      if(savedMap === null || savedMap.mapId === null) {
+        API.getSingleMap(loadThisMap)
+        .then(results => {
+          const data = results.data;
+          setLoadedMapData(data);
+
+          const MapTiles = data.MapTiles;
+
+          let loadedTiles = [];
+          if(MapTiles.length > 0) {
+            for(var i = 0; i < MapTiles.length; i++) {
+              let tile = {
+                i: i.toString(),
+                mapTileId: MapTiles[i].id,
+                tileId: MapTiles[i].TileId.toString(),
+                orientation: MapTiles[i].orientation,
+                environment: MapTiles[i].EnvironmentId,
+                bg: MapTiles[i].Tile.image_url,
+                x: MapTiles[i].xCoord,
+                y: MapTiles[i].yCoord,
+                w: 1,
+                h: 1
+              }
+              loadedTiles.push(tile);
+            }
+            setMapLayout([...loadedTiles]);
+          }
+
+        })
+        .catch(err => console.error(err));
+
+      }
+      // setLoadedMapId(loadThisMap.mapId);
+      // setMapLayout([...loadThisMap.layout]);
     }
 
-  },[]);
+    saveMapToLocalStorage();
+
+  },[mapLayout]);
 
   const getMapFromLocalStorage = () => {
     return localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
   }
 
-  const sortMapTiles = (asc) => {
+  const sortMapTiles = (key, asc=true) => {
     let sortedMapLayout = mapLayout;
 
     if(asc) {
-      sortedMapLayout = sortedMapLayout.sort( (a, b) => (a.x < b.x) ? 1 : -1);
+      sortedMapLayout = sortedMapLayout.sort( (a, b) => (a[key] < b[key]) ? 1 : -1);
     } else {
-      sortedMapLayout = sortedMapLayout.sort((a, b) => (a.x > b.x) ? 1 : -1);
+      sortedMapLayout = sortedMapLayout.sort((a, b) => (a[key] > b[key]) ? 1 : -1);
     }
     
     sortedMapLayout.map( obj => obj.i = sortedMapLayout.indexOf(obj).toString() );
@@ -62,22 +96,30 @@ export default function Grid({ addThisTile, loadThisMap }) {
     return sortedMapLayout;
   }
 
-  const updateMapLayout = (layout) => {
-    if(mapLayout !== layout || mapLayout.length === 0) {
-      setMapLayout([...layout]);
-    }
-
-    const sortedMapLayout = sortMapTiles(true);
-    console.log(sortedMapLayout)
-    // setMapLayout(sortedMapLayout);
+  const saveMapToLocalStorage = () => {
     // getMapWidth();
 
-    localStorage.setItem('dungen_map', JSON.stringify({ date: todaysDate, userid: 1, layout: mapLayout, mapWidth: mapWidth, mapId: loadedMapId }));
+    const mapData = { 
+      date: todaysDate, 
+      userid: 1, 
+      layout: mapLayout, 
+      mapWidth: mapWidth, 
+      mapId: loadedMapData !== undefined ? loadedMapData.id : "", 
+      mapTitle: loadedMapData !== undefined ? loadedMapData.name : "" 
+    }
+
+    localStorage.setItem('dungen_map', JSON.stringify(mapData));
   }
 
   const getMapWidth = () => {
-    const tilesSorted = sortMapTiles(true);
-    console.log(tilesSorted[0].x, tilesSorted[tilesSorted.length - 1].x);
+    if(mapLayout.length > 1) {
+      const tilesSorted = sortMapTiles('y', true);
+      let width = tilesSorted[0].y - tilesSorted[tilesSorted.length - 1].y;
+      setMapWidth(width);
+      return width;
+    }
+
+    return 0;
   }
 
   /**
@@ -103,6 +145,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
     const newTileObj = {
       i: newIndex.toString(), // GridLayout expects this to be a string!
       tileId: addThisTile.tileid,
+      mapTileId: null,
       environment: addThisTile.environment,
       orientation: 0,
       mirrored: 1,
@@ -115,7 +158,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
 
     if(newTileObj.tileId != null && newTileObj.tileId !== undefined && newTileObj.tileId !== "") {
       // setMapLayout([...mapLayout, newTileObj]);
-      updateMapLayout([...mapLayout, newTileObj]);
+      setMapLayout([...mapLayout, newTileObj]);
       setPrevTileIndex(newIndex);
 
       if(mapLayout.length === 1) {
@@ -251,6 +294,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
           data-grid={{...item}} 
           data-environment={item.environment} 
           data-tileid={item.tileId} 
+          data-maptileid={item.mapTileId}
           data-tilekey={item.i} 
           data-displaywidget={item.displayControlWidget}
           resizable="false"
