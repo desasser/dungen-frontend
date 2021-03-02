@@ -27,11 +27,21 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    fontFamily: 'ESKARGOT'
+    fontFamily: 'ESKARGOT',
+    cursor: 'pointer',
+    fontWeight: '700'
   },
   navBar: {
     backgroundColor: '#8eb1c7',
     color: 'black'
+  },
+  navLink: {
+    color: 'black',
+    textDecoration: 'none',
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '20px',
+    marginLeft: '20px',
+    color: '#707078'
   }
 
 }));
@@ -210,25 +220,25 @@ export default function MenuAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static" className={classes.navBar} > {/*color='secondary'*/}
         <Toolbar>
-          <Link to="/builder" color="white" variant="body2">Map Builder </Link>
+          <Link to="/builder" color="white" variant="body2" className={classes.navLink}>Map Builder </Link>
           {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
-          {props.user.isLoggedIn ? <span><Link to="/dashboard"> Saved Maps </Link>
+          {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
           </span> : null}
           <Typography variant='h3' className={classes.title} onClick={titleClick}>
             DunGen
           </Typography>
-          {props.user.isLoggedIn ? <Typography variant="h6">{`Welcome ${props.user.userName}`}</Typography> : null}
+          {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
           <FormGroup>
             {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
               handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
-            /> </span> : <span> <MenuItem onClick={logout}>
+            /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
               Logout?
               </MenuItem></span>}
           </FormGroup>
           {auth && (
             <div>
               {/* <AccountCircle /> */}
-               {props.user.isLoggedIn ? <span> <AccountCircle /> </span> : null}
+               {props.user.isLoggedIn ? <span> <AccountCircle style={{fontSize: '50px', color: '#eb4511ff'}}/> </span> : null}
 
 
             </div>

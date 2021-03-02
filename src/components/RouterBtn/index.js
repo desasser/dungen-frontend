@@ -7,7 +7,7 @@ import {
 
 export default function RouterBtn(props) {
   return (
-    <Button href={props.to} className={props.classes}>
+    <Button href={props.to} className={props.classes} variant={props.variant}>
       {props.name}
     </Button>
   )
