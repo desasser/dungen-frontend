@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     background: 'gray',
     display: "flex",
     margin: "0 auto",
-    padding: "10% 25%",
+    padding: "10% 18%",
     // backgroundColor: 'pink',
     // backgroundImage: 'url("../images/fantasy-wallpaper-psdvault-18.jpg")'
     backgroundImage: 'url("https://www.ubackground.com/_ph/23/968914319.jpg")',
@@ -59,7 +59,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center'
   },
-  splashText: {
+  splashTextOne: {
+    fontWeight: 'bold',
+    fontSize: '80px',
+    fontFamily: 'ESKARGOT'
+  },
+  splashTextTwo: {
     fontWeight: 'bold',
     fontSize: '60px',
     fontFamily: 'ESKARGOT'
@@ -75,7 +80,7 @@ export default function Splash() {
     <div className={classes.root}>
       <Grid item xs={12} >
         <Container className={classes.containerBanner} >
-          <motion.div className={classes.splashText}
+          <motion.div className={classes.splashTextOne}
             drag
             dragConstraints={{
               top: -140,
@@ -88,7 +93,7 @@ export default function Splash() {
             }}>
             Dun
           </motion.div>
-          <motion.div className={classes.splashText}
+          <motion.div className={classes.splashTextOne}
             drag
             dragConstraints={{
               top: -140,
@@ -101,7 +106,7 @@ export default function Splash() {
             }}>
             Gen
           </motion.div>
-          <motion.div className={classes.splashText}
+          <motion.div className={classes.splashTextTwo}
             drag
             dragConstraints={{
               top: -140,
@@ -111,7 +116,7 @@ export default function Splash() {
             }}>
             Snail
           </motion.div>
-          <motion.div className={classes.splashText}
+          <motion.div className={classes.splashTextTwo}
             drag
             dragConstraints={{
               top: -140,
