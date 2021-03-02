@@ -37,7 +37,6 @@ export default function LoginModal(props) {
     const history = useHistory(props);
     useEffect(() => {
         if (props.isLoggedIn) {
-            history.push("/dashboard")
             handleClose()
         }
     }, [props.isLoggedIn])
@@ -62,9 +61,9 @@ export default function LoginModal(props) {
                 <Fade in={open}>
                     <div className={classes.paper}>
 
+                        <ActionBtn action={props.switch} name={props.formBtn} />
                         <h1>{props.formMsg}</h1>
                         <Form handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
-                        <ActionBtn action={props.switch} name={props.formBtn} />
 
                     </div>
                 </Fade>
