@@ -75,12 +75,12 @@ export default function Splash() {
                 </Container >
 
                 <Container>
-                    <p>
-                        I'm baby jianbing typewriter selvage, authentic celiac lyft blog wayfarers XOXO PBR&B vape. Vape pickled organic artisan. Ramps PBR&B snackwave locavore XOXO listicle you probably haven't heard of them actually pug semiotics offal street art messenger bag occupy craft beer. Actually freegan before they sold out, copper mug narwhal swag vexillologist 8-bit meh brooklyn sartorial flannel DIY stumptown. Wolf fixie food truck art party prism DIY microdosing farm-to-table plaid viral selfies 8-bit subway tile ennui scenester. Vice tattooed shoreditch, hoodie neutra bushwick helvetica crucifix blue bottle narwhal tumeric. +1 echo park brunch paleo deep v affogato.
-                    </p>
+                    <h3>
+                        Dungen Building should be easy.
+                    </h3>
                     <p>
 
-                        Post-ironic poutine readymade authentic tote bag biodiesel la croix franzen heirloom affogato cred intelligentsia thundercats. Occupy fashion axe freegan, roof party cold-pressed four dollar toast green juice. Dreamcatcher keytar taiyaki church-key schlitz prism. PBR&B kickstarter etsy keffiyeh poutine, cliche four dollar toast brunch. Migas actually VHS poutine. Butcher whatever actually poutine quinoa green juice venmo cray succulents beard roof party.
+                       An approach
                     </p>
                 </Container>
 
