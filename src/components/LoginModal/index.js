@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'SpaceAndAstronomy',
     fontSize: '20px',
     marginLeft: '20px',
-    color: '#707078'
+    color: '#36434b'
   }
 }));
 
