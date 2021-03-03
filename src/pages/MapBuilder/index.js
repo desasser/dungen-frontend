@@ -10,7 +10,8 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import Grid from '../../components/Grid';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 import API from '../../utils/API';
 
 const useStyles = makeStyles({
@@ -28,15 +29,51 @@ const useStyles = makeStyles({
   },
   actionBtn: {
     width: 100,
-    height: 50,
-    backgroundColor: '#E52977',
-    color: '#ABC686'
+    height: 60,
+    backgroundColor: '#eb4511',
+    color: '#36434b',
+    margin: 20,
+    fontSize: '18px',
   },
   routerBtn: {
     width: 100,
-    height: 50,
-    backgroundColor: '#ABC686',
-    color: '#E52977'
+    height: 60,
+    backgroundColor: '#36434b',
+    color: '#eb4511',
+    margin: 20,
+    fontSize: '18px',
+  },
+  titleInput: {
+    borderRadius: '0.5em',
+    width: '600px',
+    '& .MuiFilledInput-input': {
+      fontSize: '24px',
+      fontFamily: 'SpaceAndAstronomy',
+      backgroundColor: 'white'
+    }
+  },
+  title: {
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '30px',
+    marginTop: 20,
+    // color: '#eb4511',
+    // fontWeight: 900
+  },
+  titleBtn: {
+    color: 'white',
+    alignSelf: 'flex-end',
+    marginRight: 20
+  },
+  titleWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'column',
+    width: '80%'
+  },
+  btnWrapper: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    width: '80%'
   }
 })
 
@@ -44,6 +81,7 @@ const useStyles = makeStyles({
 export default function MapBuilder() {
   // for tile "drawer"
   const [lockState, setLockState] = useState(false);
+  const [titleState, setTitleState] = useState(false);
   // for the map title
   const [mapTitle, setMapTitle] = useState("Rambo's Throne of Marshmallows");
   // for adding a new tile to the map grid
@@ -176,10 +214,6 @@ export default function MapBuilder() {
     console.log(e.target);
   }
 
-  const updateMapTitle = (e) => {
-    setMapTitle(e.target.value);
-  }
-
   const clearMap = (e) => {
     console.log("clear the grid")
   }
@@ -195,22 +229,37 @@ export default function MapBuilder() {
     });
   }
 
+  const handleTitleSubmit = (event) => {
+    event.preventDefault();
+    setTitleState(false);
+  }
+
   return (
     <Container>
       <Container>
-        <Typography variant='h2'><input type="text" value={mapTitle} onChange={(e) => updateMapTitle(e)} /></Typography>
+        <Container className={classes.titleWrapper}>
+          <Typography variant='h2' className={classes.title}>{mapTitle}</Typography>
+          {!titleState ? <Button onClick={() => setTitleState(true)} className={classes.titleBtn}>Edit Title</Button> :
+            <form onSubmit={handleTitleSubmit}>
+              <TextField id="filled-basic" label="Map Title" variant="filled" value={mapTitle} onChange={(e) => setMapTitle(e.target.value)} className={classes.titleInput} />
+            </form>}
+        </Container>
+
         {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
-        <Container className="grid-base" style={{ border: 'black 1px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
-          <Grid addThisTile={addThisTile} loadThisMap={id} />
+        <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
+          <Grid addThisTile={addThisTile} loadThisMap={loadedMapData} />
         </Container>
-        <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
+        {/* TODO: This functionality is for future development */}
+        {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
-        </IconBtn>
-        <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} />
-        <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
-        <RouterBtn name='VIEW' classes={classes.routerBtn} action={viewMap} />
+        </IconBtn> */}
+        <Container className={classes.btnWrapper}>
+          <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} />
+          <RouterBtn name='VIEW' classes={classes.routerBtn} action={viewMap} />
+          <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
+        </Container>
       </Container>
     </Container>
   )
