@@ -3,11 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
+import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
+<<<<<<< HEAD
 import Login from "./pages/Login";
 import Splash from "./pages/Splash/index"
+=======
+import Splash from "./pages/Splash/index"
+import Nope from "./pages/503"
+import FourOhNope from "./pages/404"
+>>>>>>> dev
 import API from "./utils/API.js"
-import LoginModal from "./components/LoginModal"
 
 
 function App() {
@@ -28,7 +34,7 @@ function App() {
   })
 
   const [hapticBtn, setHapticBtn] = useState({
-    Btn: "Sign Up",
+    Btn: "Switch to: Sign Up",
   })
 
   const [loginState, setLoginState] = useState({
@@ -36,9 +42,13 @@ function App() {
     password: "",
   })
 
+  const token = localStorage.getItem("token")
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
+    userAuth()
+  }, [])
+
+  const userAuth = () => {
     API.getAuthToken(token).then(res => {
       console.log("got the token!")
       setUserState({
@@ -52,7 +62,7 @@ function App() {
       localStorage.removeItem("token");
       console.log("not properly Authed")
     })
-  }, [])
+  }
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -63,7 +73,6 @@ function App() {
   }
 
   // const redirect = ()=>history.push("/dashboard")
-
   const handleLogin = (data) => {
     setUserState({ ...users, isLoggedIn: data })
   }
@@ -87,7 +96,6 @@ function App() {
         })
         setLoginState({
           userName: "",
-          name: "",
           password: ""
         })
       }).catch(error => {
@@ -108,7 +116,6 @@ function App() {
         })
         setLoginState({
           userName: "",
-          name: "",
           password: ""
         })
       }).catch(error => {
@@ -119,40 +126,51 @@ function App() {
     }
   };
 
-  const signUpBtn = click => {
-    console.log(click)
-    if (formSwitch.login === true) {
-      setFormSwitch({ login: false })
-      setFormMsg({ Msg: "Creat an Account" })
-      setHapticBtn({ Btn: "Login" })
-    } else {
-      setFormMsg({ Msg: "Please Login" })
-      setHapticBtn({ Btn: "Sign Up" })
-      setFormSwitch({ login: true })
-    }
-  }
+  // const signUpBtn = click => {
+  //   console.log(click)
+  //   if (formSwitch.login === true) {
+  //     setFormSwitch({ login: false })
+  //     setFormMsg({ Msg: "Create an Account" })
+  //     setHapticBtn({ Btn: "Switch to: Login" })
+  //   } else {
+  //     setFormMsg({ Msg: "Please Login" })
+  //     setHapticBtn({ Btn: "Switch to: Sign Up" })
+  //     setFormSwitch({ login: true })
+  //   }
+  // }
 
 
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <h1 className="text-2xl text-header">DUNGEN: JUNK WIZARDS</h1>
-      </header> */}
       <Router>
         <NavBar user={users} />
         <Switch>
+<<<<<<< HEAD
           <Route exact path="/" component={Splash} />
         
           <Route exact path="/login">
             <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
+=======
+>>>>>>> dev
 
+          <Route exact path="/">
+            <Splash />
           </Route>
 
           <Route exact path="/dashboard">
-          <SavedMaps users={users} />
+            {users.isLoggedIn ? <SavedMaps users={users} /> : <Nope />}
+          </Route>
+          <Route exact path="/503">
+            <Nope />
+          </Route>
+          <Route exact path="/builder" component={MapBuilder} />
+          <Route exact path="/builder/:id" component={MapBuilder} />
+          <Route exact path="/render">
+            {users.isLoggedIn ? <RenderedMap /> : <Nope />}
           </Route>
 
-          <Route exact path="/builder" component={MapBuilder} />
+          <Route component={FourOhNope} />
+
         </Switch>
       </Router>
     </div>

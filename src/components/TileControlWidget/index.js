@@ -1,22 +1,25 @@
 import React from 'react'
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import './style.scss'
-import IconBtn from '../IconBtn'
+import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import RotateRightIcon from '@material-ui/icons/RotateRight'
 import RotateLeftIcon from '@material-ui/icons/RotateLeft'
 import CloseIcon from '@material-ui/icons/Close'
+import FlipIcon from '@material-ui/icons/Flip'
+import Tooltip from '@material-ui/core/Tooltip'
 
 const useStyles = makeStyles({
   tileControlWidget: {
+    zIndex: "-999",
     position: "absolute",
-    left: "40px",
-    top: "40px",
+    left: "5%",
+    top: "5%",
     opacity: 0,
     width: 0,
     height: 0,
     borderRadius: "50%",
-    border: "10px solid rgba(255,255,255,0.5)",
+    border: "10px solid rgba(230,230,230,0.5)",
     transition: "all 0.3s ease",
   },
   activeWidget: {
@@ -29,6 +32,7 @@ const useStyles = makeStyles({
     transition: "all 0.3s ease",
 
     "& .controlButton": {
+      display: "flex",
       padding: 0,
       margin: 0,
       left: 0,
@@ -69,7 +73,7 @@ const useStyles = makeStyles({
         color: "white"
       }
     },
-    "& .rotateTileRight": {
+    "& .rotateTileLeft": {
       left: "-33px",
       top: "50%",
       transform: "rotate(-90deg)",
@@ -80,7 +84,7 @@ const useStyles = makeStyles({
         color: "white"
       }
     },
-    "& .rotateTileLeft": {
+    "& .rotateTileRight": {
       left: "33px",
       top: "50%",
       transform: "rotate(90deg)",
@@ -90,31 +94,67 @@ const useStyles = makeStyles({
         background: "hotpink",
         color: "white"
       }
+    },
+    "& .mirrorTile": {
+      left: 0,
+      top: "50%",
+      color: "rebeccapurple",
+
+      "&:hover .MuiSvgIcon-root": {
+        background: "rebeccapurple",
+        color: "white"
+      }
     }
   }
 });
 
-export default function TileControlWidget({ item, handleWidgetButtonClick }) {
+export default function TileControlWidget({ item, handleClickOutsideTile, handleWidgetButtonClick }) {
   const classes = useStyles();
 
-  // React.useEffect(() => {
-  //   console.log(item);
-  // },[]);
+  const outsideClickClosesTileControlWidget = React.useRef(null);
+
+  React.useEffect(() => {
+    // console.log("Control Widget Loaded")
+    // document.addEventListener( 'click', handleClickOutsideTile );
+    if(item.displayControlWidget) {
+      document.addEventListener( 'click', handleClickOutsideTile );
+    } else {
+      document.removeEventListener( 'click', handleClickOutsideTile );
+    }
+  }, [item.displayControlWidget]);
 
   return (
-    <div data-tilekey={item.i} data-tileid={item.tileId} className={item.displayControlWidget ? `${classes.tileControlWidget} ${classes.activeWidget}` : classes.tileControlWidget}>
-    <IconBtn classes={"controlButton closeWidget"} onClick={(e) => handleWidgetButtonClick("closeWidget", item.i)}>
-        <CloseIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton rotateTileRight"} onClick={(e) => handleWidgetButtonClick("rotateRight", item.i)}>
-        <RotateRightIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton rotateTileLeft"} onClick={(e) => handleWidgetButtonClick("rotateLeft", item.i)}>
-        <RotateLeftIcon />
-      </IconBtn>
-      <IconBtn classes={"controlButton deleteTile"} onClick={(e) => handleWidgetButtonClick("deleteTile", item.i)}>
-        <DeleteIcon />
-      </IconBtn>
+    <div ref={outsideClickClosesTileControlWidget} data-tilekey={item.i} data-tileid={item.tileId} className={item.displayControlWidget ? `${classes.tileControlWidget} ${classes.activeWidget}` : classes.tileControlWidget}>
+
+      {item.displayControlWidget === true &&
+        <>
+          <Tooltip title="Close Controls" placement="top">
+            <IconButton data-action="closeWidget" aria-label="close" className="controlButton closeWidget" onClick={() => handleWidgetButtonClick("closeWidget", item)}>
+              <CloseIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Rotate Clockwise" placement="right">
+            <IconButton data-action="rotateTileRight" aria-label="rotate clockwise" className="controlButton rotateTileRight" onClick={() => handleWidgetButtonClick("rotateTileRight", item)}>
+              <RotateRightIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Mirror" placement="top">
+            <IconButton data-action="mirrorTile" aria-label="mirror" className="controlButton mirrorTile" onClick={() => handleWidgetButtonClick("mirrorTile", item)}>
+              <FlipIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Rotate Counterclockwise" placement="left">
+            <IconButton data-action="rotateTileLeft" aria-label="rotate counterclockwise" className="controlButton rotateTileLeft" onClick={() => handleWidgetButtonClick("rotateTileLeft", item)}>
+              <RotateLeftIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete" placement="bottom">
+            <IconButton data-action="deleteTile" aria-label="delete" className="controlButton deleteTile" onClick={() => handleWidgetButtonClick("deleteTile", item)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      }
     </div>
   )
 }
