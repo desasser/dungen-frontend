@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-    },
+    }
 }));
 
 export default function LoginModal(props) {
@@ -40,19 +40,18 @@ console.log(props)
 
     const history = useHistory(props);
     useEffect(() => {
+        console.log(props)
         if (props.isLoggedIn) {
             handleClose()
         }
     }, [props.isLoggedIn])
 
-    const email = () => {
-        console.log("this might work")
-    }
+   
 
     return (
         <div>
-            <MenuItem type="button" onClick={handleOpen}>
-                Login
+            <MenuItem type="button" className={classes.navLink} onClick={handleOpen}>
+                LOGIN
       </MenuItem>
             <Modal
                 aria-labelledby="transition-modal-title"
