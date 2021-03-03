@@ -60,6 +60,12 @@ const API = {
     deleteMap: mapId => {
         // console.log(URL_PREFIX);
         return axios.delete(`${URL_PREFIX}/api/deleteMap/${mapId}`)
+    },
+    deleteMapTile: tileId => {
+        return axios.delete(`${URL_PREFIX}/api/maptile/${tileId}`)
+    },
+    deleteAllMapTilesForMap: mapId => {
+        return axios.delete(`${URL_PREFIX}/api/deletemaptilebymap/${mapId}`)
     }
 }
 
