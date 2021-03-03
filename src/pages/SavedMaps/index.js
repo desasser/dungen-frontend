@@ -60,7 +60,7 @@ export default function SavedMaps(props) {
     API.getUserMaps(props.users.id)
       .then(res => {
         setUserMaps(res.data);
-        setLoadState(true)
+        setLoadState(true);
       }).catch(err => {
         console.log(err);
       })
