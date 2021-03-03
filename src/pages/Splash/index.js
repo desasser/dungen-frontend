@@ -60,7 +60,8 @@ const useStyles = makeStyles((theme) => ({
   synHeaderSmall: {
     paddingBottom: '0.5em',
     fontFamily: 'SpaceAndAstronomy',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: '14px'
   },
   synopsisSmall: {
     width: '100%',
@@ -84,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
   },
   splashContentSmall: {
     width: '90%',
-    marginLeft: '-4%',
+    marginLeft: 0,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center'
