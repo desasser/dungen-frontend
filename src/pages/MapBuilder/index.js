@@ -98,7 +98,7 @@ export default function MapBuilder(props) {
   const [loadedMapData, setLoadedMapData] = useState();
 
   const [saved, setSavedState] = useState(false);
-  
+
   const [auth, setAuthState] = useState(false)
 
   const classes = useStyles();
@@ -132,14 +132,14 @@ export default function MapBuilder(props) {
     setSavedState(false)
   }
 
-  const toggleAuthState = ()=>{
+  const toggleAuthState = () => {
     setAuthState(false)
   }
 
   const saveMapToDB = () => {
     let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
     console.log(id, id === null, id === undefined);
-    if (!props.users.isLoggedIn){
+    if (props.users.isLoggedIn === false) {
       setAuthState(true)
     }
 
