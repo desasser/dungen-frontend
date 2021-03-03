@@ -84,10 +84,12 @@ export default function MapBuilder() {
     }
   }
 
-  const saveMapToDB = (e) => {
+  const saveMapToDB = () => {
     let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
-  
+    console.log(id, id === null, id === undefined);
+
     if( id === null || id === undefined ) {
+      console.log("NO ID, SAVING NEW MAP")
       let results;
       // console.log(e.target);
       const mapLayout = savedMap.layout;
@@ -114,6 +116,7 @@ export default function MapBuilder() {
       .catch(err => console.error(err));
 
     } else {
+      console.log("ID PROVIDED, SAVING MAP TILES FOR SPECIFIED MAP")
       // we should probably ask the user if they want to save a NEW map
       // or save over the existing map
       // but that's a "later guy" problem, imho
@@ -125,25 +128,47 @@ export default function MapBuilder() {
         .catch(err => console.error(err));
 
       }
-      
-      for(var i = 0; i < savedMap.layout.length; i++) {
-        // console.log(savedMap.layout[i]);
-        let tile = newMapTile(id, savedMap.layout[i]);
-        if(tile.mapTileId === undefined || tile.mapTileId === null) {
+
+      API.deleteAllMapTilesForMap(id)
+      .then(results => {
+        console.log(results);
+
+        for(var i = 0; i < savedMap.layout.length; i++) {
+          // console.log(savedMap.layout[i]);
+          let tile = newMapTile(id, savedMap.layout[i]);
           API.saveMapTile(tile)
           .then(results => {
             console.log(results);
           })
           .catch(err => console.error(err));
-
-        } else {
-          API.updateMapTile(tile)
-          .then(results => {
-            console.log(results.data);
-          })
-          .catch(err => console.error(err));
         }
-      }
+      })
+      .catch(err => console.error(err));
+      
+      // for(var i = 0; i < savedMap.layout.length; i++) {
+      //   // console.log(savedMap.layout[i]);
+      //   let tile = newMapTile(id, savedMap.layout[i]);
+      //   API.saveMapTile(tile)
+      //   .then(results => {
+      //     console.log(results);
+      //   })
+      //   .catch(err => console.error(err));
+
+      //   // if(tile.mapTileId === undefined || tile.mapTileId === null) {
+      //   //   API.saveMapTile(tile)
+      //   //   .then(results => {
+      //   //     console.log(results);
+      //   //   })
+      //   //   .catch(err => console.error(err));
+
+      //   // } else {
+      //   //   API.updateMapTile(tile)
+      //   //   .then(results => {
+      //   //     console.log(results.data);
+      //   //   })
+      //   //   .catch(err => console.error(err));
+      //   // }
+      // }
     }
   }
 

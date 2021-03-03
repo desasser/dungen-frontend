@@ -4,36 +4,35 @@ import './style.scss'
 export default function Tile({item, handleDoubleClick }) {
   const [inlineStyles, setInlineStyles] = React.useState({
     background: "#f00",
-    transform: `rotate(0deg) scale(1,1)`
+    transform: `rotate(${item.orientation}deg) scale(1,1)`,
+    backgroundSize: "contain",
+    backgroundPosition: "center center",
+    backgroundRepeat: "no-repeat"
   })
 
   React.useEffect(() => {
+    console.log("TILE", item.orientation);
     let scale = "scale(1,1)";
     if(item.mirror !== undefined && item.mirror !== null) {
       scale = (item.orientation == 90 || item.orientation == -90 || item.orientation == 270 || item.orientation == -270) ? `scaleY(${item.mirror})` : `scaleX(${item.mirror})`;
     }
 
-    setInlineStyles({
-      background: item.bg.substring(0,1) === "#" ? item.bg : `url(${item.bg})`,
+    let newStyles = {
+      ...inlineStyles,
       transform: `rotate(${item.orientation}deg) ${scale}`
-    });
+    }
 
-  }, [item.mirror, item.orientation])
+    if(item.bg.substring(0,1) === "#") {
+      newStyles.backgroundColor = item.bg;
+    } else {
+      newStyles.backgroundImage = `url(${item.bg})`;
+    }
 
-  // React.useEffect(() => {
-  //   SetOrientation(item.orientation);
-    
-  // }, [item.orientation]);
+    setInlineStyles({...newStyles})
 
-  // React.useEffect(() => {
-  //   if(item.mirror !== undefined && item.mirror !== null) {
-  //     let scale = (item.orientation == 90 || item.orientation == -90 || item.orientation == 270 || item.orientation == -270) ? `scaleY(${item.mirror})` : `scaleX(${item.mirror})`;
-  //     setScaleIt(scale);
-
-  //   }
-  // }, [item]);
+  }, [item.orientation, item.mirror]);
     
   return (
-    <div className={item.displayControlWidget ? `tile activeTile` : `tile`} style={{...inlineStyles}} onDoubleClick={(e) => handleDoubleClick(e)}></div>
+    <div className={item.displayControlWidget ? `tile activeTile` : `tile`} style={inlineStyles} onDoubleClick={(e) => handleDoubleClick(e)}></div>
   );
 }
