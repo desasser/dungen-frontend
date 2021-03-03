@@ -6,6 +6,8 @@ import Container from '@material-ui/core/Container';
 import RouterBtn from '../../components/RouterBtn'
 import HomeIcon from '@material-ui/icons/Home';
 import Typography from '@material-ui/core/Typography';
+import dragon from '../../images/968914319.jpg';
+import temple from '../../images/fantasy-wallpaper-psdvault-18.jpg';
 import { motion } from "framer-motion"
 
 const useStyles = makeStyles((theme) => ({
@@ -23,9 +25,11 @@ const useStyles = makeStyles((theme) => ({
     padding: "10% 18%",
     // backgroundColor: 'pink',
     // backgroundImage: 'url("../images/fantasy-wallpaper-psdvault-18.jpg")'
-    backgroundImage: 'url("https://www.ubackground.com/_ph/23/968914319.jpg")',
+    backgroundImage: `url(${dragon})`,
+    // backgroundImage: `url(${temple})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
+    // backgroundPosition: '0px -50px',
     maxWidth: "none",
     height: '50vh'
   },

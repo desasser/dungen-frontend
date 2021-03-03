@@ -8,6 +8,7 @@ body {
   background: linear-gradient(140deg, #c1bfb5 70.8%, #707078 70.8%);
   background-repeat:no-repeat;
   height: 100vh;
+  background-attachment: fixed;
 }
 
 .App {

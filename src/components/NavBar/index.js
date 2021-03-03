@@ -18,6 +18,7 @@ import API from "../../utils/API";
 import { useHistory } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Hidden from '@material-ui/core/Hidden';
+import Button from '@material-ui/core/Button';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     fontFamily: 'ESKARGOT',
     cursor: 'pointer',
-    fontWeight: '700'
+    fontWeight: '700',
+    // marginLeft: '-10px'
   },
   navBar: {
     backgroundColor: '#8eb1c7',
@@ -50,9 +52,10 @@ const useStyles = makeStyles((theme) => ({
 export default function MenuAppBar(props) {
   const history = useHistory();
   const classes = useStyles();
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [auth, setAuth] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [anchorXSEl, setAnchorXSEl] = useState(null);
 
   //======================================================================
   //Login/Sign Functions
@@ -199,6 +202,14 @@ export default function MenuAppBar(props) {
     setAnchorEl(null);
   };
 
+  const handleXSClick = (event) => {
+    setAnchorXSEl(event.currentTarget);
+  };
+
+  const handleXSClose = () => {
+    setAnchorXSEl(null);
+  };
+
   // const handleCloseModal = () => {
   //   setOpen(false);
   // };
@@ -221,13 +232,31 @@ export default function MenuAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static" className={classes.navBar} > {/*color='secondary'*/}
         <Toolbar>
+          {/* XS NAVIGATION */}
+          <Hidden smUp>
+            <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleXSClick}>
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorXSEl}
+              keepMounted
+              open={Boolean(anchorXSEl)}
+              onClose={handleXSClose}
+            >
+              {/* <Typography variant='h6'>Welcome {props.user.userName}</Typography> */}
+              <MenuItem onClick={handleXSClose}><Link to='/builder'>MAP BUILDER</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}><Link to='/dashboard'>SAVED MAPS</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}><Link>logout</Link></MenuItem>
+            </Menu>
+          </Hidden>
+          {/* XS NAVIGATION */}
+
           {/* NAVIGATION LINKS */}
           <Hidden xsDown>
-            {/* <Container disableGutters='true' style={{ width: '30%' }} display={{ xs: 'none' }}> */}
-              <Link to="/builder" color="white" variant="body2" className={classes.navLink}>Map Builder </Link>
-              {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
-              </span> : null}
-            {/* </Container> */}
+            <Link to="/builder" color="white" variant="body2" className={classes.navLink}>Map Builder </Link>
+            {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
+            </span> : null}
           </Hidden>
           {/* NAVIGATION LINKS */}
 
@@ -238,20 +267,24 @@ export default function MenuAppBar(props) {
           {/* LOGO HEADER */}
 
           {/* WELCOME USER */}
-          {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
-          <FormGroup>
-            {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
-              handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
-            /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
-              Logout?
+          <Hidden xsDown>
+            {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
+            <FormGroup>
+              {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
+                handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
+              /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
+                Logout?
               </MenuItem></span>}
-          </FormGroup>
-          {auth && (
-            <div>
-              {props.user.isLoggedIn ? <span> <AccountCircle style={{ fontSize: '50px', color: '#eb4511ff' }} /> </span> : null}
-            </div>
-          )}
+            </FormGroup>
+            {auth && (
+              <div>
+                {props.user.isLoggedIn ? <span> <AccountCircle style={{ fontSize: '50px', color: '#eb4511ff' }} /> </span> : null}
+              </div>
+            )}
+          </Hidden>
           {/* WELCOME USER */}
+
+          
         </Toolbar>
       </AppBar>
     </div>
