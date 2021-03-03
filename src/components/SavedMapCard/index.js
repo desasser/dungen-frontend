@@ -24,6 +24,13 @@ const useStyles = makeStyles({
   cardTitle: {
     fontFamily: 'SpaceAndAstronomy',
     fontSize: '24px',
+  },
+  btnStyle: {
+    '&:hover' :{
+      backgroundColor: '#eb4511'
+    },
+    color: '#36434b',
+    fontFamily: 'SpaceAndAstronomy'
   }
 });
 
@@ -50,14 +57,14 @@ export default function SavedMapCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions style={{justifyContent:'center'}}>
-        <Button size="small" color="primary"  href={`/builder/${props.id}`}>
+        <Button size="small" color="primary"  href={`/builder/${props.id}`} className={classes.btnStyle}>
           {/* TODO: href will end up passing to darhboard page along with a map id */}
           Edit
         </Button>
-        <Button size="small" color="primary" onClick={() => props.deleteMap(props.id)}>
+        <Button size="small" color="primary" onClick={() => props.deleteMap(props.id)} className={classes.btnStyle}>
           Delete
         </Button>
-        <Button size="small" color="primary" href="/render">
+        <Button size="small" color="primary" href="/render" className={classes.btnStyle}>
           {/* TODO: href will end up passing to render map page along with a map id */}
           View
         </Button>
