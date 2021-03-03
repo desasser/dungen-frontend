@@ -5,9 +5,14 @@ import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
 import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
+<<<<<<< HEAD
+import Login from "./pages/Login";
+import Splash from "./pages/Splash/index"
+=======
 import Splash from "./pages/Splash/index"
 import Nope from "./pages/503"
 import FourOhNope from "./pages/404"
+>>>>>>> dev
 import API from "./utils/API.js"
 
 
@@ -140,6 +145,13 @@ function App() {
       <Router>
         <NavBar user={users} />
         <Switch>
+<<<<<<< HEAD
+          <Route exact path="/" component={Splash} />
+        
+          <Route exact path="/login">
+            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
+=======
+>>>>>>> dev
 
           <Route exact path="/">
             <Splash />
