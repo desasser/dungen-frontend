@@ -46,21 +46,20 @@ export default function LoginModal(props) {
     setOpen(false);
   };
 
-  const history = useHistory(props);
-  useEffect(() => {
-    if (props.isLoggedIn) {
-      handleClose()
-    }
-  }, [props.isLoggedIn])
+    const history = useHistory(props);
+    useEffect(() => {
+        console.log(props)
+        if (props.isLoggedIn) {
+            handleClose()
+        }
+    }, [props.isLoggedIn])
 
-  const email = () => {
-    console.log("this might work")
-  }
+   
 
-  return (
-    <div>
-      <MenuItem type="button" onClick={handleOpen} className={classes.navLink} >
-        Login
+    return (
+        <div>
+            <MenuItem type="button" className={classes.navLink} onClick={handleOpen}>
+                LOGIN
       </MenuItem>
       <Modal
         aria-labelledby="transition-modal-title"

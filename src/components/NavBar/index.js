@@ -83,6 +83,7 @@ export default function MenuAppBar(props) {
   const [loginState, setLoginState] = useState({
     userName: "",
     password: "",
+
   })
 
 
@@ -117,12 +118,11 @@ export default function MenuAppBar(props) {
     setUserState({ ...users, isLoggedIn: data })
   }
   const [errorState, setErrorState] = useState({
-        error: false
+    error: false
   });
 
-  const handleSubmit = event => {
+    const handleSubmit = event => {
     event.preventDefault()
-    console.log("this is the NavBar page.")
     console.log(event.target)
     if (formSwitch.login === true) {
       API.login(loginState).then(res => {
@@ -141,10 +141,22 @@ export default function MenuAppBar(props) {
         })
         history.go(0)
       }).catch(error => {
+        
         console.log(error);
         setErrorState({
           error: true
-    })
+        })
+        if (errorState){
+          setLoginState({
+            userName: "",
+            password: ""
+          })
+          setErrorState({
+            errorState: false
+          })
+        }
+        
+        
         localStorage.removeItem("token");
         console.log("token has been removed. Error Login. NavBar line: 123")
         return error
@@ -254,7 +266,17 @@ export default function MenuAppBar(props) {
               {/* <Typography variant='h6'>Welcome {props.user.userName}</Typography> */}
               <MenuItem onClick={handleXSClose}><Link to='/builder'>MAP BUILDER</Link></MenuItem>
               <MenuItem onClick={handleXSClose}><Link to='/dashboard'>SAVED MAPS</Link></MenuItem>
-              <MenuItem onClick={handleXSClose}><Link>logout</Link></MenuItem>
+              {/* <MenuItem onClick={handleXSClose}><Link onClick={logout}>Logout</Link></MenuItem> */}
+              <FormGroup>
+              {!props.user.isLoggedIn ? <span> <Link><LoginModal edge="start" onClick={logInPopUp}
+                handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+              /> </Link>
+              </span> : <span> <MenuItem onClick={logout}>
+                <Link>
+                LOGOUT?
+                </Link>
+              </MenuItem></span>}
+            </FormGroup>
             </Menu>
           </Hidden>
           {/* XS NAVIGATION */}
@@ -272,6 +294,15 @@ export default function MenuAppBar(props) {
             DunGen
           </Typography>
           {/* LOGO HEADER */}
+
+          {/* MOBILE RENDER OF LOGIN/LOGOUT */}
+          <Hidden smUp>
+          <FormGroup>
+              {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
+                handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+              /> </span> :  null }
+            </FormGroup>
+            </Hidden>
 
           {/* WELCOME USER */}
           <Hidden xsDown>
@@ -291,7 +322,7 @@ export default function MenuAppBar(props) {
           </Hidden>
           {/* WELCOME USER */}
 
-          
+
         </Toolbar>
       </AppBar>
     </div>

@@ -119,13 +119,14 @@ export default function Splash() {
     <div className={classes.root}>
       <Grid item xs={12} >
         <Container className={classes.containerBanner} >
+        <Hidden smDown>
 
           <motion.div className={classes.splashTextOne}
             drag
             dragConstraints={{
               top: -140,
-              left: -625,
-              right: 600,
+              left: -225,
+              right: 1150,
               bottom: 175,
             }}
             style={{
@@ -137,8 +138,8 @@ export default function Splash() {
             drag
             dragConstraints={{
               top: -140,
-              left: -725,
-              right: 600,
+              left: -325,
+              right: 1050,
               bottom: 175,
             }}
             style={{
@@ -150,8 +151,8 @@ export default function Splash() {
             drag
             dragConstraints={{
               top: -140,
-              left: -825,
-              right: 600,
+              left: -425,
+              right: 950,
               bottom: 175,
             }}>
             Snail
@@ -160,12 +161,62 @@ export default function Splash() {
             drag
             dragConstraints={{
               top: -140,
-              left: -950,
-              right: 600,
+              left: -525,
+              right: 850,
               bottom: 175,
             }}>
             Butts
           </motion.div>
+              </Hidden>
+{/* Mobile Physics Playground */}
+
+              <Hidden smUp>
+            <motion.div className={classes.splashTextOne}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -80,
+                right: 60,
+                bottom: 60,
+              }}
+              style={{
+                color: '#eb4511'
+              }}>
+              Dun
+          </motion.div>
+            <motion.div className={classes.splashTextOne}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -90,
+                right: 50,
+                bottom: 60,
+              }}
+              style={{
+                color: '#eb4511'
+              }}>
+              Gen
+          </motion.div>
+            <motion.div className={classes.splashTextTwo}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -80,
+                right: 50,
+                bottom: 60,
+              }}>
+              Snail
+          </motion.div>
+            <motion.div className={classes.splashTextTwo}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -90,
+                right: 40,
+                bottom: 60,
+              }}>
+              </motion.div>
+              </Hidden>
         </Container >
 
         {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
