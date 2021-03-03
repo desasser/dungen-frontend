@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   root: {
     maxWidth: 300,
     margin: '20px',
-    backgroundColor: 'olivedrab',
+    backgroundColor: '#8eb1c7',
     display: 'flex',
     flexFlow: 'column nowrap',
     justifyContent: 'space-between'
@@ -21,6 +21,10 @@ const useStyles = makeStyles({
   media: {
     height: 300,
   },
+  cardTitle: {
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '24px',
+  }
 });
 
 export default function SavedMapCard(props) {
@@ -37,7 +41,7 @@ export default function SavedMapCard(props) {
           alt="a tile"
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2" style={{fontFamily:'fantasy'}}>
+          <Typography gutterBottom variant="h5" component="h2" className={classes.cardTitle}>
             {props.name.toUpperCase()}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
