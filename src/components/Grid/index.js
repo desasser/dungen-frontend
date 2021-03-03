@@ -15,7 +15,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
   const [loadedMapData, setLoadedMapData] = useState({id: null, layout: [], mapTitle: ''});
 
   React.useEffect(() => {
-    console.log(dragging);
+    console.log("dragging", dragging);
     const dt = new Date();
     let month = (dt.getMonth() + 1);
     let date = dt.getDate();
@@ -63,10 +63,10 @@ export default function Grid({ addThisTile, loadThisMap }) {
 
         res.then(loadedMap => {
           console.log("LOADED MAP FROM DB", loadThisMap);
- 
-          let savedMap = getMapFromLocalStorage();
 
           if(loadedMap !== undefined && loadedMap !== null && loadedMap.layout.length > 0 && mapLayout.length === 0) {
+            console.log("CHECKING LOCAL STORAGE")
+            let savedMap = getMapFromLocalStorage();
             let savedMapDate, loadedMapDate;
 
             if(savedMap !== null) {
@@ -75,6 +75,8 @@ export default function Grid({ addThisTile, loadThisMap }) {
               console.log("Saved Map: " + savedMapDate, "Loaded Map: " + loadedMapDate);
 
               console.log("savedMapDate < loadedMapDate", savedMapDate < loadedMapDate);
+            } else {
+              saveMapToLocalStorage({ layout: loadedMap.layout, title: loadedMap.mapTitle })
             }
 
             if(savedMap !== null && savedMapDate < loadedMapDate && savedMap.mapId === parseInt(loadThisMap)) {
@@ -92,7 +94,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
 
       } else if(loadedMapData !== undefined && loadedMapData.layout.length > 0) {
         setMapLayout([...loadedMapData.layout]);
-        saveMapToLocalStorage();
+        // saveMapToLocalStorage();
       }
 
     }
@@ -112,7 +114,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
     if(loadedMapData.layout.length === 0) {
       results = API.getSingleMap(mapId)
       .then(singleMap => {
-        console.log(singleMap.data);
+        console.log(singleMap);
         if(singleMap.data !== "") {
           const mapTiles = singleMap.data.MapTiles;
  
@@ -146,10 +148,12 @@ export default function Grid({ addThisTile, loadThisMap }) {
             mapTitle: singleMap.data.name,
             lastUpdated: singleMap.data.updatedAt
           }
-          
+          setLoadedMapData(loadLayout);
           return loadLayout;
+
         } else {
           return { mapId: null, layout: [], mapTitle: "" }
+
         }
       })
       .catch(err => console.error(err));

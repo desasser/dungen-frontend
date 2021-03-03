@@ -11,6 +11,7 @@ export default function DraggableTile({ tileId, children, imageURL, handleOnDrag
   return (
     <div
       className="droppable-element"
+      key={tileId}
       data-tileid={tileId}
       data-maptileid={null}
       data-environment="swamp"

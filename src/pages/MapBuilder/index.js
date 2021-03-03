@@ -274,7 +274,7 @@ export default function MapBuilder() {
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
         <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
-          <Grid addThisTile={addThisTile} loadThisMap={loadedMapData} />
+          <Grid addThisTile={addThisTile} loadThisMap={id} />
         </Container>
         {/* TODO: This functionality is for future development */}
         {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>

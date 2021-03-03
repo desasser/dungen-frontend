@@ -206,7 +206,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
             className={classes.selectMenu}
           >
             {/* MAP OVER ALL ENVIRONMENTS AND CREATE MENU ITEMS */}
-            {environmentListState.map(environment => <MenuItem value={environment.id}>{environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}</MenuItem>)}
+            {environmentListState.map(environment => <MenuItem key={environment.id} value={environment.id}>{environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}</MenuItem>)}
           </Select>
 
           {/* Tile display */}
