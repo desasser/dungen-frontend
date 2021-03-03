@@ -7,7 +7,6 @@ import Alert from '../AlertBar'
 
 
 export default function Form(props) {
-  // console.log(`this is history`,  props.history )
 useEffect(() => {
   console.log(props)
   console.log(props.login)
@@ -33,11 +32,6 @@ useEffect(() => {
           <TextField id="standard-basic" type="password" label="Password" name="password" required value={props.email} onChange={props.handleInputChange} 
           />
         </div>
-        {/* {!props.login ? <span>
-        <div>
-          <TextField id="standard-basic" type="password" label="Verify Password" name="password" value={props.password} onChange={props.handleInputChange} />
-        </div> 
-        </span> : null} */}
         <Button type="submit" color="primary" variant="contained" onClick={props.handleSubmit}>
           Submit
           </Button>

@@ -7,8 +7,6 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-// import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -16,7 +14,6 @@ import { Link } from "react-router-dom";
 import LoginModal from "../LoginModal";
 import API from "../../utils/API";
 import { useHistory } from 'react-router-dom';
-import Container from '@material-ui/core/Container';
 import Hidden from '@material-ui/core/Hidden';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
@@ -34,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'ESKARGOT',
     cursor: 'pointer',
     fontWeight: '700',
-    // marginLeft: '-10px'
   },
   navBar: {
     backgroundColor: '#8eb1c7',
@@ -102,24 +98,6 @@ export default function MenuAppBar(props) {
 
   })
 
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token")
-  //   API.getAuthToken(token).then(res => {
-  //     console.log("got the token!")
-  //     setUserState({
-  //       id: res.data.id,
-  //       userName: res.data.userName,
-  //       token: token,
-  //       isLoggedIn: true
-  //     }).then(handleClose())
-  //   }).catch(err => {
-  //     localStorage.removeItem("token");
-  //     console.log("not properly Authed")
-  //     console.log(err)
-  //   })
-  // }, [])
-
   const handleInputChange = event => {
     const { name, value } = event.target;
     setLoginState({
@@ -128,11 +106,6 @@ export default function MenuAppBar(props) {
     })
   }
 
-  // const redirect = ()=>history.push("/dashboard")
-
-  const handleLogin = (data) => {
-    setUserState({ ...users, isLoggedIn: data })
-  }
   const [errorState, setErrorState] = useState({
     error: false
   });
@@ -224,19 +197,6 @@ export default function MenuAppBar(props) {
     history.push('/')
   }
 
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleXSClick = (event) => {
     setAnchorXSEl(event.currentTarget);
   };
@@ -244,10 +204,6 @@ export default function MenuAppBar(props) {
   const handleXSClose = () => {
     setAnchorXSEl(null);
   };
-
-  // const handleCloseModal = () => {
-  //   setOpen(false);
-  // };
 
   const logInPopUp = () => {
     console.log("ummm...click")
@@ -260,6 +216,7 @@ export default function MenuAppBar(props) {
       userName: "",
       isLoggedIn: false
     })
+    history.push("/")
     history.go(0)
   }
 
