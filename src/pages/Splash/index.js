@@ -4,88 +4,201 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import RouterBtn from '../../components/RouterBtn'
-
 import HomeIcon from '@material-ui/icons/Home';
-
-import { motion } from "framer-motion"
+import Typography from '@material-ui/core/Typography';
+import dragon from '../../images/968914319.jpg';
+import temple from '../../images/fantasy-wallpaper-psdvault-18.jpg';
+import { motion } from "framer-motion";
+import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    containerBanner: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-        minHeight: '40vh',
-        background: 'gray',
-        display: "flex",
-        justify: "center",
-        margin: "0 auto",
-        padding: "10% 25%"
-
-    },
+  root: {
+    flexGrow: 1,
+  },
+  containerBanner: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    minHeight: '40vh',
+    background: 'gray',
+    display: "flex",
+    margin: "0 auto",
+    padding: "10% 18%",
+    // backgroundColor: 'pink',
+    // backgroundImage: 'url("../images/fantasy-wallpaper-psdvault-18.jpg")'
+    backgroundImage: `url(${dragon})`,
+    // backgroundImage: `url(${temple})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    // backgroundPosition: '0px -50px',
+    maxWidth: "none",
+    height: '50vh'
+  },
+  synopsis: {
+    width: '50%',
+    marginLeft: '1em',
+    marginTop: '3em',
+    border: '0.5em #8eb1c7 solid',
+    borderRadius: '0.5em',
+    padding: '2em',
+    backgroundColor: 'white'
+  },
+  synHeader: {
+    paddingBottom: '0.5em',
+    fontFamily: 'SpaceAndAstronomy',
+    fontWeight: 'bold'
+  },
+  buildButton: {
+    backgroundColor: '#eb4511',
+    height: '5em',
+    padding: '1em',
+    fontSize: '1.5em',
+    margin: '20px',
+    fontFamily: 'SpaceAndAstronomy',
+    fontWeight: 'bold'
+  },
+  synHeaderSmall: {
+    paddingBottom: '0.5em',
+    fontFamily: 'SpaceAndAstronomy',
+    fontWeight: 'bold',
+    fontSize: '14px'
+  },
+  synopsisSmall: {
+    width: '100%',
+    marginLeft: '1em',
+    marginTop: '3em',
+    border: '0.5em #8eb1c7 solid',
+    borderRadius: '0.5em',
+    padding: '2em',
+    backgroundColor: 'white',
+    display: 'block'
+  },
+  buildButtonSmall: {
+    backgroundColor: '#eb4511',
+    height: '5em',
+    padding: '1em',
+    fontSize: '1.5em',
+    margin: '20px',
+    fontFamily: 'SpaceAndAstronomy',
+    marginLeft: '20%',
+    fontWeight: 'bold'
+  },
+  splashContentSmall: {
+    width: '90%',
+    marginLeft: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  splashContent: {
+    width: '80%',
+    margin: '0 auto',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  splashTextOne: {
+    fontWeight: 'bold',
+    fontSize: '80px',
+    fontFamily: 'ESKARGOT'
+  },
+  splashTextTwo: {
+    fontWeight: 'bold',
+    fontSize: '60px',
+    fontFamily: 'ESKARGOT'
+  }
 }));
 
 
 export default function Splash() {
-    const classes = useStyles();
+  const classes = useStyles();
 
 
-    return (
-        <div className={classes.root}>
-            <Grid item xs={12} >
-                <Container className={classes.containerBanner} >
-                    <motion.div
-                        drag
-                        dragConstraints={{
-                            top: -175,
-                            left: -400,
-                            right: 600,
-                            bottom: 175,
-                        }}
-                    >Dun</motion.div>
-                    <motion.div
-                        drag
-                        dragConstraints={{
-                            top: -175,
-                            left: -400,
-                            right: 600,
-                            bottom: 175,
-                        }}
-                    >Snail</motion.div>
-                    <motion.div
-                        drag
-                        dragConstraints={{
-                            top: -175,
-                            left: -400,
-                            right: 600,
-                            bottom: 175,
-                        }}
-                    >Snail</motion.div>
-                    <motion.div
-                        drag
-                        dragConstraints={{
-                            top: -175,
-                            left: -400,
-                            right: 600,
-                            bottom: 175,
-                        }}
-                    >Butts</motion.div>
-                </Container >
+  return (
+    <div className={classes.root}>
+      <Grid item xs={12} >
+        <Container className={classes.containerBanner} >
 
-                <Container>
-                    <p>
-                        I'm baby jianbing typewriter selvage, authentic celiac lyft blog wayfarers XOXO PBR&B vape. Vape pickled organic artisan. Ramps PBR&B snackwave locavore XOXO listicle you probably haven't heard of them actually pug semiotics offal street art messenger bag occupy craft beer. Actually freegan before they sold out, copper mug narwhal swag vexillologist 8-bit meh brooklyn sartorial flannel DIY stumptown. Wolf fixie food truck art party prism DIY microdosing farm-to-table plaid viral selfies 8-bit subway tile ennui scenester. Vice tattooed shoreditch, hoodie neutra bushwick helvetica crucifix blue bottle narwhal tumeric. +1 echo park brunch paleo deep v affogato.
-                    </p>
-                    <p>
+          <motion.div className={classes.splashTextOne}
+            drag
+            dragConstraints={{
+              top: -140,
+              left: -625,
+              right: 600,
+              bottom: 175,
+            }}
+            style={{
+              color: '#eb4511'
+            }}>
+            Dun
+          </motion.div>
+          <motion.div className={classes.splashTextOne}
+            drag
+            dragConstraints={{
+              top: -140,
+              left: -725,
+              right: 600,
+              bottom: 175,
+            }}
+            style={{
+              color: '#eb4511'
+            }}>
+            Gen
+          </motion.div>
+          <motion.div className={classes.splashTextTwo}
+            drag
+            dragConstraints={{
+              top: -140,
+              left: -825,
+              right: 600,
+              bottom: 175,
+            }}>
+            Snail
+          </motion.div>
+          <motion.div className={classes.splashTextTwo}
+            drag
+            dragConstraints={{
+              top: -140,
+              left: -950,
+              right: 600,
+              bottom: 175,
+            }}>
+            Butts
+          </motion.div>
+        </Container >
 
-                        Post-ironic poutine readymade authentic tote bag biodiesel la croix franzen heirloom affogato cred intelligentsia thundercats. Occupy fashion axe freegan, roof party cold-pressed four dollar toast green juice. Dreamcatcher keytar taiyaki church-key schlitz prism. PBR&B kickstarter etsy keffiyeh poutine, cliche four dollar toast brunch. Migas actually VHS poutine. Butcher whatever actually poutine quinoa green juice venmo cray succulents beard roof party.
-                    </p>
-                </Container>
+        {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
+        <Hidden smUp>
+          <Container className={classes.splashContentSmall}>
+            <Container className={classes.synopsisSmall}>
+              <Typography variant='h5' className={classes.synHeaderSmall}>
+                Dungen Building should be easy.
+                    </Typography>
+              <Typography variant="body2" >
+                A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
+                    </Typography>
+            </Container>
+            <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButtonSmall} disableRippe={true} variant="contained" />
+          </Container>
+        </Hidden>
+        {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
 
-                <RouterBtn to="/builder" name="Build Maps Now!" />
-            </Grid>
-        </div>
-    )
+        {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
+        <Hidden xsDown>
+          <Container className={classes.splashContent}>
+            <Container className={classes.synopsis}>
+              <Typography variant='h5' className={classes.synHeader}>
+                Dungen Building should be easy.
+                    </Typography>
+              <Typography variant="body2" >
+                A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
+                    </Typography>
+            </Container>
+            <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButton} disableRippe={true} variant="contained" />
+          </Container>
+        </Hidden>
+        {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
+
+      </Grid>
+    </div>
+  )
 }
