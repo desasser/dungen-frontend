@@ -93,7 +93,6 @@ const useStyles = makeStyles((theme) => ({
     width: '80%',
     margin: '0 auto',
     display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center'
   },
   splashTextOne: {
@@ -117,6 +116,7 @@ export default function Splash() {
     <div className={classes.root}>
       <Grid item xs={12} >
         <Container className={classes.containerBanner} >
+
           <motion.div className={classes.splashTextOne}
             drag
             dragConstraints={{
@@ -164,6 +164,7 @@ export default function Splash() {
             Butts
           </motion.div>
         </Container >
+
         {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
         <Hidden smUp>
           <Container className={classes.splashContentSmall}>
@@ -178,6 +179,8 @@ export default function Splash() {
             <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButtonSmall} disableRippe={true} variant="contained" />
           </Container>
         </Hidden>
+        {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
+
         {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
         <Hidden xsDown>
           <Container className={classes.splashContent}>
@@ -193,6 +196,7 @@ export default function Splash() {
           </Container>
         </Hidden>
         {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
+
       </Grid>
     </div>
   )
