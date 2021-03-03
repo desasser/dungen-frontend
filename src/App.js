@@ -167,6 +167,9 @@ function App() {
 
           <Route component={FourOhNope} />
 
+          <Route exact path="/503">
+            <Nope />
+          </Route>
         </Switch>
       </Router>
     </div>

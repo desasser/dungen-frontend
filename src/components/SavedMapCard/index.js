@@ -58,16 +58,14 @@ export default function SavedMapCard(props) {
       </CardActionArea>
       <CardActions style={{justifyContent:'center'}}>
         <Button size="small" color="primary"  href={`/builder/${props.id}`} className={classes.btnStyle}>
-          {/* TODO: href will end up passing to darhboard page along with a map id */}
           Edit
         </Button>
         <Button size="small" color="primary" onClick={() => props.deleteMap(props.id)} className={classes.btnStyle}>
           Delete
         </Button>
-        <Button size="small" color="primary" href="/render" className={classes.btnStyle}>
-          {/* TODO: href will end up passing to render map page along with a map id */}
+        {/* <Button size="small" color="primary" href="/render" className={classes.btnStyle}>
           View
-        </Button>
+        </Button> */}
       </CardActions>
     </Card>
   );

@@ -28,6 +28,13 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '20px',
     marginLeft: '20px',
     color: '#36434b'
+  },
+  menuItem: {
+    color: 'black',
+    textDecoration: 'none',
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '16px',
+    margin: 0
   }
 }));
 
@@ -45,21 +52,26 @@ export default function LoginModal(props) {
     setOpen(false);
   };
 
-    const history = useHistory(props);
-    useEffect(() => {
-        console.log(props)
-        if (props.isLoggedIn) {
-            handleClose()
-        }
-    }, [props.isLoggedIn])
+  const history = useHistory(props);
+  useEffect(() => {
+    console.log(props)
+    if (props.isLoggedIn) {
+      handleClose()
+    }
+  }, [props.isLoggedIn])
 
-   
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
 
-    return (
-        <div>
-            <MenuItem type="button" className={classes.navLink} onClick={handleOpen}>
-                LOGIN
-      </MenuItem>
+  console.log('check me out!', navigator.userAgent);
+  console.log('mobile?', isMobile);
+
+  return (
+    <>
+      <p type="button" className={!isMobile ? classes.navLink : classes.menuItem} onClick={handleOpen} style={{cursor: 'pointer'}}>
+        LOGIN
+      </p>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -82,6 +94,6 @@ export default function LoginModal(props) {
           </div>
         </Fade>
       </Modal>
-    </div>
+    </>
   );
 }

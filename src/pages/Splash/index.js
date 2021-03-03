@@ -17,20 +17,18 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    minHeight: '40vh',
     background: 'gray',
     display: "flex",
     margin: "0 auto",
     padding: "10% 18%",
-    // backgroundColor: 'pink',
-    // backgroundImage: 'url("../images/fantasy-wallpaper-psdvault-18.jpg")'
     backgroundImage: `url(${dragon})`,
     // backgroundImage: `url(${temple})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    // backgroundPosition: '0px -50px',
     maxWidth: "none",
-    height: '50vh'
+    height: '60vh',
+    display: 'flex',
+    flexWrap: 'wrap'
   },
   synopsis: {
     width: '50%',
@@ -105,6 +103,21 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '60px',
     fontFamily: 'ESKARGOT',
     cursor: 'grab'
+  },
+  splashTextOneMobile: {
+    fontWeight: 'bold',
+    fontSize: '60px',
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab'
+  },
+  splashTextTwoMobile: {
+    fontWeight: 'bold',
+    fontSize: '40px',
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab',
+    position: 'relative',
+    top:'-90px',
+    left: '70px'
   }
 }));
 
@@ -117,59 +130,68 @@ export default function Splash() {
     <div className={classes.root}>
       <Grid item xs={12} >
         <Container className={classes.containerBanner} >
-        <Hidden smDown>
 
-          <motion.div className={classes.splashTextOne}
-            drag
-            dragConstraints={{
-              top: -140,
-              left: -225,
-              right: 1150,
-              bottom: 175,
-            }}
-            style={{
-              color: '#eb4511'
-            }}>
-            Dun
-          </motion.div>
-          <motion.div className={classes.splashTextOne}
-            drag
-            dragConstraints={{
-              top: -140,
-              left: -325,
-              right: 1050,
-              bottom: 175,
-            }}
-            style={{
-              color: '#eb4511'
-            }}>
-            Gen
-          </motion.div>
-          <motion.div className={classes.splashTextTwo}
-            drag
-            dragConstraints={{
-              top: -140,
-              left: -425,
-              right: 950,
-              bottom: 175,
-            }}>
-            Snail
-          </motion.div>
-          <motion.div className={classes.splashTextTwo}
-            drag
-            dragConstraints={{
-              top: -140,
-              left: -525,
-              right: 850,
-              bottom: 175,
-            }}>
-            Butts
-          </motion.div>
-              </Hidden>
-{/* Mobile Physics Playground */}
-
-              <Hidden smUp>
+          {/* Full Screen */}
+          <Hidden xsDown>
             <motion.div className={classes.splashTextOne}
+              drag
+              dragConstraints={{
+                top: -140,
+                left: -225,
+                right: 1150,
+                bottom: 175,
+              }}
+              style={{
+                color: '#eb4511',
+                height: 100
+              }}>
+              Dun
+          </motion.div>
+            <motion.div className={classes.splashTextOne}
+              drag
+              dragConstraints={{
+                top: -140,
+                left: -325,
+                right: 1050,
+                bottom: 175,
+              }}
+              style={{
+                color: '#eb4511',
+                height: 100
+              }}>
+              Gen
+          </motion.div>
+            <motion.div className={classes.splashTextTwo}
+              drag
+              dragConstraints={{
+                top: -140,
+                left: -425,
+                right: 950,
+                bottom: 175,
+              }}
+              style={{
+                height: 80
+              }}>
+              Snail
+          </motion.div>
+            <motion.div className={classes.splashTextTwo}
+              drag
+              dragConstraints={{
+                top: -140,
+                left: -525,
+                right: 850,
+                bottom: 175,
+              }}
+              style={{
+                height: 80
+              }}>
+              Butts
+          </motion.div>
+          </Hidden>
+
+          {/* Mobile Physics Playground */}
+          <Hidden smUp>
+            <motion.div className={classes.splashTextOneMobile}
               drag
               dragConstraints={{
                 top: -60,
@@ -178,43 +200,52 @@ export default function Splash() {
                 bottom: 60,
               }}
               style={{
-                color: '#eb4511'
+                color: '#eb4511',
+                height: 80
               }}>
               Dun
           </motion.div>
-            <motion.div className={classes.splashTextOne}
-              drag
-              dragConstraints={{
-                top: -60,
-                left: -90,
-                right: 50,
-                bottom: 60,
-              }}
-              style={{
-                color: '#eb4511'
-              }}>
-              Gen
-          </motion.div>
-            <motion.div className={classes.splashTextTwo}
+            <motion.div className={classes.splashTextOneMobile}
               drag
               dragConstraints={{
                 top: -60,
                 left: -80,
                 right: 50,
                 bottom: 60,
+              }}
+              style={{
+                color: '#eb4511',
+                height: 80
               }}>
-              Snail
+              Gen
           </motion.div>
-            <motion.div className={classes.splashTextTwo}
+            <motion.div className={classes.splashTextTwoMobile}
               drag
               dragConstraints={{
                 top: -60,
-                left: -90,
+                left: -80,
+                right: 50,
+                bottom: 60,
+              }}
+              style={{
+                height: 60
+              }}>
+              Snail
+          </motion.div>
+            <motion.div className={classes.splashTextTwoMobile}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -80,
                 right: 40,
                 bottom: 60,
+              }}
+              style={{
+                height: 60
               }}>
-              </motion.div>
-              </Hidden>
+                Butts
+            </motion.div>
+          </Hidden>
         </Container >
 
         {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}

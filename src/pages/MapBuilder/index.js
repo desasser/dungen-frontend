@@ -30,10 +30,14 @@ const useStyles = makeStyles({
     color: '#E4572E',
   },
   actionBtn: {
+    '&:hover' :{
+      color: 'white',
+      backgroundColor: '#eb4511'
+    },
     width: 100,
     height: 60,
-    backgroundColor: '#eb4511',
-    color: '#36434b',
+    backgroundColor: 'white',
+    color: '#eb4511',
     margin: 20,
     fontSize: '18px',
   },
@@ -75,7 +79,7 @@ const useStyles = makeStyles({
   btnWrapper: {
     display: 'flex',
     justifyContent: 'flex-end',
-    width: '80%'
+    width: '94.5%'
   }
 })
 
