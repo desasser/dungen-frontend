@@ -7,75 +7,93 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Form from "../../components/Form/index"
 import ActionBtn from "../../components/ActionBtn/index"
 import { useHistory } from 'react-router-dom'
-import { Snackbar } from '@material-ui/core';
+
 
 
 const useStyles = makeStyles((theme) => ({
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        border: '2px solid #000',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-    },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+  navLink: {
+    textDecoration: 'none',
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '20px',
+    marginLeft: '20px',
+    color: '#36434b'
+  },
+  menuItem: {
+    color: 'black',
+    textDecoration: 'none',
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '16px',
+    margin: 0
+  }
 }));
 
 export default function LoginModal(props) {
-console.log(props)
+  console.log(props)
 
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
 
-    const handleOpen = () => {
-        setOpen(true);
-    };
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    const history = useHistory(props);
-    useEffect(() => {
-        if (props.isLoggedIn) {
-            handleClose()
-        }
-    }, [props.isLoggedIn])
-
-    const email = () => {
-        console.log("this might work")
+  const history = useHistory(props);
+  useEffect(() => {
+    console.log(props)
+    if (props.isLoggedIn) {
+      handleClose()
     }
+  }, [props.isLoggedIn])
 
-    return (
-        <div>
-            <MenuItem type="button" onClick={handleOpen}>
-                Login
-      </MenuItem>
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={open}
-                onClose={handleClose}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={open}>
-                    <div className={classes.paper}>
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
 
-                        <ActionBtn action={props.switch} name={props.formBtn} />
-                        <h1>{props.formMsg}</h1>
-                        <Form login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
+  console.log('check me out!', navigator.userAgent);
+  console.log('mobile?', isMobile);
 
-                    </div>
-                </Fade>
-            </Modal>
-        </div>
-    );
+  return (
+    <>
+      <p type="button" className={!isMobile ? classes.navLink : classes.menuItem} onClick={handleOpen} style={{cursor: 'pointer'}}>
+        LOGIN
+      </p>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+
+            <ActionBtn action={props.switch} name={props.formBtn} />
+            <h1>{props.formMsg}</h1>
+            <Form login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
+
+          </div>
+        </Fade>
+      </Modal>
+    </>
+  );
 }

@@ -47,7 +47,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
     } 
     // check to see if there's something in localStorage
     // if there is, and the layout length is NOT empty, we can load it up
-    else if( loadThisMap === undefined && loadThisMap === null ) {
+    else if( loadThisMap === undefined || loadThisMap === null ) {
       if(savedMap !== null && savedMap.layout.length > 0)
         setMapLayout([...savedMap.layout]);
 
