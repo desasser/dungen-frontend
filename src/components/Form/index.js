@@ -21,17 +21,22 @@ useEffect(() => {
         </div>
         {!props.login ? <span>
         <div>
-          <TextField id="standard-basic" type="password" label="Name" name="name" value={props.name} onChange={props.handleInputChange} />
+          <TextField id="standard-basic" type="text" label="Email" name="email" value={props.name} onChange={props.handleInputChange} />
+        </div> 
+        </span> : null}
+        {!props.login ? <span>
+        <div>
+          <TextField id="standard-basic" type="password" label="Name" name="Name" value={props.name} onChange={props.handleInputChange} />
         </div> 
         </span> : null}
         <div>
           <TextField id="standard-basic" type="password" label="Password" name="password" value={props.password} onChange={props.handleInputChange} />
         </div>
-        {!props.login ? <span>
+        {/* {!props.login ? <span>
         <div>
           <TextField id="standard-basic" type="password" label="Verify Password" name="password" value={props.password} onChange={props.handleInputChange} />
         </div> 
-        </span> : null}
+        </span> : null} */}
         <Button type="submit" color="primary" variant="contained" onClick={props.handleSubmit}>
           Submit
           </Button>
