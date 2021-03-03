@@ -266,7 +266,17 @@ export default function MenuAppBar(props) {
               {/* <Typography variant='h6'>Welcome {props.user.userName}</Typography> */}
               <MenuItem onClick={handleXSClose}><Link to='/builder'>MAP BUILDER</Link></MenuItem>
               <MenuItem onClick={handleXSClose}><Link to='/dashboard'>SAVED MAPS</Link></MenuItem>
-              <MenuItem onClick={handleXSClose}><Link onClick={logout}>Logout</Link></MenuItem>
+              {/* <MenuItem onClick={handleXSClose}><Link onClick={logout}>Logout</Link></MenuItem> */}
+              <FormGroup>
+              {!props.user.isLoggedIn ? <span> <Link><LoginModal edge="start" onClick={logInPopUp}
+                handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+              /> </Link>
+              </span> : <span> <MenuItem onClick={logout}>
+                <Link>
+                LOGOUT?
+                </Link>
+              </MenuItem></span>}
+            </FormGroup>
             </Menu>
           </Hidden>
           {/* XS NAVIGATION */}
@@ -290,9 +300,7 @@ export default function MenuAppBar(props) {
           <FormGroup>
               {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
                 handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
-              /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
-                Logout?
-              </MenuItem></span>}
+              /> </span> :  null }
             </FormGroup>
             </Hidden>
 

@@ -21,14 +21,7 @@ const useStyles = makeStyles((theme) => ({
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-    },
-      navLink: {
-        textDecoration: 'none',
-        fontFamily: 'SpaceAndAstronomy',
-        fontSize: '20px',
-        marginLeft: '0px',
-        color: '#707078'
-      }
+    }
 }));
 
 export default function LoginModal(props) {
@@ -58,7 +51,7 @@ console.log(props)
     return (
         <div>
             <MenuItem type="button" className={classes.navLink} onClick={handleOpen}>
-                Login
+                LOGIN
       </MenuItem>
             <Modal
                 aria-labelledby="transition-modal-title"
