@@ -83,6 +83,7 @@ export default function MenuAppBar(props) {
   const [loginState, setLoginState] = useState({
     userName: "",
     password: "",
+
   })
 
 
@@ -109,7 +110,6 @@ export default function MenuAppBar(props) {
       ...loginState,
       [name]: value
     })
-    console.log("hi buddy")
   }
 
   // const redirect = ()=>history.push("/dashboard")
@@ -118,12 +118,11 @@ export default function MenuAppBar(props) {
     setUserState({ ...users, isLoggedIn: data })
   }
   const [errorState, setErrorState] = useState({
-        error: false
+    error: false
   });
 
-  const handleSubmit = event => {
+    const handleSubmit = event => {
     event.preventDefault()
-    console.log("this is the NavBar page.")
     console.log(event.target)
     if (formSwitch.login === true) {
       API.login(loginState).then(res => {
@@ -142,10 +141,22 @@ export default function MenuAppBar(props) {
         })
         history.go(0)
       }).catch(error => {
+        
         console.log(error);
         setErrorState({
           error: true
-    })
+        })
+        if (errorState){
+          setLoginState({
+            userName: "",
+            password: ""
+          })
+          setErrorState({
+            errorState: false
+          })
+        }
+        
+        
         localStorage.removeItem("token");
         console.log("token has been removed. Error Login. NavBar line: 123")
         return error
@@ -274,6 +285,16 @@ export default function MenuAppBar(props) {
           </Typography>
           {/* LOGO HEADER */}
 
+          <Hidden smUp>
+          <FormGroup>
+              {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
+                handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+              /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
+                Logout?
+              </MenuItem></span>}
+            </FormGroup>
+            </Hidden>
+
           {/* WELCOME USER */}
           <Hidden xsDown>
             {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
@@ -292,7 +313,7 @@ export default function MenuAppBar(props) {
           </Hidden>
           {/* WELCOME USER */}
 
-          
+
         </Toolbar>
       </AppBar>
     </div>

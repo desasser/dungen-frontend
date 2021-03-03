@@ -17,20 +17,21 @@ useEffect(() => {
       <form onSubmit={props.handleSubmit} noValidate autoComplete="off">
         <div>
           <Alert error = {props.error}></Alert>
-          <TextField id="standard-basic" type="text" label="userName" name="userName" value={props.userName} onChange={props.handleInputChange} />
+          <TextField id="standard-basic" type="text" label="userName"  name="userName" required value={props.userName} onChange={props.handleInputChange} />
         </div>
         {!props.login ? <span>
         <div>
-          <TextField id="standard-basic" type="text" label="Email" name="email" value={props.name} onChange={props.handleInputChange} />
+          <TextField id="standard-basic" type="text" label="Email" name="email" required value={props.name} onChange={props.handleInputChange} />
         </div> 
         </span> : null}
         {!props.login ? <span>
         <div>
-          <TextField id="standard-basic" type="password" label="Name" name="Name" value={props.name} onChange={props.handleInputChange} />
+          <TextField id="standard-basic" type="text" label="Name" name="Name" value={props.name} onChange={props.handleInputChange} />
         </div> 
         </span> : null}
         <div>
-          <TextField id="standard-basic" type="password" label="Password" name="password" value={props.email} onChange={props.handleInputChange} />
+          <TextField id="standard-basic" type="password" label="Password" name="password" required value={props.email} onChange={props.handleInputChange} 
+          />
         </div>
         {/* {!props.login ? <span>
         <div>

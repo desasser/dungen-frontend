@@ -22,6 +22,13 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
+      navLink: {
+        textDecoration: 'none',
+        fontFamily: 'SpaceAndAstronomy',
+        fontSize: '20px',
+        marginLeft: '0px',
+        color: '#707078'
+      }
 }));
 
 export default function LoginModal(props) {
@@ -40,18 +47,17 @@ console.log(props)
 
     const history = useHistory(props);
     useEffect(() => {
+        console.log(props)
         if (props.isLoggedIn) {
             handleClose()
         }
     }, [props.isLoggedIn])
 
-    const email = () => {
-        console.log("this might work")
-    }
+   
 
     return (
         <div>
-            <MenuItem type="button" onClick={handleOpen}>
+            <MenuItem type="button" className={classes.navLink} onClick={handleOpen}>
                 Login
       </MenuItem>
             <Modal
