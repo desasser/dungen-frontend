@@ -266,7 +266,7 @@ export default function MenuAppBar(props) {
               {/* <Typography variant='h6'>Welcome {props.user.userName}</Typography> */}
               <MenuItem onClick={handleXSClose}><Link to='/builder'>MAP BUILDER</Link></MenuItem>
               <MenuItem onClick={handleXSClose}><Link to='/dashboard'>SAVED MAPS</Link></MenuItem>
-              <MenuItem onClick={handleXSClose}><Link>logout</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}><Link onClick={logout}>Logout</Link></MenuItem>
             </Menu>
           </Hidden>
           {/* XS NAVIGATION */}
@@ -285,6 +285,7 @@ export default function MenuAppBar(props) {
           </Typography>
           {/* LOGO HEADER */}
 
+          {/* MOBILE RENDER OF LOGIN/LOGOUT */}
           <Hidden smUp>
           <FormGroup>
               {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
