@@ -99,12 +99,14 @@ const useStyles = makeStyles((theme) => ({
   splashTextOne: {
     fontWeight: 'bold',
     fontSize: '80px',
-    fontFamily: 'ESKARGOT'
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab'
   },
   splashTextTwo: {
     fontWeight: 'bold',
     fontSize: '60px',
-    fontFamily: 'ESKARGOT'
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab'
   }
 }));
 
