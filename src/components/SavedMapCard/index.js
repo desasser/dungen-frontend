@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   root: {
     maxWidth: 300,
     margin: '20px',
-    backgroundColor: 'olivedrab',
+    backgroundColor: '#8eb1c7',
     display: 'flex',
     flexFlow: 'column nowrap',
     justifyContent: 'space-between'
@@ -21,6 +21,17 @@ const useStyles = makeStyles({
   media: {
     height: 300,
   },
+  cardTitle: {
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '24px',
+  },
+  btnStyle: {
+    '&:hover' :{
+      backgroundColor: '#eb4511'
+    },
+    color: '#36434b',
+    fontFamily: 'SpaceAndAstronomy'
+  }
 });
 
 export default function SavedMapCard(props) {
@@ -37,7 +48,7 @@ export default function SavedMapCard(props) {
           alt="a tile"
         />
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2" style={{fontFamily:'fantasy'}}>
+          <Typography gutterBottom variant="h5" component="h2" className={classes.cardTitle}>
             {props.name.toUpperCase()}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
@@ -46,14 +57,14 @@ export default function SavedMapCard(props) {
         </CardContent>
       </CardActionArea>
       <CardActions style={{justifyContent:'center'}}>
-        <Button size="small" color="primary"  href={`/builder/${props.id}`}>
+        <Button size="small" color="primary"  href={`/builder/${props.id}`} className={classes.btnStyle}>
           {/* TODO: href will end up passing to darhboard page along with a map id */}
           Edit
         </Button>
-        <Button size="small" color="primary" onClick={() => props.deleteMap(props.id)}>
+        <Button size="small" color="primary" onClick={() => props.deleteMap(props.id)} className={classes.btnStyle}>
           Delete
         </Button>
-        <Button size="small" color="primary" href="/render">
+        <Button size="small" color="primary" href="/render" className={classes.btnStyle}>
           {/* TODO: href will end up passing to render map page along with a map id */}
           View
         </Button>

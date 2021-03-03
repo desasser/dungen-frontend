@@ -99,12 +99,14 @@ const useStyles = makeStyles((theme) => ({
   splashTextOne: {
     fontWeight: 'bold',
     fontSize: '80px',
-    fontFamily: 'ESKARGOT'
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab'
   },
   splashTextTwo: {
     fontWeight: 'bold',
     fontSize: '60px',
-    fontFamily: 'ESKARGOT'
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab'
   }
 }));
 
@@ -239,10 +241,10 @@ export default function Splash() {
             <Container className={classes.synopsis}>
               <Typography variant='h5' className={classes.synHeader}>
                 Dungen Building should be easy.
-                    </Typography>
+              </Typography>
               <Typography variant="body2" >
                 A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
-                    </Typography>
+              </Typography>
             </Container>
             <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButton} disableRippe={true} variant="contained" />
           </Container>
