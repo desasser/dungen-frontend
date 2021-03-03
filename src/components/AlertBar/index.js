@@ -45,7 +45,7 @@ export default function CustomizedSnackbars(props) {
   return (
     <div className={classes.root}>
       <Snackbar open={open} autoHideDuration={2500} onClose={handleClose} onChange={props.handleInputChange} anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
-        <Alert onClose={handleClose} severity="warning">
+        <Alert onClose={handleClose} severity="info">
             Try again. Incorrect Login Credentials.
         </Alert>
       </Snackbar>
