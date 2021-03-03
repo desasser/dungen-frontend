@@ -12,10 +12,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { Link } from "react-router-dom"
-import LoginModal from "../LoginModal"
-import API from "../../utils/API"
-import { useHistory } from 'react-router-dom'
+import { Link } from "react-router-dom";
+import LoginModal from "../LoginModal";
+import API from "../../utils/API";
+import { useHistory } from 'react-router-dom';
+import Container from '@material-ui/core/Container';
+import Hidden from '@material-ui/core/Hidden';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,17 +35,16 @@ const useStyles = makeStyles((theme) => ({
   },
   navBar: {
     backgroundColor: '#8eb1c7',
-    color: 'black'
+    color: 'black',
+    width: '100vw'
   },
   navLink: {
-    color: 'black',
     textDecoration: 'none',
     fontFamily: 'SpaceAndAstronomy',
     fontSize: '20px',
     marginLeft: '20px',
     color: '#707078'
   }
-
 }));
 
 export default function MenuAppBar(props) {
@@ -220,13 +221,23 @@ export default function MenuAppBar(props) {
     <div className={classes.root}>
       <AppBar position="static" className={classes.navBar} > {/*color='secondary'*/}
         <Toolbar>
-          <Link to="/builder" color="white" variant="body2" className={classes.navLink}>Map Builder </Link>
-          {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
-          {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
-          </span> : null}
+          {/* NAVIGATION LINKS */}
+          <Hidden xsDown>
+            {/* <Container disableGutters='true' style={{ width: '30%' }} display={{ xs: 'none' }}> */}
+              <Link to="/builder" color="white" variant="body2" className={classes.navLink}>Map Builder </Link>
+              {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
+              </span> : null}
+            {/* </Container> */}
+          </Hidden>
+          {/* NAVIGATION LINKS */}
+
+          {/* LOGO HEADER */}
           <Typography variant='h3' className={classes.title} onClick={titleClick}>
             DunGen
           </Typography>
+          {/* LOGO HEADER */}
+
+          {/* WELCOME USER */}
           {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
           <FormGroup>
             {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
@@ -237,12 +248,10 @@ export default function MenuAppBar(props) {
           </FormGroup>
           {auth && (
             <div>
-              {/* <AccountCircle /> */}
-               {props.user.isLoggedIn ? <span> <AccountCircle style={{fontSize: '50px', color: '#eb4511ff'}}/> </span> : null}
-
-
+              {props.user.isLoggedIn ? <span> <AccountCircle style={{ fontSize: '50px', color: '#eb4511ff' }} /> </span> : null}
             </div>
           )}
+          {/* WELCOME USER */}
         </Toolbar>
       </AppBar>
     </div>
