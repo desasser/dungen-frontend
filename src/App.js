@@ -156,7 +156,10 @@ function App() {
           <Route exact path="/503">
             <Nope />
           </Route>
-          <Route exact path="/builder" component={MapBuilder} />
+          <Route exact path="/builder">
+            <MapBuilder users={users}/>
+          </Route>
+          
           <Route exact path="/builder/:id" component={MapBuilder} />
           <Route exact path="/render">
             {users.isLoggedIn ? <RenderedMap /> : <Nope />}
