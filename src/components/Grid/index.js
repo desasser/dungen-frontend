@@ -7,37 +7,147 @@ import TileControlWidget from '../TileControlWidget'
 import GridCoordsOverlay from './GridCoordsOverlay'
 import API from '../../utils/API'
  
-export default function Grid({ addThisTile }) {
+export default function Grid({ addThisTile, loadThisMap }) {
+  const [dragging, setDragging] = useState(false);
   const [mapLayout, setMapLayout] = useState([]);
   const [todaysDate, setTodaysDate] = useState();
+  const [timestamp, setTimestamp] = useState();
+  const [loadedMapData, setLoadedMapData] = useState({id: null, layout: [], mapTitle: ''});
 
   React.useEffect(() => {
-    const today = new Date();
-    setTodaysDate(today.getFullYear() +''+ (today.getMonth() + 1) +''+ today.getDate());
+    const dt = new Date();
+    let today = dt.getFullYear() +''+ (dt.getMonth() + 1) +''+ dt.getDate();
+    if(today !== todaysDate) { setTodaysDate(dt.getFullYear() +''+ (dt.getMonth() + 1) +''+ dt.getDate()); }
+    
+    setTimestamp(dt.getHours() +''+ dt.getMinutes() +''+ dt.getSeconds());
 
     let savedMap = getMapFromLocalStorage();
 
+    // if mapLayout is NOT empty, the user has started building something already!
+    // so just save that to localStorage on "load"
     if(mapLayout.length > 0) {
-      saveMapToLocalStorage();
-    } else if( savedMap !== null && savedMap.layout.length > 0 ) {
-      setMapLayout([...savedMap.layout]);
+      // BUT we don't want to save to local storage before & after dragging
+      // so we only save if we're NOT dragging a tile.
+      if(!dragging) {
+        console.log("saving to local storage");
+        saveMapToLocalStorage();
+      }
+    } 
+    // check to see if there's something in localStorage
+    // if there is, and the layout length is NOT empty, we can load it up
+    else if( loadThisMap === undefined && loadThisMap === null ) {
+      if(savedMap !== null && savedMap.layout.length > 0)
+        setMapLayout([...savedMap.layout]);
+
+    }
+    // now for handling if loadThisMap is NOT null / undefined
+    else if( loadThisMap !== undefined && loadThisMap !== null ) {
+      console.log("Loading Saved Map", loadThisMap);
+
+      // ok, check the localstorage and just update it if things match?
+      if(loadedMapData !== undefined && loadedMapData.layout.length === 0 ) {
+        console.log("loading map from database");
+        let res = loadMapFromDB(loadThisMap);
+
+        res.then(loadedMap => {
+          console.log("LOADED MAP FROM DB", loadThisMap);
+          setLoadedMapData(loadedMap);
+
+          let savedMap = getMapFromLocalStorage();
+          console.log(savedMap);
+
+          if(loadedMap !== undefined && loadedMap !== null) {
+            if(savedMap !== null && savedMap.mapId === parseInt(loadThisMap) && loadedMap.layout.length === 0 && savedMap.layout.length > 0 && mapLayout.length === 0) {
+              setMapLayout([...savedMap.layout]);
+  
+            } else if(loadedMap !== undefined && loadedMap.layout.length > 0 && mapLayout.length === 0 ) {
+                setMapLayout([...loadedMap.layout]);
+                saveMapToLocalStorage({layout: loadedMap.layout, title: loadedMap.mapTitle});
+            }
+
+          } else if(savedMap !== null && savedMap.mapId === parseInt(loadThisMap) && savedMap.layout.length > 0 && mapLayout.length === 0) {
+            setMapLayout([...savedMap.layout]);
+
+          }
+        });
+
+      } else if(loadedMapData !== undefined && loadedMapData.layout.length > 0) {
+        setMapLayout([...loadedMapData.layout]);
+        saveMapToLocalStorage();
+      }
+
     }
 
   }, [mapLayout]);
+
+  const loadMapFromDB = (mapId) => {
+    let results = {
+      mapId: mapId,
+      layout: [],
+      mapTitle: ""
+    };
+
+    if(loadedMapData.layout.length === 0) {
+      results = API.getSingleMap(mapId)
+      .then(singleMap => {
+        if(singleMap.data !== "") {
+          const mapTiles = singleMap.data.MapTiles;
+ 
+          let gridTiles = [];
+          if(mapTiles.length > 0) {
+            for( var i = 0; i < mapTiles.length; i++ ) {
+              const mapTile = mapTiles[i];
+              let tile = {};
+              if(mapTile.Tile !== null) {
+                tile = {
+                  i: i.toString(),
+                  tileId: mapTile.TileId,
+                  mapTileId: mapTile.id,
+                  environment: mapTile.EnvironmentId,
+                  orientation: mapTile.orientation,
+                  mirror: mapTile.mirror,
+                  bg: mapTile.Tile.image_url,
+                  x: parseInt(mapTile.xCoord),
+                  y: parseInt(mapTile.yCoord),
+                  w: 1,
+                  h: 1
+                }
+                gridTiles.push(tile);
+              }
+            }
+          }
+      
+          const loadLayout = {
+            mapId: singleMap.data.id,
+            layout: gridTiles,
+            mapTitle: singleMap.data.name
+          }
+          
+          return loadLayout;
+        } else {
+          return { mapId: null, layout: [], mapTitle: "" }
+        }
+      })
+      .catch(err => console.error(err));
+
+    }
+
+    return results;
+  }
 
   const getMapFromLocalStorage = () => {
     return localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
   }
 
-  const saveMapToLocalStorage = (args) => {
-    let layout = [];
-    let title = "";
+  const saveMapToLocalStorage = (args=null) => {
+    let layout = loadedMapData !== undefined ? loadedMapData.layout : mapLayout;
+    let title = loadedMapData !== undefined ? loadedMapData.mapTitle : "";
 
-    if(args !== undefined && args.layout !== undefined) {
+    if(args !== null && args.layout !== undefined) {
       layout = args.layout;
     } 
 
-    if(args !== undefined && args.title !== undefined) {
+    if(args !== null && args.title !== undefined) {
       title = args.title;
     } 
 
@@ -46,7 +156,7 @@ export default function Grid({ addThisTile }) {
       userid: 6, 
       layout: layout.length > 0 ? layout : mapLayout, 
       mapWidth: null, 
-      mapId: null, 
+      mapId: loadThisMap !== undefined ? parseInt(loadThisMap) : null, 
       mapTitle: title
     }
 
@@ -64,6 +174,7 @@ export default function Grid({ addThisTile }) {
     let droppedItem = typeof item === "Array" ? item[0] : item;
     if(addThisTile !== undefined && addThisTile.tileid !== undefined) {
       createNewTile(droppedItem);
+      saveMapToLocalStorage();
     }
   }
 
@@ -72,20 +183,13 @@ export default function Grid({ addThisTile }) {
       droppedItemData = droppedItemData[droppedItemData.length - 1];
     }
 
-    let newIndex = 0;
-    // console.log(mapLayout.length);
-    if(mapLayout.length > 0) {
-      newIndex = mapLayout.length;
-    }
-    // setPrevTileIndex(parseInt(newIndex));
-
     const newTileObj = {
-      i: newIndex.toString(), // GridLayout expects this to be a string!
+      i: (timestamp).toString(), // GridLayout expects this to be a string!
       tileId: addThisTile.tileid,
       mapTileId: null,
       environment: addThisTile.environment,
       orientation: 0,
-      mirrored: 1,
+      mirror: 1,
       x: addThisTile.x !== null ? parseInt(addThisTile.x) : parseInt(droppedItemData.x),
       y: addThisTile.y !== null ? parseInt(addThisTile.y) : parseInt(droppedItemData.y),
       bg: addThisTile.bg,
@@ -98,15 +202,38 @@ export default function Grid({ addThisTile }) {
     }
   }
 
-  const handleOnDragStop = (layout, oldItem, newItem, placeholder, e, element) => {
-    mapLayout.map(tile => {
-      if(tile.i === newItem.i) {
-        tile.x = newItem.x
-        tile.y = newItem.y
-      }
-    });
+  const handleOnDragStart = (layout, oldItem, newItem, placeholder, e, element) => {
+    // if we're clicking on a button, we're NOT dragging!
+    if(e.target.closest("button") === undefined || e.target.closest("button") === null) {
+      setDragging(true);
+      let newLayout = [...mapLayout];
+      newLayout.map(tile => tile.displayControlWidget = false);
 
-    setMapLayout([...mapLayout]);
+      setMapLayout([...newLayout]);
+    } else {
+      const button = e.target.closest("button");
+      const tile = button.closest(".tile-wrapper");
+      const tileData = {
+        i: tile.dataset.tilekey,
+        displayControlWidget: tile.dataset.displaywidget === "true" ? true : false
+      }
+      // console.log(button.dataset.action, tileData);
+      handleWidgetButtonClick(button.dataset.action, tileData);
+    }
+  }
+
+  const handleOnDragStop = (layout, oldItem, newItem, placeholder, e, element) => {
+    if(dragging) {
+      setDragging(false);
+      mapLayout.map(tile => {
+        if(tile.i === newItem.i) {
+          tile.x = newItem.x
+          tile.y = newItem.y
+        }
+      });
+
+      setMapLayout([...mapLayout]);
+    }
   }
 
   const handleDoubleClick = (e) => {
@@ -136,7 +263,7 @@ export default function Grid({ addThisTile }) {
   const handleClickOutsideTile = (e) => {
     // console.log(e.target);
     let parent = e.target.closest("button");
-    if(parent !== null && parent.classList.contains("controlButton")) {
+    if(parent !== null && parent !== undefined && parent.classList.contains("controlButton")) {
       // console.log(parent);
       let tile = e.target.closest(".tile-wrapper");
       if(tile !== undefined && tile !== null) {
@@ -204,7 +331,9 @@ export default function Grid({ addThisTile }) {
     let newLayout = [...mapLayout];
     newLayout.map(mapTile => {
       if(mapTile.i.toString() === tileKey.toString()) {
-        mapTile.mirrored = mapTile.mirrored === 1 ? -1 : 1;
+        // console.log(mapTile.mirror);
+        mapTile.mirror = mapTile.mirror === 1 ? -1 : 1;
+        // console.log(mapTile.mirror);
       }
     });
 
@@ -235,7 +364,7 @@ export default function Grid({ addThisTile }) {
         onDrop={handleOnDrop}
         // onLayoutChange={handleOnLayoutChange}
         onDragStop={handleOnDragStop}
-        // onDragStart={handleOnDragStart}
+        onDragStart={handleOnDragStart}
         style={{height: "100%"}}
       >
       {mapLayout.map(item => 

@@ -108,18 +108,18 @@ const useStyles = makeStyles({
   }
 });
 
-export default function TileControlWidget({ item, handleWidgetButtonClick, handleClickOutsideTile }) {
+export default function TileControlWidget({ item, handleClickOutsideTile }) {
   const classes = useStyles();
 
   const outsideClickClosesTileControlWidget = React.useRef(null);
 
   React.useEffect(() => {
-    document.addEventListener( 'click', handleClickOutsideTile );
-    // if(item.displayControlWidget) {
-    //   document.addEventListener( 'click', handleClickOutsideTile );
-    // } else {
-    //   document.removeEventListener( 'click', handleClickOutsideTile );
-    // }
+    // document.addEventListener( 'click', handleClickOutsideTile );
+    if(item.displayControlWidget) {
+      document.addEventListener( 'click', handleClickOutsideTile );
+    } else {
+      document.removeEventListener( 'click', handleClickOutsideTile );
+    }
   }, []);
 
   return (
