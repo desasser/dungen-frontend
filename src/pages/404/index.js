@@ -10,7 +10,6 @@ const useStyles = makeStyles({
     marginTop: 40
   },
   imageStyle: {
-    // width: '80%',
     padding: 40,
     borderRadius: '0.25em',
 
@@ -24,10 +23,9 @@ const useStyles = makeStyles({
 
 export default function FourOhNope() {
   const classes = useStyles();
-  // const [checked, setChecked] = useState(true);
+
 
   return (
-    <div>
       <Container fixed>
         <Typography variant="h3" gutterBottom className={classes.errorMessage}>
           You Failed your Investigation Check (404 Not Found)
@@ -39,6 +37,5 @@ export default function FourOhNope() {
           />
         </Slide>
       </Container>
-    </div>
   )
 }
