@@ -30,7 +30,7 @@ useEffect(() => {
         </div> 
         </span> : null}
         <div>
-          <TextField id="standard-basic" type="password" label="Password" name="password" value={props.password} onChange={props.handleInputChange} />
+          <TextField id="standard-basic" type="password" label="Password" name="password" value={props.email} onChange={props.handleInputChange} />
         </div>
         {/* {!props.login ? <span>
         <div>

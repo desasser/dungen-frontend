@@ -97,6 +97,7 @@ export default function MenuAppBar(props) {
       ...loginState,
       [name]: value
     })
+    console.log("hi buddy")
   }
 
   // const redirect = ()=>history.push("/dashboard")
