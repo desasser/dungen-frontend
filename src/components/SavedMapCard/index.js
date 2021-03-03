@@ -34,7 +34,7 @@ export default function SavedMapCard(props) {
         <CardMedia
           className={classes.media}
           image={props.image}
-          title="a tile"
+          alt="a tile"
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2" style={{fontFamily:'fantasy'}}>
