@@ -8,7 +8,8 @@ import HomeIcon from '@material-ui/icons/Home';
 import Typography from '@material-ui/core/Typography';
 import dragon from '../../images/968914319.jpg';
 import temple from '../../images/fantasy-wallpaper-psdvault-18.jpg';
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
+import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,13 +55,45 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '1.5em',
     margin: '20px',
     fontFamily: 'SpaceAndAstronomy',
-    // fontWeight: 'bold'
+    fontWeight: 'bold'
+  },
+  synHeaderSmall: {
+    paddingBottom: '0.5em',
+    fontFamily: 'SpaceAndAstronomy',
+    fontWeight: 'bold'
+  },
+  synopsisSmall: {
+    width: '100%',
+    marginLeft: '1em',
+    marginTop: '3em',
+    border: '0.5em #8eb1c7 solid',
+    borderRadius: '0.5em',
+    padding: '2em',
+    backgroundColor: 'white',
+    display: 'block'
+  },
+  buildButtonSmall: {
+    backgroundColor: '#eb4511',
+    height: '5em',
+    padding: '1em',
+    fontSize: '1.5em',
+    margin: '20px',
+    fontFamily: 'SpaceAndAstronomy',
+    marginLeft: '20%',
+    fontWeight: 'bold'
+  },
+  splashContentSmall: {
+    width: '90%',
+    marginLeft: '-4%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   splashContent: {
     width: '80%',
     margin: '0 auto',
-    // backgroundColor: 'pink',
     display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center'
   },
   splashTextOne: {
@@ -131,17 +164,35 @@ export default function Splash() {
             Butts
           </motion.div>
         </Container >
-        <Container className={classes.splashContent}>
-          <Container className={classes.synopsis}>
-            <Typography variant='h5' className={classes.synHeader}>
-              Dungen Building should be easy.
+        {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
+        <Hidden smUp>
+          <Container className={classes.splashContentSmall}>
+            <Container className={classes.synopsisSmall}>
+              <Typography variant='h5' className={classes.synHeaderSmall}>
+                Dungen Building should be easy.
                     </Typography>
-            <Typography variant="body2" >
-              A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
+              <Typography variant="body2" >
+                A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
                     </Typography>
+            </Container>
+            <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButtonSmall} disableRippe={true} variant="contained" />
           </Container>
-          <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButton} disableRippe={true} variant="contained" />
-        </Container>
+        </Hidden>
+        {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
+        <Hidden xsDown>
+          <Container className={classes.splashContent}>
+            <Container className={classes.synopsis}>
+              <Typography variant='h5' className={classes.synHeader}>
+                Dungen Building should be easy.
+                    </Typography>
+              <Typography variant="body2" >
+                A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
+                    </Typography>
+            </Container>
+            <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButton} disableRippe={true} variant="contained" />
+          </Container>
+        </Hidden>
+        {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
       </Grid>
     </div>
   )
