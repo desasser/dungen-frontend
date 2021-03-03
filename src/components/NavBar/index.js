@@ -12,11 +12,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import { Link } from "react-router-dom"
-import LoginModal from "../LoginModal"
-import API from "../../utils/API"
-import { useHistory } from 'react-router-dom'
-import { Snackbar } from '@material-ui/core';
+import { Link } from "react-router-dom";
+import LoginModal from "../LoginModal";
+import API from "../../utils/API";
+import { useHistory } from 'react-router-dom';
+import Container from '@material-ui/core/Container';
+import Hidden from '@material-ui/core/Hidden';
+import Button from '@material-ui/core/Button';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,24 +28,34 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     zIndex: 10,
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  menu: {
-    zIndex: 9999,
-  },
   title: {
     flexGrow: 1,
+    fontFamily: 'ESKARGOT',
+    cursor: 'pointer',
+    fontWeight: '700',
+    // marginLeft: '-10px'
   },
-
+  navBar: {
+    backgroundColor: '#8eb1c7',
+    color: 'black',
+    width: '100vw'
+  },
+  navLink: {
+    textDecoration: 'none',
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '20px',
+    marginLeft: '20px',
+    color: '#707078'
+  }
 }));
 
 export default function MenuAppBar(props) {
   const history = useHistory();
   const classes = useStyles();
-  const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [auth, setAuth] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [anchorXSEl, setAnchorXSEl] = useState(null);
 
   //======================================================================
   //Login/Sign Functions
@@ -197,6 +209,14 @@ export default function MenuAppBar(props) {
     setAnchorEl(null);
   };
 
+  const handleXSClick = (event) => {
+    setAnchorXSEl(event.currentTarget);
+  };
+
+  const handleXSClose = () => {
+    setAnchorXSEl(null);
+  };
+
   // const handleCloseModal = () => {
   //   setOpen(false);
   // };
@@ -217,33 +237,61 @@ export default function MenuAppBar(props) {
 
   return (
     <div className={classes.root}>
-
-      <AppBar position="static">
+      <AppBar position="static" className={classes.navBar} > {/*color='secondary'*/}
         <Toolbar>
+          {/* XS NAVIGATION */}
+          <Hidden smUp>
+            <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleXSClick}>
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorXSEl}
+              keepMounted
+              open={Boolean(anchorXSEl)}
+              onClose={handleXSClose}
+            >
+              {/* <Typography variant='h6'>Welcome {props.user.userName}</Typography> */}
+              <MenuItem onClick={handleXSClose}><Link to='/builder'>MAP BUILDER</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}><Link to='/dashboard'>SAVED MAPS</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}><Link>logout</Link></MenuItem>
+            </Menu>
+          </Hidden>
+          {/* XS NAVIGATION */}
 
-          <Link to="/builder" color="white" variant="body2">Map Builder </Link>
-          {/* {props.user.isLoggedIn ? <span><MenuItem onClick={handleClose}>Profile</MenuItem> </span>: null} */}
-          {props.user.isLoggedIn ? <span><Link to="/dashboard"> Saved Maps </Link>
-          </span> : null}
+          {/* NAVIGATION LINKS */}
+          <Hidden xsDown>
+            <Link to="/builder" color="white" variant="body2" className={classes.navLink}>Map Builder </Link>
+            {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
+            </span> : null}
+          </Hidden>
+          {/* NAVIGATION LINKS */}
 
-          <Typography variant="h4" className={classes.title} onClick={titleClick}>
+          {/* LOGO HEADER */}
+          <Typography variant='h3' className={classes.title} onClick={titleClick}>
             DunGen
           </Typography>
-          {props.user.isLoggedIn ? <Typography variant="h6">{`Welcome ${props.user.userName}`}</Typography> : null}
-          <FormGroup>
-            {!props.user.isLoggedIn ? <span> <LoginModal user={users} login={formSwitch} error={errorState} edge="start" onClick={logInPopUp}
-              handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn}
-            /> </span> : <span> <MenuItem onClick={logout}>
-              Logout?
+          {/* LOGO HEADER */}
+
+          {/* WELCOME USER */}
+          <Hidden xsDown>
+            {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
+            <FormGroup>
+              {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
+                handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+              /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
+                Logout?
               </MenuItem></span>}
-          </FormGroup>
-          {auth && (
-            <div>
-               {props.user.isLoggedIn ? <span> <AccountCircle /> </span> : null}
+            </FormGroup>
+            {auth && (
+              <div>
+                {props.user.isLoggedIn ? <span> <AccountCircle style={{ fontSize: '50px', color: '#eb4511ff' }} /> </span> : null}
+              </div>
+            )}
+          </Hidden>
+          {/* WELCOME USER */}
 
-
-            </div>
-          )}
+          
         </Toolbar>
       </AppBar>
     </div>
