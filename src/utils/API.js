@@ -40,7 +40,7 @@ const API = {
         return axios.get(`${URL_PREFIX}/api/usermaps/${userId}`)
     },
     getSingleMap: mapId => {
-        console.log(mapId);
+        // console.log(mapId);
         return axios.get(`${URL_PREFIX}/api/map/${mapId}`)
     },
     saveMap: title => {
@@ -50,6 +50,12 @@ const API = {
     saveMapTile: tile => {
         // console.log(tile);
         return axios.post(`${URL_PREFIX}/api/maptile`, tile)
+    },
+    updateMap: map => {
+        return axios.put(`${URL_PREFIX}/api/updateMap`, map);
+    },
+    updateMapTile: tile => {
+        return axios.put(`${URL_PREFIX}/api/maptile}`, tile)
     },
     deleteMap: mapId => {
         // console.log(URL_PREFIX);

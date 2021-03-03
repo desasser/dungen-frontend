@@ -5,12 +5,10 @@ import './style.scss'
 import Tile from '../Tile';
 import TileControlWidget from '../TileControlWidget'
 import GridCoordsOverlay from './GridCoordsOverlay'
+import API from '../../utils/API'
  
-export default function Grid({ addThisTile, loadThisMap }) {
-  const [loadedMapId, setLoadedMapId] = useState(null);
+export default function Grid({ addThisTile }) {
   const [mapLayout, setMapLayout] = useState([]);
-  const [prevTileIndex, setPrevTileIndex] = useState(0);
-  const [mapWidth, setMapWidth] = useState(0);
   const [todaysDate, setTodaysDate] = useState();
 
   React.useEffect(() => {
@@ -19,65 +17,40 @@ export default function Grid({ addThisTile, loadThisMap }) {
 
     let savedMap = getMapFromLocalStorage();
 
-    if(loadThisMap === null || loadThisMap === undefined) {
-      if(mapLayout.length === 0 && savedMap !== null && savedMap !== undefined && savedMap.layout.length > 0) {
-        // "re-index" the tiles so the 'i' key is in numeric order;
-        // the 'i' key/value is *only* for the grid display, and has no effect on the map itself
-        // also setting the displayControlWidget to false so when a map is loaded
-        // from localStorage, no control widgets are shown on load
-        savedMap.layout.map((tile) => {
-          tile.i = savedMap.layout.indexOf(tile).toString()
-          tile.displayControlWidget = false
-        });
-        setMapLayout(savedMap.layout);
-        setMapWidth(savedMap.mapWidth);
-        // this works because we're essentially re-indexing all the tiles for the map, from 0
-        // so the length (-1) === the index of the last tile object === lastTile.i
-        setPrevTileIndex( savedMap.layout.length - 1 );
-  
-      }
-    } else {
-      setLoadedMapId(loadThisMap.mapId);
-      setMapLayout([...loadThisMap.layout]);
+    if(mapLayout.length > 0) {
+      saveMapToLocalStorage();
+    } else if( savedMap !== null && savedMap.layout.length > 0 ) {
+      setMapLayout([...savedMap.layout]);
     }
 
-  },[]);
+  }, [mapLayout]);
 
   const getMapFromLocalStorage = () => {
     return localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
   }
 
-  const sortMapTiles = (asc) => {
-    let sortedMapLayout = mapLayout;
+  const saveMapToLocalStorage = (args) => {
+    let layout = [];
+    let title = "";
 
-    if(asc) {
-      sortedMapLayout = sortedMapLayout.sort( (a, b) => (a.x < b.x) ? 1 : -1);
-    } else {
-      sortedMapLayout = sortedMapLayout.sort((a, b) => (a.x > b.x) ? 1 : -1);
+    if(args !== undefined && args.layout !== undefined) {
+      layout = args.layout;
+    } 
+
+    if(args !== undefined && args.title !== undefined) {
+      title = args.title;
+    } 
+
+    const mapData = {
+      date: todaysDate, 
+      userid: 6, 
+      layout: layout.length > 0 ? layout : mapLayout, 
+      mapWidth: null, 
+      mapId: null, 
+      mapTitle: title
     }
-    
-    sortedMapLayout.map( obj => obj.i = sortedMapLayout.indexOf(obj).toString() );
 
-    // console.log(sortedMapLayout);
-    return sortedMapLayout;
-  }
-
-  const updateMapLayout = (layout) => {
-    if(mapLayout !== layout || mapLayout.length === 0) {
-      setMapLayout([...layout]);
-    }
-
-    const sortedMapLayout = sortMapTiles(true);
-    console.log(sortedMapLayout)
-    // setMapLayout(sortedMapLayout);
-    // getMapWidth();
-
-    localStorage.setItem('dungen_map', JSON.stringify({ date: todaysDate, userid: 1, layout: mapLayout, mapWidth: mapWidth, mapId: loadedMapId }));
-  }
-
-  const getMapWidth = () => {
-    const tilesSorted = sortMapTiles(true);
-    console.log(tilesSorted[0].x, tilesSorted[tilesSorted.length - 1].x);
+    localStorage.setItem('dungen_map', JSON.stringify(mapData));
   }
 
   /**
@@ -87,6 +60,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
    * 'item', however, returns the new x,y coords so it is useful and needs to be passed to createNewTile()
    */
   const handleOnDrop = (layout, item, e) => {
+    // console.log(item);
     let droppedItem = typeof item === "Array" ? item[0] : item;
     if(addThisTile !== undefined && addThisTile.tileid !== undefined) {
       createNewTile(droppedItem);
@@ -94,62 +68,41 @@ export default function Grid({ addThisTile, loadThisMap }) {
   }
 
   const createNewTile = (droppedItemData) => {
-    let newIndex = parseInt(prevTileIndex) > 0 ? parseInt(prevTileIndex) + 1 : 0;
-
-    if(mapLayout.length > 0) {
-      newIndex = parseInt(newIndex) + 1;
+    if(typeof droppedItemData === "Array") {
+      droppedItemData = droppedItemData[droppedItemData.length - 1];
     }
+
+    let newIndex = 0;
+    // console.log(mapLayout.length);
+    if(mapLayout.length > 0) {
+      newIndex = mapLayout.length;
+    }
+    // setPrevTileIndex(parseInt(newIndex));
 
     const newTileObj = {
       i: newIndex.toString(), // GridLayout expects this to be a string!
       tileId: addThisTile.tileid,
+      mapTileId: null,
       environment: addThisTile.environment,
       orientation: 0,
       mirrored: 1,
-      x: droppedItemData.x,
-      y: droppedItemData.y,
+      x: addThisTile.x !== null ? parseInt(addThisTile.x) : parseInt(droppedItemData.x),
+      y: addThisTile.y !== null ? parseInt(addThisTile.y) : parseInt(droppedItemData.y),
       bg: addThisTile.bg,
       w: 1,
       h: 1
     };
 
     if(newTileObj.tileId != null && newTileObj.tileId !== undefined && newTileObj.tileId !== "") {
-      // setMapLayout([...mapLayout, newTileObj]);
-      updateMapLayout([...mapLayout, newTileObj]);
-      setPrevTileIndex(newIndex);
-
-      if(mapLayout.length === 1) {
-        setMapWidth(1);
-      }
-
-      if(newTileObj.x > 0 && mapLayout.length > 1) {
-        getMapWidth();
-      }
+      setMapLayout([...mapLayout, newTileObj]);
     }
   }
 
-  // const handleOnLayoutChange = (layout) => {
-  //   setMapLayout([...mapLayout]);
-  // }
   const handleOnDragStop = (layout, oldItem, newItem, placeholder, e, element) => {
     mapLayout.map(tile => {
       if(tile.i === newItem.i) {
         tile.x = newItem.x
         tile.y = newItem.y
-      }
-    });
-
-    setMapLayout([...mapLayout]);
-  }
-
-  // this is the control widget for each tile, 
-  const toggleWidget = (tileKey) => {
-
-    mapLayout.map(mapTile => {
-      if(mapTile.i.toString() === tileKey) {
-        mapTile.displayControlWidget = !mapTile.displayControlWidget
-      } else {
-        mapTile.displayControlWidget = false
       }
     });
 
@@ -167,6 +120,43 @@ export default function Grid({ addThisTile, loadThisMap }) {
     toggleWidget(tile.dataset.tilekey);
   }
 
+  // this is the control widget for each tile, 
+  const toggleWidget = (tileKey) => {
+    mapLayout.map(mapTile => {
+      if(parseInt(mapTile.i) === parseInt(tileKey)) {
+        mapTile.displayControlWidget = !mapTile.displayControlWidget;
+      } else {
+        mapTile.displayControlWidget = false
+      }
+    });
+
+    setMapLayout([...mapLayout]);
+  }
+
+  const handleClickOutsideTile = (e) => {
+    // console.log(e.target);
+    let parent = e.target.closest("button");
+    if(parent !== null && parent.classList.contains("controlButton")) {
+      // console.log(parent);
+      let tile = e.target.closest(".tile-wrapper");
+      if(tile !== undefined && tile !== null) {
+        const tileData = {
+          i: tile.dataset.tilekey,
+          displayControlWidget: tile.dataset.displaywidget === "true" ? true : false
+        }
+        
+        handleWidgetButtonClick(parent.dataset.action, tileData);
+      }
+
+    } else {
+      // console.log(mapLayout);
+      let newLayout = [...mapLayout];
+      newLayout.map(tile => tile.displayControlWidget = false);
+
+      setMapLayout([...newLayout]);
+    }
+  }
+
   const handleWidgetButtonClick = (action, item) => {
     // console.log(action, item);
     // we're using opacity: 0 for the control widget to give it that fancy "imploding anim"
@@ -176,12 +166,12 @@ export default function Grid({ addThisTile, loadThisMap }) {
       const itemKey = item.i;
 
       if(action === "closeWidget") {
-        toggleWidget(itemKey.toString());
+        toggleWidget(itemKey);
   
-      } else if(action === "rotateRight") {
+      } else if(action === "rotateTileRight") {
         rotateTile(itemKey, "right");
   
-      } else if(action === "rotateLeft") {
+      } else if(action === "rotateTileLeft") {
         rotateTile(itemKey, "left");
   
       } else if(action === "deleteTile") {
@@ -194,32 +184,36 @@ export default function Grid({ addThisTile, loadThisMap }) {
   }
 
   const rotateTile = (tileKey, direction) => {
-    mapLayout.map(mapTile => {
+    let newLayout = [...mapLayout];
+    newLayout.map(mapTile => {
       if(mapTile.i.toString() === tileKey.toString()) {
-        
         if( parseInt(mapTile.orientation) === 270 || parseInt(mapTile.orientation)  === -270 ) {
           mapTile.orientation = 0;
         } else {
           mapTile.orientation = direction === "right" ? parseInt(mapTile.orientation) + 90 : parseInt(mapTile.orientation) - 90;
         }
+
+        // console.log(mapTile);
       }
     });
 
-    setMapLayout([...mapLayout]);
+    setMapLayout([...newLayout]);
   }
 
   const mirrorTile = (tileKey) => {
-    mapLayout.map(mapTile => {
+    let newLayout = [...mapLayout];
+    newLayout.map(mapTile => {
       if(mapTile.i.toString() === tileKey.toString()) {
         mapTile.mirrored = mapTile.mirrored === 1 ? -1 : 1;
       }
     });
 
-    setMapLayout([...mapLayout]);
+    setMapLayout([...newLayout]);
   }
 
   const removeTile = (tileKey) => {
-    let newMapLayout = mapLayout.filter(mapTile => mapTile.i !== tileKey);
+    let newMapLayout = [...mapLayout];
+    newMapLayout = newMapLayout.filter(mapTile => mapTile.i !== tileKey);
 
     setMapLayout([...newMapLayout]);
   }
@@ -251,6 +245,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
           data-grid={{...item}} 
           data-environment={item.environment} 
           data-tileid={item.tileId} 
+          data-maptileid={item.mapTileId}
           data-tilekey={item.i} 
           data-displaywidget={item.displayControlWidget}
           resizable="false"
@@ -258,7 +253,7 @@ export default function Grid({ addThisTile, loadThisMap }) {
           
           <Tile item={item} handleDoubleClick={handleDoubleClick} />
 
-          <TileControlWidget item={item} handleDoubleClick={handleDoubleClick} handleWidgetButtonClick={handleWidgetButtonClick} /> 
+          <TileControlWidget item={item} handleWidgetButtonClick={handleWidgetButtonClick} handleClickOutsideTile={handleClickOutsideTile} /> 
 
         </div>
       )}

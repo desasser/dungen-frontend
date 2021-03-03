@@ -116,7 +116,9 @@ export default function MenuAppBar(props) {
   const handleLogin = (data) => {
     setUserState({ ...users, isLoggedIn: data })
   }
-
+  const [errorState, setErrorState] = useState({
+        error: false
+  });
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -140,8 +142,12 @@ export default function MenuAppBar(props) {
         history.go(0)
       }).catch(error => {
         console.log(error);
+        setErrorState({
+          error: true
+    })
         localStorage.removeItem("token");
         console.log("token has been removed. Error Login. NavBar line: 123")
+        return error
       })
     } else {
       API.signup(loginState).then(res => {
@@ -158,6 +164,7 @@ export default function MenuAppBar(props) {
           userName: "",
           password: ""
         })
+        history.go(0)
       }).catch(error => {
         console.log(error);
         localStorage.removeItem("token");

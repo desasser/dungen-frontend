@@ -111,7 +111,7 @@ const useStyles = makeStyles({
 export default function TileControlWidget({ item, handleWidgetButtonClick, handleClickOutsideTile }) {
   const classes = useStyles();
 
-  const outsideClickClosesTileControlWidget = React.useRef();
+  const outsideClickClosesTileControlWidget = React.useRef(null);
 
   React.useEffect(() => {
     document.addEventListener( 'click', handleClickOutsideTile );
@@ -123,12 +123,12 @@ export default function TileControlWidget({ item, handleWidgetButtonClick, handl
   }, []);
 
   return (
-    <div data-tilekey={item.i} data-tileid={item.tileId} className={item.displayControlWidget ? `${classes.tileControlWidget} ${classes.activeWidget}` : classes.tileControlWidget}>
+    <div ref={outsideClickClosesTileControlWidget} data-tilekey={item.i} data-tileid={item.tileId} className={item.displayControlWidget ? `${classes.tileControlWidget} ${classes.activeWidget}` : classes.tileControlWidget}>
 
       {item.displayControlWidget === true &&
         <>
           <Tooltip title="Close Controls" placement="top">
-            <IconButton ref={outsideClickClosesTileControlWidget} data-action="closeControls" aria-label="close" className="controlButton closeWidget">
+            <IconButton data-action="closeWidget" aria-label="close" className="controlButton closeWidget">
               <CloseIcon />
             </IconButton>
           </Tooltip>
