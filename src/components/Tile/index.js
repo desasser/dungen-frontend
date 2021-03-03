@@ -1,26 +1,38 @@
-import { useState, useEffect } from 'react'
-import SVG from './SVG'
-import Rectangle from './Rectangle'
+import React from 'react'
+import './style.scss'
 
-export default function Tile(props) {
-  const color = props.color !== undefined ? props.color : "#000";
+export default function Tile({item, handleDoubleClick }) {
+  const [inlineStyles, setInlineStyles] = React.useState({
+    background: "#f00",
+    transform: `rotate(${item.orientation}deg) scale(1,1)`,
+    backgroundSize: "contain",
+    backgroundPosition: "center center",
+    backgroundRepeat: "no-repeat"
+  })
 
-let placeholderStyle = {
-  width: 100,
-  height: 100,
-  backgroundColor: 'tomato',
-  margin:25
-}
+  React.useEffect(() => {
+    console.log("TILE", item.orientation);
+    let scale = "scale(1,1)";
+    if(item.mirror !== undefined && item.mirror !== null) {
+      scale = (item.orientation == 90 || item.orientation == -90 || item.orientation == 270 || item.orientation == -270) ? `scaleY(${item.mirror})` : `scaleX(${item.mirror})`;
+    }
 
-// export default function Tile() {
+    let newStyles = {
+      ...inlineStyles,
+      transform: `rotate(${item.orientation}deg) ${scale}`
+    }
+
+    if(item.bg.substring(0,1) === "#") {
+      newStyles.backgroundColor = item.bg;
+    } else {
+      newStyles.backgroundImage = `url(${item.bg})`;
+    }
+
+    setInlineStyles({...newStyles})
+
+  }, [item.orientation, item.mirror]);
+    
   return (
-    <div style={placeholderStyle}>
-     </div> 
-  //  return (
-  //   <div>
-  //     <SVG title="square" desc="a tile" width="100%" height="100%" minX={50} minY={50} style={{display: "block"}}>
-  //       <Rectangle width="100" height="100" fill={color} x={0} y={0} />
-  //     </SVG>
-  //   </div>
-  // )
-  )}
+    <div className={item.displayControlWidget ? `tile activeTile` : `tile`} style={inlineStyles} onDoubleClick={(e) => handleDoubleClick(e)}></div>
+  );
+}

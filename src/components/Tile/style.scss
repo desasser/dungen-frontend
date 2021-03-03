@@ -1,0 +1,90 @@
+.react-grid-item {
+  width: 100px;
+  height: 100px;
+  transition: all 200ms ease;
+  transition-property: left, top;
+  box-sizing: border-box;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+.react-grid-item img {
+  pointer-events: none;
+  user-select: none;  
+}
+.react-grid-item.cssTransforms {
+  transition-property: transform;
+}
+.react-grid-item.resizing {
+  z-index: 1;
+  will-change: width, height;
+}
+
+.react-grid-item.react-draggable-dragging {
+  transition: none;
+  z-index: 3;
+  will-change: transform;
+  position: relative;
+}
+
+.react-grid-item.dropping {
+  visibility: hidden;
+  position: relative;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: #e0815e;
+  // opacity: 0.2;
+  transition-duration: 100ms;
+  z-index: 2;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.droppable-element {
+  width: 100px;
+  height: 100px;
+  background-color: tomato;
+  color: white;
+  font-weight: bold;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+.mapGrid .tile {
+  content: "";
+  width: 100px !important;
+  height: 100px !important;
+
+  &::after {
+    position: absolute;
+    background: transparent;
+    display: block;
+    content: "";
+    margin: 0;
+    padding: 0;
+    // left: -2px;
+    // top: -2px;
+    width: 92px;
+    height: 92px;
+    border: 4px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  &.activeTile::after,
+  &:hover::after {
+    z-index: 1000;
+    border-color: firebrick;
+    transition: all 0.3s ease;
+  }
+
+  &.activeTile::after {
+    z-index: 1000;
+    border-color: greenyellow;
+    transition: all 0.3s ease;
+  }
+}

@@ -1,0 +1,19 @@
+.controlButton {
+  display: none;
+  top: "-50%";
+  left: "-50%";
+  width: 0;
+  height: 0;
+  transition: all 0.3s ease-out;
+
+  & .MuiSvgIcon-root {
+    background: white;
+    border-radius: 50%;
+  }
+  &.closeWidget,
+  &.deleteTile,
+  &.rotateTileLeft,
+  &.rotateTileRight {
+    transition: all 0.3s ease;
+  }
+}

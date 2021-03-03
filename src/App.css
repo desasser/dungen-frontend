@@ -1,6 +1,14 @@
 body {
   margin: 0;
   padding: 0;
+  background-color: #c1bfb5;
+  background: -webkit-linear-gradient(140deg, #c1bfb5 70.8%, #707078 70.8%);
+  background: -o-linear-gradient(140deg, #c1bfb5 70.8%, #707078 70.8%);
+  background: -moz-linear-gradient(140deg, #c1bfb5 70.8%, #707078 70.8%);
+  background: linear-gradient(140deg, #c1bfb5 70.8%, #707078 70.8%);
+  background-repeat:no-repeat;
+  height: 100vh;
+  background-attachment: fixed;
 }
 
 .App {
