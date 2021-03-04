@@ -7,7 +7,7 @@ import TileControlWidget from '../TileControlWidget'
 import GridCoordsOverlay from './GridCoordsOverlay'
 import API from '../../utils/API'
  
-export default function Grid({ addThisTile, loadThisMap }) {
+export default function Grid({ addThisTile, loadThisMap, viewState }) {
   const [dragging, setDragging] = useState(false);
   const [mapLayout, setMapLayout] = useState([]);
   const [todaysDate, setTodaysDate] = useState();
@@ -379,8 +379,8 @@ export default function Grid({ addThisTile, loadThisMap }) {
   }
 
   return (
-    <div id="mapGrid" style={{flex: "1 0 70%"}}>
-      <GridCoordsOverlay width={1200} colWidth={100} rowHeight={100} />
+    <div id={!viewState ? "mapGrid" : "mapGridViewMode"} style={{flex: "1 0 70%"}}>
+      <GridCoordsOverlay width={1200} colWidth={100} rowHeight={100} viewState={viewState}/>
 
       <GridLayout 
         className="mapGrid"
