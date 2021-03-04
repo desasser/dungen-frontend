@@ -113,7 +113,7 @@ export default function MapBuilder(props) {
   const [lockState, setLockState] = useState(false);
   const [titleState, setTitleState] = useState(false);
   // for the map title
-  const [mapTitle, setMapTitle] = useState("Rambo's Throne of Marshmallows");
+  const [mapTitle, setMapTitle] = useState("Untitled Map");
   // for adding a new tile to the map grid
   const [addThisTile, setAddThisTile] = useState({
     tileid: null,
