@@ -78,7 +78,7 @@ const useStyles = makeStyles({
 })
 
 //black and pink #232E21 #F42272
-export default function MapBuilder() {
+export default function MapBuilder(props) {
   // for tile "drawer"
   const [lockState, setLockState] = useState(false);
   const [titleState, setTitleState] = useState(false);
@@ -93,7 +93,7 @@ export default function MapBuilder() {
     x: null,
     y: null
   });
-  const [loadedMapData, setLoadedMapData] = useState();
+  const [loadedMapData, setLoadedMapData] = useState({ name: "" });
 
   const classes = useStyles();
 
@@ -158,7 +158,7 @@ export default function MapBuilder() {
       // we should probably ask the user if they want to save a NEW map
       // or save over the existing map
       // but that's a "later guy" problem, imho
-      if( loadedMapData.name !== mapTitle ) {
+      if( savedMap.mapTitle !== mapTitle ) {
         API.updateMap({id: id, name: mapTitle})
         .then(results => {
           // map title updated!
