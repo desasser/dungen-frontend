@@ -391,10 +391,10 @@ export default function MapBuilder(props) {
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
           </IconBtn> */}
           <Container className={classes.btnWrapper}>
-            {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} /> */}
-            <ActionBtn name='RENDER' classes={classes.actionBtn} action={renderMap} />
+            {/* <ActionBtn name='CLEAR' classes={classes.clearBtn} action={clearMap} />
+            <ActionBtn name='RENDER' classes={classes.renderBtn} action={renderMap} /> */}
             <ActionBtn name={!viewState ? 'PREVIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
-            <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
+            <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMap} />
           </Container>
         </Container>
         <SaveBar saved={saved} toggleSavedState={toggleSavedState} />

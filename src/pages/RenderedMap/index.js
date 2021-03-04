@@ -140,7 +140,6 @@ export default function RenderedMap(props) {
         {mapData.mapTitle}
       </Typography>
       <Container className={classes.largeMap} >
-        <img src={mapData.image_url} alt={mapData.mapTitle} />
         {/* TODO: Add ternary operator to check if the image has finished rendering or not */}
         {!rendered ? <FancyLinearProgress /> : <img src={mapData.img_url} alt={mapData.mapTitle} />}
       </Container>
