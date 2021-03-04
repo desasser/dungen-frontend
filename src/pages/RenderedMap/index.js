@@ -115,15 +115,18 @@ export default function RenderedMap(props) {
     console.log("RENDER THIS ID:", id)
     if (id !== undefined) {
       API.renderMap(id)
-        .then(mapData => {
-          console.log(mapData);
-          setMapData(mapData.data);
-          setRendered(true);
-          // TODO:  [IN MAP CONTROLLER] update map with rendered image URL as thumbnail image
-          // AND do a check before running this render function for a thumbnail
-          // ? QUESTION ? is there a way to check file creation date, to check against the map's updatedAt field?
+      .then(mapData => {
+        console.log("mapdata", mapData.data);
+        setMapData(mapData.data);
+        setRendered(true);
+
+        API.updateMap({id: mapData.data.mapId, image_url: mapData.data.image_url})
+        .then(results => {
+          console.log("UPDATED MAP WITH IMAGE", results);
         })
         .catch(err => console.error(err));
+      })
+      .catch(err => console.error(err));
     }
   }, [])
 
@@ -137,6 +140,7 @@ export default function RenderedMap(props) {
         {mapData.mapTitle}
       </Typography>
       <Container className={classes.largeMap} >
+        <img src={mapData.image_url} alt={mapData.mapTitle} />
         {/* TODO: Add ternary operator to check if the image has finished rendering or not */}
         {!rendered ? <FancyLinearProgress /> : <img src={mapData.img_url} alt={mapData.mapTitle} />}
       </Container>
