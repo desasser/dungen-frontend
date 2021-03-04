@@ -143,6 +143,7 @@ export default function MapBuilder(props) {
   const saveMapToDB = () => {
     let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
     console.log(id, id === null, id === undefined);
+    console.log('check me', props);
     if (props.users.isLoggedIn === false) {
       setAuthState(true)
     }
