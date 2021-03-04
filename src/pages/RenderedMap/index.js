@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import ActionBtn from '../../components/ActionBtn'
@@ -57,11 +57,41 @@ const useStyles = makeStyles({
     backgroundColor: '#ABC686',
     color: '#E52977',
     margin: "0 1rem"
-  }
+  },
+  actionBtn: {
+    '&:hover': {
+      color: 'white',
+      backgroundColor: '#eb4511'
+    },
+    width: 100,
+    height: 60,
+    backgroundColor: 'white',
+    color: '#eb4511',
+    margin: 20,
+    fontSize: '18px',
+  },
+  routerBtn: {
+    '&:hover': {
+      color: '#36434b',
+      backgroundColor: 'white'
+    },
+    width: 100,
+    height: 60,
+    backgroundColor: '#36434b',
+    color: '#eb4511',
+    marginTop: 20,
+    fontSize: '18px',
+  },
+  title: {
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '50px',
+    marginTop: 20,
+  },
 })
 
 export default function RenderedMap(props) {
   const classes = useStyles();
+  const history = useHistory();
 
   const [mapData, setMapData] = React.useState({img_url: "", mapTitle: "", mapId: null})
 
@@ -82,19 +112,23 @@ export default function RenderedMap(props) {
       .catch(err => console.error(err));
     }
   }, [])
+
+  const editButtonAction = () => {
+    history.goBack();
+  }
   
   return (
     <Container>
-      <Typography variant='h2' style={{marginTop: "2rem"}}>
+      <Typography variant='h2' className={classes.title}>
         {mapData.mapTitle}
       </Typography>
       <Container className={classes.largeMap} >
         <img src={mapData.img_url} alt={mapData.mapTitle} />
       </Container>
-        <ActionBtn name='SAVE' classes={classes.saveBtn} />
-        <RouterBtn name='EDIT' classes={classes.editBtn} />
-        <RouterBtn name='ORDER NOW' classes={classes.orderBtn} />
-        <RouterBtn name='CLEAR' classes={classes.clearBtn} />
+        {/* <ActionBtn name='SAVE' classes={classes.actionBtn} /> */}
+        <ActionBtn name='EDIT' classes={classes.actionBtn} action={editButtonAction}/>
+        {/* <RouterBtn name='ORDER NOW' classes={classes.orderBtn} />
+        <RouterBtn name='CLEAR' classes={classes.clearBtn} /> */}
 
     </Container>
   )
