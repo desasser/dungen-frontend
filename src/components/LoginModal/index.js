@@ -45,12 +45,12 @@ const useStyles = makeStyles((theme) => ({
   },
   switchBtn: {
     '&:hover' : {
-      color: '#eb4511',
+      color: '#36434b',
       backgroundColor: 'white'
     },
     marginBottom: '10px',
     height: 40,
-    backgroundColor: '#eb4511',
+    backgroundColor: '#36434b',
     color: 'white',
     fontSize: '16px',
     fontFamily: 'SpaceAndAstronomy'
