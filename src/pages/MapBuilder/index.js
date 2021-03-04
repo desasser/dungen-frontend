@@ -15,6 +15,7 @@ import Button from '@material-ui/core/Button';
 import SaveBar from '../../components/SaveBar'
 import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
+import snail from '../../images/DisapproverSnail.png';
 
 const useStyles = makeStyles({
   tileGrid: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
     color: '#E4572E',
   },
   actionBtn: {
-    '&:hover' :{
+    '&:hover': {
       color: 'white',
       backgroundColor: '#eb4511'
     },
@@ -42,11 +43,15 @@ const useStyles = makeStyles({
     fontSize: '18px',
   },
   routerBtn: {
+    '&:hover': {
+      color: '#36434b',
+      backgroundColor: 'white'
+    },
     width: 100,
     height: 60,
     backgroundColor: '#36434b',
     color: '#eb4511',
-    margin: 20,
+    marginTop: 20,
     fontSize: '18px',
   },
   titleInput: {
@@ -80,6 +85,25 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'flex-end',
     width: '94.5%'
+  },
+  imageStyle: {
+    padding: 40,
+    borderRadius: '0.25em',
+    width: '80%',
+    height: 'auto'
+  },
+  mobileMapBuilder: {
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '40px',
+    marginTop: 20
+  },
+  mobileMapBuilderSub: {
+    fontSize: '14px',
+    fontFamily: 'SpaceAndAstronomy'
+  },
+  subTextWrapper: {
+    width: '60%',
+    marginTop: 10
   }
 })
 
@@ -89,7 +113,7 @@ export default function MapBuilder(props) {
   const [lockState, setLockState] = useState(false);
   const [titleState, setTitleState] = useState(false);
   // for the map title
-  const [mapTitle, setMapTitle] = useState("Rambo's Throne of Marshmallows");
+  const [mapTitle, setMapTitle] = useState("Untitled Map");
   // for adding a new tile to the map grid
   const [addThisTile, setAddThisTile] = useState({
     tileid: null,
@@ -99,11 +123,14 @@ export default function MapBuilder(props) {
     x: null,
     y: null
   });
-  const [loadedMapData, setLoadedMapData] = useState();
+  const [loadedMapData, setLoadedMapData] = useState({ name: "" });
 
   const [saved, setSavedState] = useState(false);
 
   const [auth, setAuthState] = useState(false)
+
+  // STATE to track view or build mode
+  const [viewState, setViewState] = useState(false);
 
   const classes = useStyles();
 
@@ -123,6 +150,8 @@ export default function MapBuilder(props) {
         .catch(err => console.error(err));
     }
   }, []);
+  const logIn = props.users.isLoggedIn
+  console.log(logIn)
 
   const handleLock = () => {
     if (lockState) {
@@ -140,16 +169,21 @@ export default function MapBuilder(props) {
     setAuthState(false)
   }
 
-  const saveMapToDB = () => {
+  const saveMap = () => {
+    saveMapToDB(false);
+  }
+
+  const saveMapToDB = (render) => {
     let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
     console.log(id, id === null, id === undefined);
-    if (props.users.isLoggedIn === false) {
+    console.log('check me', props);
+    let results;
+
+    if (logIn === false) {
       setAuthState(true)
     }
-
     if (id === null || id === undefined) {
       console.log("NO ID, SAVING NEW MAP")
-      let results;
       // console.log(e.target);
       const mapLayout = savedMap.layout;
 
@@ -169,8 +203,9 @@ export default function MapBuilder(props) {
                 .catch(err => console.error(err));
             }
           }
-          setSavedState(true)
-          history.push(`/builder/${newMapId}`)
+          setSavedState(true);
+          
+          return newMapId;
         })
         .catch(err => console.error(err));
 
@@ -180,16 +215,15 @@ export default function MapBuilder(props) {
       // or save over the existing map
       // but that's a "later guy" problem, imho
       if (savedMap.mapTitle !== mapTitle) {
-        API.updateMap({ id: id, name: mapTitle })
+        results = API.updateMap({ id: id, name: mapTitle })
           .then(results => {
             setSavedState(true)
             // map title updated!
           })
           .catch(err => console.error(err));
+        }
 
-      }
-
-      API.deleteAllMapTilesForMap(id)
+      results = API.deleteAllMapTilesForMap(id)
         .then(results => {
           console.log(results);
 
@@ -198,12 +232,26 @@ export default function MapBuilder(props) {
             let tile = newMapTile(id, savedMap.layout[i]);
             API.saveMapTile(tile)
               .then(results => {
+                setSavedState(true)
                 console.log(results);
               })
               .catch(err => console.error(err));
           }
+
+          return id;
+
         })
         .catch(err => console.error(err));
+
+        results.then(mapId => {
+      
+          console.log("TO RENDER, OR NOT TO RENDER?", render);
+          if(render) {
+            history.push(`/render/${mapId}`);
+          } else {
+            history.push(`/builder/${mapId}`);
+          }
+        });
 
       // for(var i = 0; i < savedMap.layout.length; i++) {
       //   // console.log(savedMap.layout[i]);
@@ -257,8 +305,14 @@ export default function MapBuilder(props) {
     return mapTiles;
   }
 
-  const viewMap = (e) => {
-    console.log(e.target);
+  const renderMap = (e) => {
+    // true = render map after saving
+    console.log("RENDER THE DAMN MAP")
+    saveMapToDB(true);
+  }
+  
+  const viewMap = () => {
+    setViewState((prev) => !prev)
   }
 
   const clearMap = (e) => {
@@ -281,35 +335,61 @@ export default function MapBuilder(props) {
     setTitleState(false);
   }
 
-  return (
-    <Container>
-      <Container>
-        <Container className={classes.titleWrapper}>
-          <Typography variant='h2' className={classes.title}>{mapTitle}</Typography>
-          {!titleState ? <Button onClick={() => setTitleState(true)} className={classes.titleBtn}>Edit Title</Button> :
-            <form onSubmit={handleTitleSubmit}>
-              <TextField id="filled-basic" label="Map Title" variant="filled" value={mapTitle} onChange={(e) => setMapTitle(e.target.value)} className={classes.titleInput} />
-            </form>}
-        </Container>
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
 
-        {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
-        <SliderDrawer handleDraggableItem={handleDraggableItem} />
-        {/* GRID BOX */}
-        <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginTop: '25px', padding: '0px' }}>
-          <Grid addThisTile={addThisTile} loadThisMap={id} />
-        </Container>
-        {/* TODO: This functionality is for future development */}
-        {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
+  console.log('check me out!', navigator.userAgent);
+  console.log('mobile?', isMobile);
+
+  return (
+    !isMobile ?
+      (<Container>
+        <Container>
+          <Container className={classes.titleWrapper}>
+            <Typography variant='h2' className={classes.title}>{mapTitle}</Typography>
+            {!titleState ? <Button onClick={() => setTitleState(true)} className={classes.titleBtn}>Edit Title</Button> :
+              <form onSubmit={handleTitleSubmit}>
+                <TextField id="filled-basic" label="Map Title" variant="filled" value={mapTitle} onChange={(e) => setMapTitle(e.target.value)} className={classes.titleInput} />
+              </form>}
+          </Container>
+
+          {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
+          <SliderDrawer handleDraggableItem={handleDraggableItem} />
+          {/* GRID BOX */}
+          <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginTop: '25px', padding: '0px' }}>
+            <Grid addThisTile={addThisTile} loadThisMap={id} viewState={viewState} />
+          </Container>
+          {/* TODO: This functionality is for future development */}
+          {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
-        </IconBtn> */}
-        <Container className={classes.btnWrapper}>
-          {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} />
-          <RouterBtn name='VIEW' classes={classes.routerBtn} action={viewMap} /> */}
-          <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
+          </IconBtn> */}
+          <Container className={classes.btnWrapper}>
+            {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} /> */}
+            <ActionBtn name='RENDER' classes={classes.routerBtn} action={renderMap} />
+            <ActionBtn name={!viewState ? 'VIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
+            <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
+          </Container>
         </Container>
-      </Container>
-      <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
-      <AuthBar auth={auth} toggleAuthState={toggleAuthState} />
-    </Container>
+        <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
+        <AuthBar auth={auth} toggleAuthState={toggleAuthState} />
+      </Container>) :
+      (
+        <Container>
+          <Typography variant='h3' className={classes.mobileMapBuilder}>
+            Sorry, you can't make maps on mobile... yet...
+        </Typography>
+          <Container className={classes.subTextWrapper}>
+            <Typography variant='h6' className={classes.mobileMapBuilderSub}>
+              Besides, do you really want to build a map with your thumb?
+        </Typography>
+          </Container>
+          <img
+            src={snail}
+            className={classes.imageStyle}
+          />
+        </Container>
+      )
+
   )
 }

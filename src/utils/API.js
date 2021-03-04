@@ -66,6 +66,9 @@ const API = {
     },
     deleteAllMapTilesForMap: mapId => {
         return axios.delete(`${URL_PREFIX}/api/deletemaptilebymap/${mapId}`)
+    },
+    renderMap: mapId => {
+        return axios.get(`${URL_PREFIX}/api/rendermap/${mapId}`)
     }
 }
 
