@@ -75,6 +75,9 @@ export default function RenderedMap(props) {
       .then(mapData => {
         console.log(mapData);
         setMapData(mapData.data);
+        // TODO:  [IN MAP CONTROLLER] update map with rendered image URL as thumbnail image
+        // AND do a check before running this render function for a thumbnail
+        // ? QUESTION ? is there a way to check file creation date, to check against the map's updatedAt field?
       })
       .catch(err => console.error(err));
     }
