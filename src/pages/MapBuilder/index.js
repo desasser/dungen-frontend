@@ -42,11 +42,15 @@ const useStyles = makeStyles({
     fontSize: '18px',
   },
   routerBtn: {
+    '&:hover' :{
+      color: '#36434b',
+      backgroundColor: 'white'
+    },
     width: 100,
     height: 60,
     backgroundColor: '#36434b',
     color: '#eb4511',
-    margin: 20,
+    marginTop: 20,
     fontSize: '18px',
   },
   titleInput: {
@@ -105,6 +109,9 @@ export default function MapBuilder(props) {
 
   const [auth, setAuthState] = useState(false)
 
+  // STATE to track view or build mode
+  const [viewState, setViewState] = useState(false);
+
   const classes = useStyles();
 
   const history = useHistory();
@@ -142,8 +149,6 @@ export default function MapBuilder(props) {
 
   const saveMapToDB = () => {
     let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
-    console.log(id, id === null, id === undefined);
-    console.log('check me', props);
     if (props.users.isLoggedIn === false) {
       setAuthState(true)
     }
@@ -258,8 +263,8 @@ export default function MapBuilder(props) {
     return mapTiles;
   }
 
-  const viewMap = (e) => {
-    console.log(e.target);
+  const viewMap = () => {
+    setViewState((prev) => !prev)
   }
 
   const clearMap = (e) => {
@@ -297,15 +302,15 @@ export default function MapBuilder(props) {
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
         <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginTop: '25px', padding: '0px' }}>
-          <Grid addThisTile={addThisTile} loadThisMap={id} />
+          <Grid addThisTile={addThisTile} loadThisMap={id} viewState={viewState}/>
         </Container>
         {/* TODO: This functionality is for future development */}
         {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
         </IconBtn> */}
         <Container className={classes.btnWrapper}>
-          {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} />
-          <RouterBtn name='VIEW' classes={classes.routerBtn} action={viewMap} /> */}
+          {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} /> */}
+          <ActionBtn name={!viewState ? 'VIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
           <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
         </Container>
       </Container>
