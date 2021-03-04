@@ -12,6 +12,8 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import SaveBar from '../../components/SaveBar'
+import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
 
 const useStyles = makeStyles({
@@ -28,10 +30,14 @@ const useStyles = makeStyles({
     color: '#E4572E',
   },
   actionBtn: {
+    '&:hover': {
+      color: 'white',
+      backgroundColor: '#eb4511'
+    },
     width: 100,
     height: 60,
-    backgroundColor: '#eb4511',
-    color: '#36434b',
+    backgroundColor: 'white',
+    color: '#eb4511',
     margin: 20,
     fontSize: '18px',
   },
@@ -73,7 +79,7 @@ const useStyles = makeStyles({
   btnWrapper: {
     display: 'flex',
     justifyContent: 'flex-end',
-    width: '80%'
+    width: '94.5%'
   }
 })
 
@@ -95,24 +101,30 @@ export default function MapBuilder(props) {
   });
   const [loadedMapData, setLoadedMapData] = useState({ name: "" });
 
+  const [saved, setSavedState] = useState(false);
+
+  const [auth, setAuthState] = useState(false)
+
   const classes = useStyles();
 
   const history = useHistory();
   let { id } = useParams();
 
   React.useEffect(() => {
-    if(id !== undefined) {
+    if (id !== undefined) {
       API.getSingleMap(id)
-      .then(res => {
-        // console.log(res)
-        if(res.data !== "") {
-          setMapTitle(res.data.name);
-          setLoadedMapData(res.data);
-        }
-      })
-      .catch(err => console.error(err));
+        .then(res => {
+          // console.log(res)
+          if (res.data !== "") {
+            setMapTitle(res.data.name);
+            setLoadedMapData(res.data);
+          }
+        })
+        .catch(err => console.error(err));
     }
   }, []);
+  const logIn = props.users.isLoggedIn
+  console.log(logIn)
 
   const handleLock = () => {
     if (lockState) {
@@ -122,67 +134,80 @@ export default function MapBuilder(props) {
     }
   }
 
+  const toggleSavedState = () => {
+    setSavedState(false)
+  }
+
+  const toggleAuthState = () => {
+    setAuthState(false)
+  }
+
   const saveMapToDB = () => {
     let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
     console.log(id, id === null, id === undefined);
-
-    if( id === null || id === undefined ) {
+    console.log('check me', props);
+    if (logIn === false) {
+      setAuthState(true)
+    }
+    if (id === null || id === undefined) {
       console.log("NO ID, SAVING NEW MAP")
       let results;
       // console.log(e.target);
       const mapLayout = savedMap.layout;
-      
-      results = API.saveMap({UserId: 6, name: mapTitle, image_url: ""})
-      .then(savedMap => {
-        // console.log(savedMap.data);
-        const newMapId = savedMap.data.id;
-        
-        const newMapTiles = createMapTiles(newMapId);
 
-        for(var i = 0; i < newMapTiles.length; i++) {
-          if(newMapTiles[i].TileId !== null) {
-            API.saveMapTile(newMapTiles[i])
-            .then(savedMapTile => {
-              // mapTile successfully saved!
-            })
-            .catch(err => console.error(err));
+      results = API.saveMap({ UserId: props.users.id, name: mapTitle, image_url: "" })
+        .then(savedMap => {
+          // console.log(savedMap.data);
+          const newMapId = savedMap.data.id;
+
+          const newMapTiles = createMapTiles(newMapId);
+
+          for (var i = 0; i < newMapTiles.length; i++) {
+            if (newMapTiles[i].TileId !== null) {
+              API.saveMapTile(newMapTiles[i])
+                .then(savedMapTile => {
+                  // mapTile successfully saved!
+                })
+                .catch(err => console.error(err));
+            }
           }
-        }
-        
-        history.push(`/builder/${newMapId}`)
-      })
-      .catch(err => console.error(err));
+          setSavedState(true)
+          history.push(`/builder/${newMapId}`)
+        })
+        .catch(err => console.error(err));
 
     } else {
       console.log("ID PROVIDED, SAVING MAP TILES FOR SPECIFIED MAP")
       // we should probably ask the user if they want to save a NEW map
       // or save over the existing map
       // but that's a "later guy" problem, imho
-      if( savedMap.mapTitle !== mapTitle ) {
-        API.updateMap({id: id, name: mapTitle})
-        .then(results => {
-          // map title updated!
-        })
-        .catch(err => console.error(err));
+      if (savedMap.mapTitle !== mapTitle) {
+        API.updateMap({ id: id, name: mapTitle })
+          .then(results => {
+            setSavedState(true)
+            // map title updated!
+          })
+          .catch(err => console.error(err));
 
       }
 
       API.deleteAllMapTilesForMap(id)
-      .then(results => {
-        console.log(results);
+        .then(results => {
+          console.log(results);
 
-        for(var i = 0; i < savedMap.layout.length; i++) {
-          // console.log(savedMap.layout[i]);
-          let tile = newMapTile(id, savedMap.layout[i]);
-          API.saveMapTile(tile)
-          .then(results => {
-            console.log(results);
-          })
-          .catch(err => console.error(err));
-        }
-      })
-      .catch(err => console.error(err));
-      
+          for (var i = 0; i < savedMap.layout.length; i++) {
+            // console.log(savedMap.layout[i]);
+            let tile = newMapTile(id, savedMap.layout[i]);
+            API.saveMapTile(tile)
+              .then(results => {
+                setSavedState(true)
+                console.log(results);
+              })
+              .catch(err => console.error(err));
+          }
+        })
+        .catch(err => console.error(err));
+
       // for(var i = 0; i < savedMap.layout.length; i++) {
       //   // console.log(savedMap.layout[i]);
       //   let tile = newMapTile(id, savedMap.layout[i]);
@@ -227,7 +252,7 @@ export default function MapBuilder(props) {
   const createMapTiles = (mapId) => {
     const mapLayout = JSON.parse(localStorage.getItem('dungen_map')).layout;
     let mapTiles = [];
-    for(var i = 0; i < mapLayout.length; i++) {
+    for (var i = 0; i < mapLayout.length; i++) {
       const tile = newMapTile(mapId, mapLayout[i]);
       mapTiles.push(tile);
     }
@@ -273,7 +298,7 @@ export default function MapBuilder(props) {
         {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
         <SliderDrawer handleDraggableItem={handleDraggableItem} />
         {/* GRID BOX */}
-        <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginLeft: '0px', marginTop: '25px', padding: '0px' }}>
+        <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginTop: '25px', padding: '0px' }}>
           <Grid addThisTile={addThisTile} loadThisMap={id} />
         </Container>
         {/* TODO: This functionality is for future development */}
@@ -281,11 +306,13 @@ export default function MapBuilder(props) {
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
         </IconBtn> */}
         <Container className={classes.btnWrapper}>
-          <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} />
-          <RouterBtn name='VIEW' classes={classes.routerBtn} action={viewMap} />
+          {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} />
+          <RouterBtn name='VIEW' classes={classes.routerBtn} action={viewMap} /> */}
           <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
         </Container>
       </Container>
+      <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
+      <AuthBar auth={auth} toggleAuthState={toggleAuthState} />
     </Container>
   )
 }

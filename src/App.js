@@ -5,6 +5,7 @@ import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
 import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
+import Login from "./pages/Login";
 import Splash from "./pages/Splash/index"
 import Nope from "./pages/503"
 import FourOhNope from "./pages/404"
@@ -121,18 +122,18 @@ function App() {
     }
   };
 
-  // const signUpBtn = click => {
-  //   console.log(click)
-  //   if (formSwitch.login === true) {
-  //     setFormSwitch({ login: false })
-  //     setFormMsg({ Msg: "Create an Account" })
-  //     setHapticBtn({ Btn: "Switch to: Login" })
-  //   } else {
-  //     setFormMsg({ Msg: "Please Login" })
-  //     setHapticBtn({ Btn: "Switch to: Sign Up" })
-  //     setFormSwitch({ login: true })
-  //   }
-  // }
+  const signUpBtn = click => {
+    console.log(click)
+    if (formSwitch.login === true) {
+      setFormSwitch({ login: false })
+      setFormMsg({ Msg: "Create an Account" })
+      setHapticBtn({ Btn: "Switch to: Login" })
+    } else {
+      setFormMsg({ Msg: "Please Login" })
+      setHapticBtn({ Btn: "Switch to: Sign Up" })
+      setFormSwitch({ login: true })
+    }
+  }
 
 
   return (
@@ -140,7 +141,11 @@ function App() {
       <Router>
         <NavBar user={users} />
         <Switch>
+          <Route exact path="/" component={Splash} />
 
+          <Route exact path="/login">
+            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
+          </Route>
           <Route exact path="/">
             <Splash />
           </Route>
@@ -151,14 +156,23 @@ function App() {
           <Route exact path="/503">
             <Nope />
           </Route>
-          <Route exact path="/builder" component={MapBuilder} />
-          <Route exact path="/builder/:id" component={MapBuilder} />
+          
+          <Route exact path="/builder">
+            <MapBuilder users={users}/>
+          </Route>
+          <Route exact path="/builder/:id">
+            <MapBuilder users={users}/>
+          </Route>
+          
           <Route exact path="/render">
             {users.isLoggedIn ? <RenderedMap /> : <Nope />}
           </Route>
 
           <Route component={FourOhNope} />
 
+          <Route exact path="/503">
+            <Nope />
+          </Route>
         </Switch>
       </Router>
     </div>

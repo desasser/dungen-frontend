@@ -5,12 +5,40 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import API from '../../utils/API';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import RouterBtn from '../../components/RouterBtn';
+import Divider from '@material-ui/core/Divider';
+
 
 const useStyles = makeStyles({
   savedMapCard: {
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    width: '100%'
+  },
+  savedTitle: {
+    fontFamily: 'SpaceAndAstronomy',
+    // fontWeight: 'bold',
+    fontSize: '60px',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  savedError: {
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '40px',
+    marginTop: 20,
+    marginBottom: 20,
+    width: '40%',
+    margin: '0 auto'
+  },
+  buildButton: {
+    backgroundColor: '#eb4511',
+    height: '5em',
+    padding: '1em',
+    fontSize: '1.5em',
+    margin: '20px',
+    fontFamily: 'SpaceAndAstronomy',
+    fontWeight: 'bold'
   }
 })
 
@@ -20,27 +48,21 @@ export default function SavedMaps(props) {
   const [loadState, setLoadState] = useState(false)
   const classes = useStyles();
 
-   useEffect(() => {
-    if(props){
+  useEffect(() => {
+    if (props) {
       loadUserMaps()
-     }
+    }
 
-   }, [props])
-  
+  }, [props])
+
 
   const loadUserMaps = () => {
-    //NOTE FROM CALVIN included props.users.id to the parameter
-    API.getUserMaps(6)
-    // console.log(props)
-    // API.getUserMaps(props.users.id)
+    API.getUserMaps(props.users.id)
       .then(res => {
-        // console.log('response', res.data);
         setUserMaps(res.data);
-        setLoadState(true)
-        // check length of response and render No Maps! or All maps!
+        setLoadState(true);
       }).catch(err => {
         console.log(err);
-        // add a simple snackbar that says 'sorry, we failed you, try again!'
       })
   }
 
@@ -52,23 +74,24 @@ export default function SavedMaps(props) {
 
   return (
     <Container >
-      {/* TODO: Welcome userName, your saved maps */}
-      <Typography variant='h1'>Saved Maps</Typography>
+      <Typography variant='h1' className={classes.savedTitle}>Your Map Case</Typography>
+      <Divider variant="middle" />
       <Container className={classes.savedMapCard} maxWidth={false}>
-        {/* Map over saved maps array return from the database and create these cards */}
-        {/* Conditional render, if error, render error message */}
-        {console.log('state', userMaps.data)}
         {userMaps.length > 0 ?
           userMaps.map(map => (
-            // TODO: Check this on deploy
             <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} deleteMap={deleteMap} />
           )) : (
             (!loadState ? (
               <CircularProgress />
             ) : (
-                <Typography variant='h3'>
-                  No maps!
-                </Typography>))
+                <Container>
+                  <Divider variant="middle" />
+                  <Typography variant='h3' className={classes.savedError}>
+                    You haven't stored any maps in your map case.
+                </Typography>
+                  <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButton} disableRippe={true} variant="contained" />
+                </Container>
+              ))
           )}
       </Container>
     </Container>

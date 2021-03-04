@@ -1,10 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import RouterBtn from '../../components/RouterBtn'
-import HomeIcon from '@material-ui/icons/Home';
 import Typography from '@material-ui/core/Typography';
 import dragon from '../../images/968914319.jpg';
 import temple from '../../images/fantasy-wallpaper-psdvault-18.jpg';
@@ -19,20 +17,18 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    minHeight: '40vh',
     background: 'gray',
     display: "flex",
     margin: "0 auto",
     padding: "10% 18%",
-    // backgroundColor: 'pink',
-    // backgroundImage: 'url("../images/fantasy-wallpaper-psdvault-18.jpg")'
     backgroundImage: `url(${dragon})`,
     // backgroundImage: `url(${temple})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    // backgroundPosition: '0px -50px',
     maxWidth: "none",
-    height: '50vh'
+    height: '60vh',
+    display: 'flex',
+    flexWrap: 'wrap'
   },
   synopsis: {
     width: '50%',
@@ -99,12 +95,29 @@ const useStyles = makeStyles((theme) => ({
   splashTextOne: {
     fontWeight: 'bold',
     fontSize: '80px',
-    fontFamily: 'ESKARGOT'
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab'
   },
   splashTextTwo: {
     fontWeight: 'bold',
     fontSize: '60px',
-    fontFamily: 'ESKARGOT'
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab'
+  },
+  splashTextOneMobile: {
+    fontWeight: 'bold',
+    fontSize: '60px',
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab'
+  },
+  splashTextTwoMobile: {
+    fontWeight: 'bold',
+    fontSize: '40px',
+    fontFamily: 'ESKARGOT',
+    cursor: 'grab',
+    position: 'relative',
+    top:'-90px',
+    left: '70px'
   }
 }));
 
@@ -118,52 +131,121 @@ export default function Splash() {
       <Grid item xs={12} >
         <Container className={classes.containerBanner} >
 
-          <motion.div className={classes.splashTextOne}
-            drag
-            dragConstraints={{
-              top: -140,
-              left: -625,
-              right: 600,
-              bottom: 175,
-            }}
-            style={{
-              color: '#eb4511'
-            }}>
-            Dun
+          {/* Full Screen */}
+          <Hidden xsDown>
+            <motion.div className={classes.splashTextOne}
+              drag
+              dragConstraints={{
+                top: -140,
+                left: -225,
+                right: 1150,
+                bottom: 175,
+              }}
+              style={{
+                color: '#eb4511',
+                height: 100
+              }}>
+              Dun
           </motion.div>
-          <motion.div className={classes.splashTextOne}
-            drag
-            dragConstraints={{
-              top: -140,
-              left: -725,
-              right: 600,
-              bottom: 175,
-            }}
-            style={{
-              color: '#eb4511'
-            }}>
-            Gen
+            <motion.div className={classes.splashTextOne}
+              drag
+              dragConstraints={{
+                top: -140,
+                left: -325,
+                right: 1050,
+                bottom: 175,
+              }}
+              style={{
+                color: '#eb4511',
+                height: 100
+              }}>
+              Gen
           </motion.div>
-          <motion.div className={classes.splashTextTwo}
-            drag
-            dragConstraints={{
-              top: -140,
-              left: -825,
-              right: 600,
-              bottom: 175,
-            }}>
-            Snail
+            <motion.div className={classes.splashTextTwo}
+              drag
+              dragConstraints={{
+                top: -140,
+                left: -425,
+                right: 950,
+                bottom: 175,
+              }}
+              style={{
+                height: 80
+              }}>
+              Snail
           </motion.div>
-          <motion.div className={classes.splashTextTwo}
-            drag
-            dragConstraints={{
-              top: -140,
-              left: -950,
-              right: 600,
-              bottom: 175,
-            }}>
-            Butts
+            <motion.div className={classes.splashTextTwo}
+              drag
+              dragConstraints={{
+                top: -140,
+                left: -525,
+                right: 850,
+                bottom: 175,
+              }}
+              style={{
+                height: 80
+              }}>
+              Butts
           </motion.div>
+          </Hidden>
+
+          {/* Mobile Physics Playground */}
+          <Hidden smUp>
+            <motion.div className={classes.splashTextOneMobile}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -80,
+                right: 60,
+                bottom: 60,
+              }}
+              style={{
+                color: '#eb4511',
+                height: 80
+              }}>
+              Dun
+          </motion.div>
+            <motion.div className={classes.splashTextOneMobile}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -80,
+                right: 50,
+                bottom: 60,
+              }}
+              style={{
+                color: '#eb4511',
+                height: 80
+              }}>
+              Gen
+          </motion.div>
+            <motion.div className={classes.splashTextTwoMobile}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -80,
+                right: 50,
+                bottom: 60,
+              }}
+              style={{
+                height: 60
+              }}>
+              Snail
+          </motion.div>
+            <motion.div className={classes.splashTextTwoMobile}
+              drag
+              dragConstraints={{
+                top: -60,
+                left: -80,
+                right: 40,
+                bottom: 60,
+              }}
+              style={{
+                height: 60
+              }}>
+                Butts
+            </motion.div>
+          </Hidden>
         </Container >
 
         {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
@@ -188,10 +270,10 @@ export default function Splash() {
             <Container className={classes.synopsis}>
               <Typography variant='h5' className={classes.synHeader}>
                 Dungen Building should be easy.
-                    </Typography>
+              </Typography>
               <Typography variant="body2" >
                 A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
-                    </Typography>
+              </Typography>
             </Container>
             <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButton} disableRippe={true} variant="contained" />
           </Container>

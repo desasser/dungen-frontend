@@ -46,13 +46,17 @@ export default function Grid({ addThisTile, loadThisMap }) {
         console.log("saving to local storage");
         saveMapToLocalStorage({layout: mapLayout});
       }
-    } 
+    }
+
     // check to see if there's something in localStorage
     // if there is, and the layout length is NOT empty, we can load it up
     else if( loadThisMap === undefined || loadThisMap === null ) {
       if(savedMap !== null && savedMap.layout.length > 0) {
         console.log("loading from localStorage")
         setMapLayout([...savedMap.layout]);
+
+      // if(savedMap !== null && savedMap.layout.length > 0)
+      //   setMapLayout([...savedMap.layout]);
       }
 
     }
