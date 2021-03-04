@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
@@ -6,18 +6,15 @@ import ActionBtn from '../../components/ActionBtn'
 import RouterBtn from '../../components/RouterBtn'
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import API from '../../utils/API';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles({
   largeMap: {
-    backgroundColor: '#372248',
-    border: '1px black solid',
+    backgroundColor: 'white',
+    outline: '#8eb1c7 15px solid',
     maxWidth: '80%',
-    // width: '80%',
-    // height: 1000,
-    borderRadius: '0.5em',
     // backgroundImage: `url("http://paratime.ca/images/fantasy/dungeon-055.jpg")`,
     backgroundRepeat: 'no-repeat',
-    // backgroundAttachment: 'fixed',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
     margin: "2rem auto",
@@ -89,45 +86,63 @@ const useStyles = makeStyles({
   },
 })
 
+const FancyLinearProgress = withStyles((theme) => ({
+  root: {
+    height: 10,
+    borderRadius: 5,
+  },
+  colorPrimary: {
+    backgroundColor: '#36434b',
+  },
+  bar: {
+    borderRadius: 5,
+    backgroundColor: '#eb4511',
+  },
+}))(LinearProgress);
+
 export default function RenderedMap(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const [mapData, setMapData] = React.useState({img_url: "", mapTitle: "", mapId: null})
+  const [mapData, setMapData] = React.useState({ img_url: "", mapTitle: "", mapId: null })
+
+  const [rendered, setRendered] = useState(false);
 
   let { id } = useParams();
-  
+
   // TODO: Maybe can't be done front side?
   React.useEffect(() => {
     console.log("RENDER THIS ID:", id)
-    if(id !== undefined) {
+    if (id !== undefined) {
       API.renderMap(id)
-      .then(mapData => {
-        console.log(mapData);
-        setMapData(mapData.data);
-        // TODO:  [IN MAP CONTROLLER] update map with rendered image URL as thumbnail image
-        // AND do a check before running this render function for a thumbnail
-        // ? QUESTION ? is there a way to check file creation date, to check against the map's updatedAt field?
-      })
-      .catch(err => console.error(err));
+        .then(mapData => {
+          console.log(mapData);
+          setMapData(mapData.data);
+          setRendered(true);
+          // TODO:  [IN MAP CONTROLLER] update map with rendered image URL as thumbnail image
+          // AND do a check before running this render function for a thumbnail
+          // ? QUESTION ? is there a way to check file creation date, to check against the map's updatedAt field?
+        })
+        .catch(err => console.error(err));
     }
   }, [])
 
   const editButtonAction = () => {
     history.goBack();
   }
-  
+
   return (
     <Container>
       <Typography variant='h2' className={classes.title}>
         {mapData.mapTitle}
       </Typography>
       <Container className={classes.largeMap} >
-        <img src={mapData.img_url} alt={mapData.mapTitle} />
+        {/* TODO: Add ternary operator to check if the image has finished rendering or not */}
+        {!rendered ? <FancyLinearProgress /> : <img src={mapData.img_url} alt={mapData.mapTitle} />}
       </Container>
-        {/* <ActionBtn name='SAVE' classes={classes.actionBtn} /> */}
-        <ActionBtn name='EDIT' classes={classes.actionBtn} action={editButtonAction}/>
-        {/* <RouterBtn name='ORDER NOW' classes={classes.orderBtn} />
+      {/* <ActionBtn name='SAVE' classes={classes.actionBtn} /> */}
+      <ActionBtn name='EDIT' classes={classes.actionBtn} action={editButtonAction} />
+      {/* <RouterBtn name='ORDER NOW' classes={classes.orderBtn} />
         <RouterBtn name='CLEAR' classes={classes.clearBtn} /> */}
 
     </Container>
