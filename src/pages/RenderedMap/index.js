@@ -60,7 +60,7 @@ const useStyles = makeStyles({
   }
 })
 
-export default function RenderedMap(props) {
+export default function RenderedMap() {
   const classes = useStyles();
 
   const [mapData, setMapData] = React.useState({img_url: "", mapTitle: "", mapId: null})
@@ -73,7 +73,7 @@ export default function RenderedMap(props) {
     if(id !== undefined) {
       API.renderMap(id)
       .then(mapData => {
-        console.log(mapData);
+        console.log("mapdata", mapData);
         setMapData(mapData.data);
         // TODO:  [IN MAP CONTROLLER] update map with rendered image URL as thumbnail image
         // AND do a check before running this render function for a thumbnail

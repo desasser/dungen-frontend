@@ -205,7 +205,12 @@ export default function MapBuilder(props) {
           }
           setSavedState(true);
           
-          return newMapId;
+          console.log("TO RENDER, OR NOT TO RENDER?", render);
+          if(render) {
+            history.push(`/render/${newMapId}`);
+          } else {
+            history.push(`/builder/${newMapId}`);
+          }
         })
         .catch(err => console.error(err));
 
@@ -223,7 +228,7 @@ export default function MapBuilder(props) {
           .catch(err => console.error(err));
         }
 
-      results = API.deleteAllMapTilesForMap(id)
+      API.deleteAllMapTilesForMap(id)
         .then(results => {
           console.log(results);
 
@@ -238,20 +243,15 @@ export default function MapBuilder(props) {
               .catch(err => console.error(err));
           }
 
-          return id;
+          console.log("TO RENDER, OR NOT TO RENDER?", render);
+          if(render) {
+            history.push(`/render/${id}`);
+          } else {
+            history.push(`/builder/${id}`);
+          }
 
         })
         .catch(err => console.error(err));
-
-        results.then(mapId => {
-      
-          console.log("TO RENDER, OR NOT TO RENDER?", render);
-          if(render) {
-            history.push(`/render/${mapId}`);
-          } else {
-            history.push(`/builder/${mapId}`);
-          }
-        });
 
       // for(var i = 0; i < savedMap.layout.length; i++) {
       //   // console.log(savedMap.layout[i]);
