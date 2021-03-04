@@ -42,6 +42,30 @@ const useStyles = makeStyles({
     margin: 20,
     fontSize: '18px',
   },
+  renderBtn: {
+    '&:hover': {
+      color: '#84e561',
+      backgroundColor: '#36434b'
+    },
+    width: 100,
+    height: 60,
+    backgroundColor: '#84e561',
+    color: '#36434b',
+    margin: 20,
+    fontSize: '18px',
+  },
+  clearBtn: {
+    '&:hover': {
+      backgroundColor: '#eb4511',
+    color: 'white',
+    },
+    width: 100,
+    height: 60,
+    color: '#36434b',
+    backgroundColor: '#f8b4a0',
+    marginTop: 20,
+    fontSize: '18px',
+  },
   routerBtn: {
     '&:hover': {
       color: '#36434b',
@@ -317,6 +341,8 @@ export default function MapBuilder(props) {
 
   const clearMap = (e) => {
     console.log("clear the grid")
+    localStorage.removeItem('dungen_map');
+    setLoadedMapData({ name: "" });
   }
 
   const handleDraggableItem = (e) => {
@@ -365,8 +391,8 @@ export default function MapBuilder(props) {
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
           </IconBtn> */}
           <Container className={classes.btnWrapper}>
-            {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} /> */}
-            <ActionBtn name='RENDER' classes={classes.routerBtn} action={renderMap} />
+            <ActionBtn name='CLEAR' classes={classes.clearBtn} action={clearMap} />
+            <ActionBtn name='RENDER' classes={classes.renderBtn} action={renderMap} />
             <ActionBtn name={!viewState ? 'VIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
             <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
           </Container>
