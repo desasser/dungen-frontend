@@ -113,7 +113,7 @@ export default function MapBuilder(props) {
   const [lockState, setLockState] = useState(false);
   const [titleState, setTitleState] = useState(false);
   // for the map title
-  const [mapTitle, setMapTitle] = useState("Rambo's Throne of Marshmallows");
+  const [mapTitle, setMapTitle] = useState("Untitled Map");
   // for adding a new tile to the map grid
   const [addThisTile, setAddThisTile] = useState({
     tileid: null,
@@ -123,7 +123,7 @@ export default function MapBuilder(props) {
     x: null,
     y: null
   });
-  const [loadedMapData, setLoadedMapData] = useState();
+  const [loadedMapData, setLoadedMapData] = useState({ name: "" });
 
   const [saved, setSavedState] = useState(false);
 
@@ -169,14 +169,21 @@ export default function MapBuilder(props) {
     setAuthState(false)
   }
 
-  const saveMapToDB = () => {
+  const saveMap = () => {
+    saveMapToDB(false);
+  }
+
+  const saveMapToDB = (render) => {
     let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
-    if (props.users.isLoggedIn === false) {
+    console.log(id, id === null, id === undefined);
+    console.log('check me', props);
+    let results;
+
+    if (logIn === false) {
       setAuthState(true)
     }
     if (id === null || id === undefined) {
       console.log("NO ID, SAVING NEW MAP")
-      let results;
       // console.log(e.target);
       const mapLayout = savedMap.layout;
 
@@ -196,8 +203,9 @@ export default function MapBuilder(props) {
                 .catch(err => console.error(err));
             }
           }
-          setSavedState(true)
-          history.push(`/builder/${newMapId}`)
+          setSavedState(true);
+          
+          return newMapId;
         })
         .catch(err => console.error(err));
 
@@ -207,16 +215,15 @@ export default function MapBuilder(props) {
       // or save over the existing map
       // but that's a "later guy" problem, imho
       if (savedMap.mapTitle !== mapTitle) {
-        API.updateMap({ id: id, name: mapTitle })
+        results = API.updateMap({ id: id, name: mapTitle })
           .then(results => {
             setSavedState(true)
             // map title updated!
           })
           .catch(err => console.error(err));
+        }
 
-      }
-
-      API.deleteAllMapTilesForMap(id)
+      results = API.deleteAllMapTilesForMap(id)
         .then(results => {
           console.log(results);
 
@@ -230,8 +237,21 @@ export default function MapBuilder(props) {
               })
               .catch(err => console.error(err));
           }
+
+          return id;
+
         })
         .catch(err => console.error(err));
+
+        results.then(mapId => {
+      
+          console.log("TO RENDER, OR NOT TO RENDER?", render);
+          if(render) {
+            history.push(`/render/${mapId}`);
+          } else {
+            history.push(`/builder/${mapId}`);
+          }
+        });
 
       // for(var i = 0; i < savedMap.layout.length; i++) {
       //   // console.log(savedMap.layout[i]);
@@ -285,6 +305,12 @@ export default function MapBuilder(props) {
     return mapTiles;
   }
 
+  const renderMap = (e) => {
+    // true = render map after saving
+    console.log("RENDER THE DAMN MAP")
+    saveMapToDB(true);
+  }
+  
   const viewMap = () => {
     setViewState((prev) => !prev)
   }
@@ -337,9 +363,10 @@ export default function MapBuilder(props) {
           {/* TODO: This functionality is for future development */}
           {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
-        </IconBtn> */}
+          </IconBtn> */}
           <Container className={classes.btnWrapper}>
             {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} /> */}
+            <ActionBtn name='RENDER' classes={classes.routerBtn} action={renderMap} />
             <ActionBtn name={!viewState ? 'VIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
             <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
           </Container>

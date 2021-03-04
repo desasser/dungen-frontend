@@ -33,23 +33,32 @@ export default function Grid({ addThisTile, loadThisMap, viewState }) {
     setTimestamp(hours +':'+ minutes +':'+ seconds);
     
     if(today !== todaysDate) { setTodaysDate(today); }
+
     let savedMap = getMapFromLocalStorage();
 
     // if mapLayout is NOT empty, the user has started building something already!
     // so just save that to localStorage on "load"
     if(mapLayout.length > 0) {
+      // console.log("mapLayout length is GREATER THAN 0!")
       // BUT we don't want to save to local storage before & after dragging
       // so we only save if we're NOT dragging a tile.
       if(!dragging) {
         console.log("saving to local storage");
         saveMapToLocalStorage({layout: mapLayout});
       }
-    } 
+    }
+
     // check to see if there's something in localStorage
     // if there is, and the layout length is NOT empty, we can load it up
     else if( loadThisMap === undefined || loadThisMap === null ) {
-      if(savedMap !== null && savedMap.layout.length > 0)
+
+      if(savedMap !== null && savedMap.layout.length > 0 && savedMap.mapId === null) {
+        console.log("loading from localStorage")
         setMapLayout([...savedMap.layout]);
+
+      // if(savedMap !== null && savedMap.layout.length > 0)
+      //   setMapLayout([...savedMap.layout]);
+      }
 
     }
     // now for handling if loadThisMap is NOT null / undefined
