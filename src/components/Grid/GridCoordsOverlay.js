@@ -121,7 +121,8 @@ export default function GridCoordsOverlay(props) {
   }
 
   return (
-    <GridLayout
+    !props.viewState ? 
+    (<GridLayout
       className="mapCoordsGrid"
       {...props}
       compactType={null}
@@ -132,6 +133,8 @@ export default function GridCoordsOverlay(props) {
       style={{height: "100%"}}
     >
       {gridCellCoords.map( cell => <div key={cell.i} className="grid-cell-coords" data-grid={{...cell}} resizable="false" onClick={(e) => handleOnCoordClick(e)}>{cell.x},{cell.y}</div> )} 
-    </GridLayout>
+    </GridLayout>)
+    :
+    null
   )
 }

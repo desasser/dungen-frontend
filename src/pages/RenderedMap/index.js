@@ -20,33 +20,43 @@ const useStyles = makeStyles({
     // backgroundAttachment: 'fixed',
     backgroundPosition: 'center',
     backgroundSize: 'cover',
+    margin: "2rem auto",
+    padding: "2rem",
+
     "& img": {
       width: '100%',
+      margin: "0 auto",
+      display: "block",
+      border: "4px solid black"
     }
   },
   saveBtn: {
     width: 100,
     height: 50,
     backgroundColor: '#E52977',
-    color: '#ABC686'
+    color: '#ABC686',
+    margin: "0 1rem"
   },
   editBtn: {
     width: 100,
     height: 50,
     backgroundColor: '#ABC686',
-    color: '#E52977'
+    color: '#E52977',
+    margin: "0 1rem"
   },
   orderBtn: {
     width: 100,
     height: 50,
     backgroundColor: '#E52977',
-    color: '#ABC686'
+    color: '#ABC686',
+    margin: "0 1rem"
   },
   clearBtn: {
     width: 100,
     height: 50,
     backgroundColor: '#ABC686',
-    color: '#E52977'
+    color: '#E52977',
+    margin: "0 1rem"
   }
 })
 
@@ -72,8 +82,8 @@ export default function RenderedMap(props) {
   
   return (
     <Container>
-      <Typography variant='h2'>
-        This where you can see a big map!
+      <Typography variant='h2' style={{marginTop: "2rem"}}>
+        {mapData.mapTitle}
       </Typography>
       <Container className={classes.largeMap} >
         <img src={mapData.img_url} alt={mapData.mapTitle} />
