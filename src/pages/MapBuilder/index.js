@@ -42,6 +42,30 @@ const useStyles = makeStyles({
     margin: 20,
     fontSize: '18px',
   },
+  renderBtn: {
+    '&:hover': {
+      color: '#84e561',
+      backgroundColor: '#36434b'
+    },
+    width: 100,
+    height: 60,
+    backgroundColor: '#84e561',
+    color: '#36434b',
+    margin: 20,
+    fontSize: '18px',
+  },
+  clearBtn: {
+    '&:hover': {
+      backgroundColor: '#eb4511',
+    color: 'white',
+    },
+    width: 100,
+    height: 60,
+    color: '#36434b',
+    backgroundColor: '#f8b4a0',
+    marginTop: 20,
+    fontSize: '18px',
+  },
   routerBtn: {
     '&:hover': {
       color: '#36434b',
@@ -205,7 +229,12 @@ export default function MapBuilder(props) {
           }
           setSavedState(true);
           
-          return newMapId;
+          console.log("TO RENDER, OR NOT TO RENDER?", render);
+          if(render) {
+            history.push(`/render/${newMapId}`);
+          } else {
+            history.push(`/builder/${newMapId}`);
+          }
         })
         .catch(err => console.error(err));
 
@@ -223,7 +252,7 @@ export default function MapBuilder(props) {
           .catch(err => console.error(err));
         }
 
-      results = API.deleteAllMapTilesForMap(id)
+      API.deleteAllMapTilesForMap(id)
         .then(results => {
           console.log(results);
 
@@ -238,20 +267,15 @@ export default function MapBuilder(props) {
               .catch(err => console.error(err));
           }
 
-          return id;
+          console.log("TO RENDER, OR NOT TO RENDER?", render);
+          if(render) {
+            history.push(`/render/${id}`);
+          } else {
+            history.push(`/builder/${id}`);
+          }
 
         })
         .catch(err => console.error(err));
-
-        results.then(mapId => {
-      
-          console.log("TO RENDER, OR NOT TO RENDER?", render);
-          if(render) {
-            history.push(`/render/${mapId}`);
-          } else {
-            history.push(`/builder/${mapId}`);
-          }
-        });
 
       // for(var i = 0; i < savedMap.layout.length; i++) {
       //   // console.log(savedMap.layout[i]);
@@ -317,6 +341,8 @@ export default function MapBuilder(props) {
 
   const clearMap = (e) => {
     console.log("clear the grid")
+    localStorage.removeItem('dungen_map');
+    setLoadedMapData({ name: "" });
   }
 
   const handleDraggableItem = (e) => {
