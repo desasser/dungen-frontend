@@ -35,7 +35,7 @@ const useStyles = makeStyles({
       color: 'white',
       backgroundColor: '#eb4511'
     },
-    width: 100,
+    width: 110,
     height: 60,
     backgroundColor: 'white',
     color: '#eb4511',
@@ -71,7 +71,7 @@ const useStyles = makeStyles({
       color: '#36434b',
       backgroundColor: 'white'
     },
-    width: 100,
+    width: 110,
     height: 60,
     backgroundColor: '#36434b',
     color: '#eb4511',
@@ -391,10 +391,10 @@ export default function MapBuilder(props) {
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
           </IconBtn> */}
           <Container className={classes.btnWrapper}>
-            <ActionBtn name='CLEAR' classes={classes.clearBtn} action={clearMap} />
-            <ActionBtn name='RENDER' classes={classes.renderBtn} action={renderMap} />
-            <ActionBtn name={!viewState ? 'VIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
-            <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
+            {/* <ActionBtn name='CLEAR' classes={classes.clearBtn} action={clearMap} />
+            <ActionBtn name='RENDER' classes={classes.renderBtn} action={renderMap} /> */}
+            <ActionBtn name={!viewState ? 'PREVIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
+            <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMap} />
           </Container>
         </Container>
         <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
