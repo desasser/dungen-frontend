@@ -150,6 +150,8 @@ export default function MapBuilder(props) {
         .catch(err => console.error(err));
     }
   }, []);
+  const logIn = props.users.isLoggedIn
+  console.log(logIn)
 
   const handleLock = () => {
     if (lockState) {
@@ -172,7 +174,6 @@ export default function MapBuilder(props) {
     if (props.users.isLoggedIn === false) {
       setAuthState(true)
     }
-
     if (id === null || id === undefined) {
       console.log("NO ID, SAVING NEW MAP")
       let results;
@@ -224,6 +225,7 @@ export default function MapBuilder(props) {
             let tile = newMapTile(id, savedMap.layout[i]);
             API.saveMapTile(tile)
               .then(results => {
+                setSavedState(true)
                 console.log(results);
               })
               .catch(err => console.error(err));
