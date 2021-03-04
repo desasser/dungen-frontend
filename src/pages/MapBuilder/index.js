@@ -30,7 +30,7 @@ const useStyles = makeStyles({
     color: '#E4572E',
   },
   actionBtn: {
-    '&:hover' :{
+    '&:hover': {
       color: 'white',
       backgroundColor: '#eb4511'
     },
@@ -123,6 +123,8 @@ export default function MapBuilder(props) {
         .catch(err => console.error(err));
     }
   }, []);
+  const logIn = props.users.isLoggedIn
+  console.log(logIn)
 
   const handleLock = () => {
     if (lockState) {
@@ -144,10 +146,9 @@ export default function MapBuilder(props) {
     let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
     console.log(id, id === null, id === undefined);
     console.log('check me', props);
-    if (props.users.isLoggedIn === false) {
+    if (logIn === false) {
       setAuthState(true)
     }
-
     if (id === null || id === undefined) {
       console.log("NO ID, SAVING NEW MAP")
       let results;
@@ -199,6 +200,7 @@ export default function MapBuilder(props) {
             let tile = newMapTile(id, savedMap.layout[i]);
             API.saveMapTile(tile)
               .then(results => {
+                setSavedState(true)
                 console.log(results);
               })
               .catch(err => console.error(err));
