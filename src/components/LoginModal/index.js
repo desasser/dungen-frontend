@@ -7,6 +7,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Form from "../../components/Form/index"
 import ActionBtn from "../../components/ActionBtn/index"
 import { useHistory } from 'react-router-dom'
+import Typography from '@material-ui/core/Typography';
 
 
 
@@ -17,10 +18,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    backgroundColor: '#8eb1c7',
+    borderRadius: '0.5em',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    outline: 'none'
   },
   navLink: {
     textDecoration: 'none',
@@ -35,6 +37,23 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'SpaceAndAstronomy',
     fontSize: '16px',
     margin: 0
+  },
+  loginMsg: {
+    fontFamily: 'SpaceAndAstronomy',
+    fontSize: '20px',
+    margin: '10px'
+  },
+  switchBtn: {
+    '&:hover' : {
+      color: '#eb4511',
+      backgroundColor: 'white'
+    },
+    marginBottom: '10px',
+    height: 40,
+    backgroundColor: '#eb4511',
+    color: 'white',
+    fontSize: '16px',
+    fontFamily: 'SpaceAndAstronomy'
   }
 }));
 
@@ -83,12 +102,13 @@ export default function LoginModal(props) {
         BackdropProps={{
           timeout: 500,
         }}
+        
       >
         <Fade in={open}>
           <div className={classes.paper}>
 
-            <ActionBtn action={props.switch} name={props.formBtn} />
-            <h1>{props.formMsg}</h1>
+            <ActionBtn action={props.switch} name={props.formBtn} classes={classes.switchBtn}/>
+            <Typography variant="h3" className={classes.loginMsg}>{props.formMsg}</Typography>
             <Form login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
 
           </div>
