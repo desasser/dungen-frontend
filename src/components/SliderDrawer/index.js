@@ -90,8 +90,15 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     fontFamily: 'SpaceAndAstronomy'
   },
-  paper	: {
+  paper: {
     backgroundColor: '#cad8e0'
+  },
+  tileOpenBtn: {
+    backgroundColor: 'rgba(255,255,255, 0.5)',
+    '&:hover': {
+      backgroundColor: '#eb4511',
+      color: 'white'
+    },
   }
 }));
 
@@ -182,7 +189,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
   return (
     <Container>
       <Container className={classes.sideNav} maxWidth={false}>
-        <IconButton onClick={handleDrawerOpen}>
+        <IconButton onClick={handleDrawerOpen} className={classes.tileOpenBtn}>
           {!isDrawerOpened ? <ReorderIcon /> : null}
         </IconButton>
       </Container>

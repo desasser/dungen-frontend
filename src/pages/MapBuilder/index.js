@@ -366,7 +366,7 @@ export default function MapBuilder(props) {
           </IconBtn> */}
           <Container className={classes.btnWrapper}>
             {/* <ActionBtn name='CLEAR' classes={classes.actionBtn} action={clearMap} /> */}
-            <ActionBtn name='RENDER' classes={classes.routerBtn} action={renderMap} />
+            <ActionBtn name='RENDER' classes={classes.actionBtn} action={renderMap} />
             <ActionBtn name={!viewState ? 'VIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
             <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMapToDB} />
           </Container>
