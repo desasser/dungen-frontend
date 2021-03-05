@@ -1,13 +1,11 @@
 # DunGen: Dungeon Map Builder
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Last Commit](https://img.shields.io/github/last-commit/desasser/dungen-frontend)
-![Language Count](https://img.shields.io/github/languages/count/desasser/dungen-frontend)
-![Top Language](https://img.shields.io/github/languages/top/desasser/dungen-frontend)
+[![github/last-commit,github/languages/count,github/languages/top](https://img.shields.io/static/v1?label=github/last-commit,github/languages/count,github/languages/top&message=desasser&color=dungen-frontend)]
 
 ## Description
 So you have an hour left before you're game, and you forgot to create a map for your player's to explore! Or perhaps you find yourself needing a map mid-game and you need a map STAT -- you don't have time for something real fancy, and just need to throw something together during a short interlude.
 
-DunGen is our answer to your needs, providing you with a simple and intuitive drag-and-drop map building experience on the web. With tilesets provided by [Skeleton Key Games](https://www.skeletonkeygames.com/) and easy tile controls, build out a map quickly and easily. Once you're done, render the tiles into a single image that you can use however you like. Import it into your favorite game management app, print it out, or order a high resolution version printed on neoprene or vinyl*.
+DunGen is our answer to your needs, providing you with a simple and intuitive drag-and-drop map building experience on the web. With tilesets provided by ![https://www.skeletonkeygames.com/](Skeleton Key Games) and easy tile controls, build out a map quickly and easily. Once you're done, render the tiles into a single image that you can use however you like. Import it into your favorite game management app, print it out, or order a high resolution version printed on neoprene or vinyl*.
 
 ## Table of Contents
 * [Installation](#Installation)
@@ -37,7 +35,8 @@ Please get in touch with one of us before pushing any code. You are of course we
 none included
 
 ### Questions
-- Find us on Github: [Daniel](https://github.com/desasser), [Doug](https://github.com/DougJohnson22), [Calvin](https://github.com/Calmanning), [Angel](https://github.com/skelliebunnie)
+- Find me on Github: [desasser](https://github.com/desasser)
+- Email me at: skelliebunnie@gmail.com
 
 ### License
 Copyright (C) 2021 Daniel, Doug, Calvin, Angel
