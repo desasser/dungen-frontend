@@ -138,6 +138,7 @@ export default function MenuAppBar(props) {
       userName: "",
       password: ""
       })
+      console.log(loginState)
       setErrorState({
         errorState: false
       })
