@@ -130,24 +130,20 @@ export default function MenuAppBar(props) {
         })
         history.go(0)
       }).catch(error => {
-
-        console.log(error);
+        console.log(loginState);
         setErrorState({
           error: true
         })
-        if (errorState) {
-          setLoginState({
-            userName: "",
-            password: ""
-          })
-          setErrorState({
-            errorState: false
-          })
-        }
-
-
+      setLoginState({
+      userName: "",
+      password: ""
+      })
+      setErrorState({
+        errorState: false
+      })
+        
         localStorage.removeItem("token");
-        console.log("token has been removed. Error Login. NavBar line: 123")
+        console.log("token has been removed. Error Login. NavBar line: 148")
         return error
       })
     } else {
@@ -247,7 +243,7 @@ export default function MenuAppBar(props) {
                 {!props.user.isLoggedIn ? <MenuItem>
                   <Link className={classes.menuItemStyle}>
                     <LoginModal edge="start" onClick={logInPopUp}
-                      handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+                      handleSubmit={handleSubmit} credentials={loginState} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={props.user} login={formSwitch} error={errorState}
                     />
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
@@ -280,7 +276,7 @@ export default function MenuAppBar(props) {
             {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
             <FormGroup>
               {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
-                handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+                credentials={loginState}  handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
               /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
                 Logout?
               </MenuItem></span>}
