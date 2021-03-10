@@ -42,13 +42,19 @@ const classes = useStyles();
         </div>
         {!props.login ? <span>
         <div>
-          <TextField id="standard-basic" type="text" label="email" name="email" required value={props.name} onChange={props.handleInputChange} labelClassName={classes.fieldText}/>
+          <TextField id="standard-basic" type="text" label="email" 
+          name="email" 
+          required value={props.credentials.email}
+          
+          onChange={props.handleInputChange} 
+          labelClassName={classes.fieldText}/>
         </div> 
         </span> : null}
         {!props.login ? <span>
         <div>
-          <TextField id="standard-basic" type="text" label="name" name="Name" 
-          value={props.name} 
+          <TextField id="standard-basic" type="text" label="name" name="name" 
+          value={props.credentials.name}
+           
           onChange={props.handleInputChange} 
           labelClassName={classes.fieldText}/>
         </div> 

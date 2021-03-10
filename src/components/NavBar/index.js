@@ -97,7 +97,6 @@ export default function MenuAppBar(props) {
     password: "",
     email: "",
     name: ""
-
   })
 
   const handleInputChange = event => {
@@ -169,6 +168,12 @@ export default function MenuAppBar(props) {
         history.go(0)
       }).catch(error => {
         console.log(error);
+        setLoginState({
+          userName: "",
+          password: "",
+          email: "",
+          name: ""
+        })
         localStorage.removeItem("token");
         console.log("token has been removed. Error Login.line: 83")
       })
