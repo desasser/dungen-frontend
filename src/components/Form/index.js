@@ -29,13 +29,13 @@ const classes = useStyles();
 
   return (
     <>
-      <form onSubmit={(event) => props.handleSubmit(event.target.value)} onChange={props.handleInputChange} credentials={props.credentials} noValidate autoComplete="off">
+      <form onSubmit={props.handleSubmit} onChange={props.handleInputChange} credentials={props.credentials} noValidate autoComplete="off">
         <div>
           <Alert error = {props.error}></Alert>
           <TextField id="standard-basic" type="text" label="username"  
           name="userName" required 
-          value={props.userName} 
-          onSubmit={(event) => props.handleSubmit(event.target.value)} 
+          value={props.credentials.userName} 
+          onSubmit={props.handleSubmit} 
           onChange={props.handleInputChange} 
           credentials={props.credentials} 
           labelClassName={classes.fieldText}/>
@@ -56,14 +56,16 @@ const classes = useStyles();
         <div>
           <TextField id="standard-basic" type="password" label="password" 
           name="password" required 
-          value={props.email} 
-          onSubmit={(event) => props.handleSubmit(event.target.value)} 
+          value={props.credentials.password} 
+          onSubmit={props.handleSubmit} 
           onChange={props.handleInputChange} 
-          credentials={props.credentials} 
           labelClassName={classes.fieldText}
           />
         </div>
-        <Button type="submit" color="primary" variant="contained" onClick={props.handleSubmit} style={{marginTop:15}} className={classes.submitBtn}>
+        <Button type="submit" color="primary" variant="contained" 
+        onClick={props.handleSubmit} 
+        style={{marginTop:15}} 
+        className={classes.submitBtn}>
           Submit
           </Button>
       </form>

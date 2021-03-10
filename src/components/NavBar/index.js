@@ -95,6 +95,8 @@ export default function MenuAppBar(props) {
   const [loginState, setLoginState] = useState({
     userName: "",
     password: "",
+    email: "",
+    name: ""
 
   })
 
@@ -160,7 +162,9 @@ export default function MenuAppBar(props) {
         })
         setLoginState({
           userName: "",
-          password: ""
+          password: "",
+          email: "",
+          name: ""
         })
         history.go(0)
       }).catch(error => {
