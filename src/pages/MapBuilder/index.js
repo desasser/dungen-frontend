@@ -17,6 +17,8 @@ import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
 import snail from '../../images/DisapproverSnail.png';
 
+import MapCanvas from '../../components/MapCanvas'
+
 const useStyles = makeStyles({
   tileGrid: {
     display: 'flex',
@@ -384,7 +386,8 @@ export default function MapBuilder(props) {
           <SliderDrawer handleDraggableItem={handleDraggableItem} />
           {/* GRID BOX */}
           <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginTop: '25px', padding: '0px' }}>
-            <Grid addThisTile={addThisTile} loadThisMap={id} viewState={viewState} />
+            {/* <Grid addThisTile={addThisTile} loadThisMap={id} viewState={viewState} /> */}
+            <MapCanvas tileSize={100} rows={6} columns={10} />
           </Container>
           {/* TODO: This functionality is for future development */}
           {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>

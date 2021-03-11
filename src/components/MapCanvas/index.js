@@ -1,31 +1,36 @@
 import React from 'react'
-import { Stage, Layer } from 'react-konva'
-
-import ActionButton from '../ActionButton'
-import CoordinateGrid from './CoordinateGrid'
-
-import TileControls from './TileControls'
-
+import { Stage, Layer, Group, Rect, Text } from 'react-konva'
+// import useImage from 'use-image';
 import SliderDrawer from '../SliderDrawer'
+import Tile from './Tile'
+import TileControls from './TileControls';
+import ActionBtn from '../ActionBtn'
 
-export default function MapCanvas() {
+// infinite grid demo: https://codesandbox.io/s/kkndq?file=/src/index.js:200-206
+// snapping & shadow tile demo: https://codepen.io/pierrebleroux/pen/gGpvxJ?editors=0010
+export default function InfiniteCanvas(props) {
+  let { tileSize, columns, rows } = props;
+  if(tileSize === undefined || tileSize === null) { tileSize = 100; }
+  if(columns === undefined || columns === null) { columns = 10; }
+  if(rows === undefined || rows === null) { rows = 6; }
+
   const stageRef = React.useRef();
 
   const [tilesLocked, setTilesLocked] = React.useState(false);
   const [gridCentered, setGridCentered] = React.useState(true);
   const [stagePosition, setStagePosition] = React.useState({ x: 0, y: 0 });
   const [grid, setGrid] = React.useState({
-    tileSize: 100,
-    columns: 10,
-    rows: 6,
-    windowWidth: 100 * 10,
-    windowHeight: 100 * 6,
-    startX: (100 * 10) * -100,
-    startY: (100 * 6) * -100,
-    endX: (100 * 10) * 100,
-    endY: (100 * 6) * 100
+    tileSize: tileSize,
+    columns: columns,
+    rows: rows,
+    windowWidth: tileSize * columns,
+    windowHeight: tileSize * rows,
+    startX: (tileSize * columns) * -tileSize,
+    startY: (tileSize * rows) * -tileSize,
+    endX: (tileSize * columns) * tileSize,
+    endY: (tileSize * rows) * tileSize
   });
-  
+  const [coordinateSquares, setCoordinateSquares] = React.useState([]);
   const [shadowTileParams, setShadowTileParams] = React.useState({
     x: 0,
     y: 0,
@@ -38,6 +43,49 @@ export default function MapCanvas() {
     dash: [20, 2],
     visible: false
   });
+
+  /**
+   * INFINITE GRID *ONLY*
+   */
+   React.useEffect(() => {
+    console.log("infinite grid setup triggered")
+    const gridInit = updateGridProps();
+
+    var i = 0;
+    const gridColors = [['gainsboro', 'white'], ['white', 'gainsboro']]
+    const cSquares = [];
+    for(var x = gridInit.startX; x < gridInit.endX; x += gridInit.tileSize) {
+      for(var y = gridInit.startY; y < gridInit.endY; y += gridInit.tileSize ) {
+        if(i === 4) { i = 0; }
+        
+        const ix = Math.abs(x / gridInit.tileSize) % gridColors.length;
+        const iy = Math.abs(y / gridInit.tileSize) % gridColors[0].length;
+
+        cSquares.push(
+          <Group key={`${x}-${y}`} name={`${x}-${y}`}>
+            <Rect
+              key={`cs-${x}-${y}`}
+              x={x}
+              y={y}
+              width={gridInit.tileSize}
+              height={gridInit.tileSize}
+              fill={gridColors[ix][iy]}
+              stroke="gainsboro"
+            />
+            <Text
+              key={`ct-${x}-${y}`}
+              text={`${x / 100}, ${y / 100}`}
+              x={x + 10}
+              y={y + 10}
+              fill="grey"
+            />
+          </Group>
+        );
+      }
+    }
+    setCoordinateSquares(cSquares);
+    // eslint-disable-next-line
+  }, [stagePosition]);
 
   // eslint-disable-next-line
   const [mapLayout, setMapLayout] = React.useState([]);
@@ -229,57 +277,57 @@ export default function MapCanvas() {
   return (
     <div>
       <div>
-        <ActionButton onClick={handleGridLock}>{tilesLocked ? "Unlock (to move Tiles)" : "Lock (to move Map)"}</ActionButton>
-        <ActionButton onClick={recenterGrid}>{gridCentered ? "Grid Centered" : "Center Grid"}</ActionButton>
-          <SliderDrawer />
+      <ActionBtn action={handleGridLock}>{tilesLocked ? "Unlock (to move Tiles)" : "Lock (to move Map)"}</ActionBtn>
+      <ActionBtn action={recenterGrid}>{gridCentered ? "Grid Centered" : "Center Grid"}</ActionBtn>
+        <SliderDrawer />
       </div>
 
-      <div id="map-builder-stage-container" onDrop={(e) => handleNewTileDrop(e)} onDragOver={(e) => e.preventDefault()}>
-        <Stage
-          ref={stageRef}
-          x={stagePosition.x}
-          y={stagePosition.y}
-          width={window.innerWidth - 25}
-          height={window.innerHeight}
-          draggable={tilesLocked}
-          onClick={(e) => handleStageClick(e)}
-          onContextMenu={(e) => handleRightClick(e)}
-          onDragEnd={(e) => handleGridDrag(e)}
-          style={{border: "2px solid black", margin: "0"}}
-        >
-          {/* grid coordinate/"checkerboard" squares layer */}
-          <CoordinateGrid />
+    <div id="map-builder-stage-container" onDrop={(e) => handleNewTileDrop(e)} onDragOver={(e) => e.preventDefault()}>
+      <Stage
+        ref={stageRef}
+        x={stagePosition.x}
+        y={stagePosition.y}
+        width={window.innerWidth - 25}
+        height={window.innerHeight}
+        draggable={tilesLocked}
+        onClick={(e) => handleStageClick(e)}
+        onContextMenu={(e) => handleRightClick(e)}
+        onDragEnd={(e) => handleGridDrag(e)}
+        style={{border: "2px solid black", margin: "0"}}
+      >
+        {/* grid coordinate/"checkerboard" squares layer */}
+        <Layer>{coordinateSquares}</Layer>
 
-          {/* "shadow" tiles */}
-          <Layer id="shadow-tile-container">
-            <Rect {...shadowTileParams} />
-          </Layer>
+        {/* "shadow" tiles */}
+        <Layer id="shadow-tile-container">
+          <Rect {...shadowTileParams} />
+        </Layer>
 
-          {/* ACTUAL TILES LAYER */}
-          <Layer id="tiles-layer">
-          {
-          mapLayout.map(tile => 
-            <Tile
-              key={tile.groupKey}
-              draggable={!tilesLocked}
-              imgKey={tile.imgKey}
-              image_src={tile.image_src}
-              width={grid.tileSize}
-              height={grid.tileSize}
-              rotation={tile.rotation}
-              scale={tile.scale}
-              x={tile.x * grid.tileSize}
-              y={tile.y * grid.tileSize}
-              onDragStart={handleTileDragStart}
-              onDragMove={handleTileDragMove}
-              onDragEnd={handleTileDragEnd}
-            />
-          )
-          }
-          </Layer>
-        </Stage>
-        <TileControls id="tile-controls" display="none" />
-      </div>
+        {/* ACTUAL TILES LAYER */}
+        <Layer id="tiles-layer">
+        {
+        mapLayout.map(tile => 
+          <Tile
+            key={tile.groupKey}
+            draggable={!tilesLocked}
+            imgKey={tile.imgKey}
+            image_src={tile.image_src}
+            width={grid.tileSize}
+            height={grid.tileSize}
+            rotation={tile.rotation}
+            scale={tile.scale}
+            x={tile.x * grid.tileSize}
+            y={tile.y * grid.tileSize}
+            onDragStart={handleTileDragStart}
+            onDragMove={handleTileDragMove}
+            onDragEnd={handleTileDragEnd}
+          />
+        )
+        }
+        </Layer>
+      </Stage>
+      <TileControls id="tile-controls" display="none" />
+    </div>
     </div>
   )
 }
