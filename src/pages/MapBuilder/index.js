@@ -16,6 +16,7 @@ import SaveBar from '../../components/SaveBar'
 import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
 import snail from '../../images/DisapproverSnail.png';
+import ErrorBoundary from '../../components/ErrorBoundary';
 
 const useStyles = makeStyles({
   tileGrid: {
@@ -370,7 +371,8 @@ export default function MapBuilder(props) {
 
   return (
     !isMobile ?
-      (<Container>
+      (
+      <Container>
         <Container>
           <Container className={classes.titleWrapper}>
             <Typography variant='h2' className={classes.title}>{mapTitle}</Typography>
