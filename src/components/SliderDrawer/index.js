@@ -17,7 +17,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 const useStyles = makeStyles((theme) => ({
   sideNav: {
     top: 80,
-    zIndex: 3,
+    // zIndex: 3,
     right: 40,
     position: 'absolute',
     width: 10,
@@ -127,7 +127,7 @@ const TileDrawer = withStyles({
 export default function SliderDrawer({ handleDraggableItem }) {
   const classes = useStyles();
   const [state, setState] = useState({
-    isDrawerOpened: false
+    isDrawerOpened: true
   })
   const [tileSet, setTileSet] = useState([]);
   const [loadState, setLoadState] = useState(false);
@@ -187,13 +187,15 @@ export default function SliderDrawer({ handleDraggableItem }) {
   }
 
   return (
-    <Container>
-      <Container className={classes.sideNav} maxWidth={false}>
+    <>
+      <Container maxWidth={false} className={classes.sideNav}>
         <IconButton onClick={handleDrawerOpen} className={classes.tileOpenBtn}>
           {!isDrawerOpened ? <ReorderIcon /> : null}
         </IconButton>
       </Container>
+
       <Divider />
+
       <TileDrawer
         anchor='right'
         variant='persistent'
@@ -240,6 +242,6 @@ export default function SliderDrawer({ handleDraggableItem }) {
           </Container>
         </Container>
       </TileDrawer>
-    </Container>
+    </>
   );
 }

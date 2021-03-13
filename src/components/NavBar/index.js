@@ -21,10 +21,11 @@ import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    boxSizing: 'border-box',
     flexGrow: 1,
     position: 'sticky',
     top: 0,
-    zIndex: 10,
+    zIndex: 9999,
   },
   title: {
     flexGrow: 1,
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   navBar: {
     backgroundColor: '#8eb1c7',
     color: 'black',
-    width: '100vw'
+    // width: '100vw'
   },
   navLink: {
     textDecoration: 'none',
