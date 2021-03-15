@@ -360,6 +360,7 @@ export default function MapBuilder(props) {
         tileSize={100}
         rows={10}
         columns={10}
+        init={false}
       />
 
       <SliderDrawer handleDraggableItem={handleDraggableItem} />

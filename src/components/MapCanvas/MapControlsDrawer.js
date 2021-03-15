@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Container, Typography, Drawer, Divider, IconButton, Switch, Grid } from '@material-ui/core';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
-import {Reorder as ReorderIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon } from '@material-ui/icons';
+import { purple, pink, lightGreen, lime, deepOrange } from '@material-ui/core/colors';
+import {
+  Reorder as ReorderIcon, 
+  ChevronLeft as ChevronLeftIcon, 
+  ChevronRight as ChevronRightIcon,
+  AccountCircle,
+  Flare,
+  Star,
+  Help,
+  GpsFixed
+} from '@material-ui/icons';
 
 import ActionBtn from '../ActionBtn'
 
@@ -28,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
     position: 'fixed',
-    maxWidth: '200px',
+    maxWidth: '230px',
   },
   tileHeader: {
     margin: '0 auto',
@@ -74,50 +84,157 @@ const useStyles = makeStyles((theme) => ({
       margin: '10px 0',
       fontSize: '0.7rem'
     }
-  }
-}));
-
-const AntSwitch = withStyles((theme) => ({
-  root: {
-    width: 28,
-    height: 16,
-    padding: 0,
-    display: 'flex',
-    color: "white"
   },
-  switchBase: {
-    padding: 2,
-    color: 'gainsboro',
-    '&$checked': {
-      transform: 'translateX(12px)',
-      color: 'white',
-      '& + $track': {
-        opacity: 1,
-        backgroundColor: 'purple',
-        borderColor: 'purple',
-      },
+  centerGrid: {
+    backgroundColor: lightGreen[300],
+    '&:hover': {
+      backgroundColor: lightGreen[500]
+    },
+    '&.Mui-disabled': {
+      color: 'darkgrey',
+      backgroundColor: 'rgba(100,100,100,0.5)'
+    }
+  },
+  recenter: {
+    backgroundColor: deepOrange[300],
+    // color: 'white'
+  },
+  clearMap: {
+    backgroundColor: deepOrange[300],
+    color: 'white',
+    '&:hover': {
+      backgroundColor: deepOrange[500]
+    },
+    '&.Mui-disabled': {
+      color: 'darkgrey',
+      backgroundColor: 'rgba(100,100,100,0.5)'
+    }
+  },
+  clearPins: {
+    backgroundColor: deepOrange[300],
+    color: 'white',
+    marginLeft: 8,
+    '&:hover': {
+      backgroundColor: deepOrange[500]
+    },
+    '&.Mui-disabled': {
+      color: 'darkgrey',
+      backgroundColor: 'rgba(100,100,100,0.5)'
+    }
+  },
+  pin: {
+    boxSizing: 'border-box',
+    display: 'inline-block',
+    position: 'relative',
+    textAlign: 'center',
+    backgroundColor: 'grey',
+    width: 30,
+    height: 30,
+    borderRadius: '50% 50% 50% 0',
+    transform: 'rotate(-45deg)',
+    margin: '10px 5px 20px',
+
+    '&:before': {
+      content: '',
+      width: 14,
+      height: 14,
+      margin: '8px 0 0 8px',
+      position: 'absolute',
+      borderRadius: '50%',
+      textAlign: 'center'
+    },
+
+    '& > button': {
+      transform: 'rotate(45deg)',
+      position: 'relative',
+      display: 'block',
+      padding: '0',
+      margin: '2px auto 0',
+      zIndex: 10,
+      color: 'white'
+    },
+
+    '&:hover': {
+      boxShadow: '1px 1px 5px white, -1px -1px 5px white'
+    },
+    
+    "&.pin-type1": {
+      backgroundColor: 'forestgreen',
+    },
+    "&.pin-type2": {
+      backgroundColor: 'firebrick',
+    },
+    "&.pin-type3": {
+      backgroundColor: 'orchid',
+    },
+    "&.pin-type4": {
+      backgroundColor: 'dodgerblue',
+    },
+    "&.pin-type5": {
+      backgroundColor: 'salmon',
     },
   },
-  thumb: {
-    width: 12,
-    height: 12,
-    boxShadow: 'none',
+  activePin: {
+    border: '2px solid chartreuse',
+
+    '& > button': {
+      margin: '1px auto'
+    }
   },
-  track: {
-    border: `1px solid gainsboro`,
-    borderRadius: 'px',
-    opacity: 1,
-    backgroundColor: 'white',
+  previewImage: {
+    backgroundColor: pink[200],
+    flex: "0 0 auto",
+    justifySelf: "flex-end",
+    color: "white",
+    marginTop: "1rem",
+    
+    '&:hover': {
+      backgroundColor: pink[400]
+    }
+  },
+}));
+
+const TilesGridSwitch = withStyles({
+  root: {
+    margin: 0
+  },
+  switchBase: {
+    color: lime[300],
+
+    '& + $track': {
+      backgroundColor: lime[300]
+    },
+
+    '&$checked': {
+      color: deepOrange[400],
+    },
+    '&$checked + $track': {
+      backgroundColor: deepOrange[400],
+    },
   },
   checked: {},
-}))(Switch);
+  track: {},
+})(Switch);
 
+const PreviewWithPinsSwitch = withStyles({
+  switchBase: {
+    color: lime[400],
+    '&$checked': {
+      color: lime[400],
+    },
+    '&$checked + $track': {
+      backgroundColor: lime[400],
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
 
 const TileDrawer = withStyles({
   root: {
     "& .MuiDrawer-paper": {
       backgroundColor: '#36434b',
-      width: 200,
+      width: 250,
       marginTop: 64,
       overflowX: 'hidden',
       border: '1px #707078 solid'
@@ -147,6 +264,8 @@ export default function SliderDrawer({ controlsData }) {
 
   const { isDrawerOpened } = state;
 
+  const [previewWithPins, setPreviewWithPins] = useState(false);
+
   return (
     <Box>
       <Container maxWidth={false} className={classes.sideNav}>
@@ -163,36 +282,91 @@ export default function SliderDrawer({ controlsData }) {
         open={isDrawerOpened}
         onClose={handleDrawerClose}
       >
+        {/* OPEN / CLOSE STUFF */}
         <Container className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose} className={classes.drawerCloseBtn}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </Container>
-
+        
+        {/* CONTROLS DRAWER TITLE */}
         <Container className={classes.tileGrid}>
           <Typography variant='h5' className={classes.tileHeader}>
             Map Controls
           </Typography>
         </Container>
 
-        <Container className={classes.controlsContainer}>
+        {/* MAP TOOLS */}
+        <Container className={classes.controlsContainer} spacing={1}>
           <Grid component="label" container alignItems="center" spacing={1}>
-            <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Move Tiles</Grid>
-            <Grid item>
-              <AntSwitch {...controlsData.toggleTileLock.props} />
+            <Grid item style={{color: "white", fontFamily: "sans-serif", margin: '0', padding: '0'}}>Move Tiles</Grid>
+            <Grid item style={{margin: '0', padding: '0'}}>
+              <TilesGridSwitch {...controlsData.toggleTileLock.props} />
             </Grid>
-            <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Move Grid</Grid>
+            <Grid item style={{color: "white", fontFamily: "sans-serif", margin: '0', padding: '0'}}>Move Grid</Grid>
           </Grid>
           {/* {controlsData.toggleTileLock.args.visible ?
             
             :
             ''
           } */}
-          <ActionBtn classes={controlsData.centerGrid.args.gridCentered ? classes.centerGrid : `${classes.centerGrid} ${classes.recenter}`} {...controlsData.centerGrid.props}>
+          <ActionBtn classes={controlsData.centerGrid.args.gridCentered ? classes.centerGrid : `${classes.centerGrid} ${classes.recenter}`} {...controlsData.centerGrid.props} disabled={controlsData.centerGrid.args.gridCentered}>
             {controlsData.centerGrid.text}
           </ActionBtn>
+          <ActionBtn classes={classes.clearMap} {...controlsData.clearMap.props} disabled={controlsData.clearMap.args.mapLayoutLength === 0}>
+            {controlsData.clearMap.text}
+          </ActionBtn>
+          <ActionBtn classes={classes.clearPins} {...controlsData.clearPins.props} disabled={controlsData.clearPins.args.mapPinsLength === 0}>
+            {controlsData.clearPins.text}
+          </ActionBtn>
+        </Container>
+        
+        <Divider />
+
+        {/* PINS */}
+        <Container>
+          <div className={controlsData.pins.activePin === 'type1' ? `${classes.pin} pin-type1 ${classes.activePin}` : `${classes.pin} pin-type1`}>
+            <IconButton {...controlsData.pins.props} data-pintype="type1">
+              <AccountCircle />
+            </IconButton>
+          </div>
+          <div className={controlsData.pins.activePin === 'type2' ? `${classes.pin} pin-type2 ${classes.activePin}` : `${classes.pin} pin-type2`}>
+            <IconButton {...controlsData.pins.props} data-pintype="type2">
+              <Flare />
+            </IconButton>
+          </div>
+          <div className={controlsData.pins.activePin === 'type3' ? `${classes.pin} pin-type3 ${classes.activePin}` : `${classes.pin} pin-type3`}>
+            <IconButton {...controlsData.pins.props} data-pintype="type3">
+              <Star />
+            </IconButton>
+          </div>
+          <div className={controlsData.pins.activePin === 'type4' ? `${classes.pin} pin-type4 ${classes.activePin}` : `${classes.pin} pin-type4`}>
+            <IconButton {...controlsData.pins.props} data-pintype="type4">
+              <GpsFixed />
+            </IconButton>
+          </div>
+          <div className={controlsData.pins.activePin === 'type5' ? `${classes.pin} pin-type5 ${classes.activePin}` : `${classes.pin} pin-type5`}>
+            <IconButton {...controlsData.pins.props} data-pintype="type5">
+              <Help />
+            </IconButton>
+          </div>
         </Container>
 
+        <Divider />
+
+        {/* PREVIEW / EXPORT */}
+        <Container spacing={1}>
+          {/* PREVIEW */}
+          <Grid component="label" container alignItems="center" spacing={1}>
+            <Grid item>
+              <PreviewWithPinsSwitch onClick={() => setPreviewWithPins(prev => !prev)} />
+            </Grid>
+            <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Include Pins</Grid>
+          </Grid>
+          <ActionBtn classes={classes.previewImage} onClick={() => {controlsData.previewImage.onClick(previewWithPins)}} disabled={controlsData.previewImage.args.mapLayoutLength === 0}>
+            {controlsData.previewImage.text}
+          </ActionBtn>
+        </Container>
       </TileDrawer>
     </Box>
   );

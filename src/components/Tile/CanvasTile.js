@@ -3,13 +3,13 @@ import { Group, Image } from 'react-konva'
 import useImage from 'use-image'
 
 export default function CanvasTile(props) {
-  const [image] = useImage(`${props.image_src}`);
+  const [image] = useImage(`${props.image_src}`, 'Anonymous');
   // console.log(props);
 
   return (
     <Image
       className="tile-image"
-      id={props.imgKey}
+      id={props.id}
       name={props.imgKey}
       draggable={props.draggable}
       x={props.x}
@@ -25,6 +25,7 @@ export default function CanvasTile(props) {
       onDragStart={props.onDragStart}
       onDragMove={props.onDragMove}
       onDragEnd={props.onDragEnd}
+      onDragOver={props.onDragOver}
     />
   )
 }
