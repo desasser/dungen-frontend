@@ -57,6 +57,10 @@ function App() {
       console.log(err)
       localStorage.removeItem("token");
       console.log("not properly Authed")
+      setLoginState({
+        userName: "",
+        password: ""
+      })
     })
   }
 
@@ -66,6 +70,7 @@ function App() {
       ...loginState,
       [name]: value
     })
+    console.log(loginState)
   }
 
   // const redirect = ()=>history.push("/dashboard")
@@ -122,18 +127,18 @@ function App() {
     }
   };
 
-  const signUpBtn = click => {
-    console.log(click)
-    if (formSwitch.login === true) {
-      setFormSwitch({ login: false })
-      setFormMsg({ Msg: "Create an Account" })
-      setHapticBtn({ Btn: "Switch to: Login" })
-    } else {
-      setFormMsg({ Msg: "Please Login" })
-      setHapticBtn({ Btn: "Switch to: Sign Up" })
-      setFormSwitch({ login: true })
-    }
-  }
+  // const signUpBtn = click => {
+  //   console.log(click)
+  //   if (formSwitch.login === true) {
+  //     setFormSwitch({ login: false })
+  //     setFormMsg({ Msg: "Create an Account" })
+  //     setHapticBtn({ Btn: "Switch to: Login" })
+  //   } else {
+  //     setFormMsg({ Msg: "Please Login" })
+  //     setHapticBtn({ Btn: "Switch to: Sign Up" })
+  //     setFormSwitch({ login: true })
+  //   }
+  // }
 
 
   return (
@@ -144,7 +149,9 @@ function App() {
           <Route exact path="/" component={Splash} />
 
           <Route exact path="/login">
-            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} />
+            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} 
+            // switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} 
+            isLoggedIn={users.isLoggedIn}  />
           </Route>
           <Route exact path="/">
             <Splash />
