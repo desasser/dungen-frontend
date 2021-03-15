@@ -10,7 +10,7 @@ import Splash from "./pages/Splash/index"
 import Nope from "./pages/503"
 import FourOhNope from "./pages/404"
 import API from "./utils/API.js"
-
+//import theme from './theme'
 
 function App() {
 
