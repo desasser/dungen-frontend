@@ -2,14 +2,14 @@ import React from 'react'
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Box, Container, Switch, Grid } from '@material-ui/core'
 import ActionBtn from '../ActionBtn'
-import SliderDrawer from '../SliderDrawer'
+// import SliderDrawer from '../SliderDrawer'
 
 const useStyles = makeStyles({
   mapBuilderUIBox: {
     position: 'absolute',
     zIndex: 1000,
     height: '100%',
-    width: '100%'
+    width: '200px'
   },
   mapBuilderControlsContainer: {
     position: 'absolute',
@@ -87,7 +87,7 @@ const AntSwitch = withStyles((theme) => ({
 export default function MapControls({ controlsData }) {
   const classes = useStyles();
 
-  console.log(controlsData.toggleTileLock);
+  // console.log(controlsData.toggleTileLock);
 
   return (
     <div className={classes.mapBuilderUIBox}>
@@ -106,10 +106,6 @@ export default function MapControls({ controlsData }) {
         <ActionBtn classes={controlsData.centerGrid.args.gridCentered ? classes.centerGrid : `${classes.centerGrid} ${classes.recenter}`} {...controlsData.centerGrid.props}>
           {controlsData.centerGrid.text}
         </ActionBtn>
-      </div>
-
-      <div className={classes.mapBuilderTileDrawerContainer}>
-        <SliderDrawer />
       </div>
     </div>
   )

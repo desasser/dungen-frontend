@@ -1,54 +1,17 @@
 import React from "react";
 import { Stage, Layer, Group, Rect, Text } from "react-konva";
 
-import { makeStyles } from "@material-ui/core/styles";
-import { Container } from '@material-ui/core';
+import MapControlsDrawer from './MapControlsDrawer';
 
-import MapControls from './MapControls';
-
-import Tile from "./Tile";
+import CanvasTile from "../Tile/CanvasTile";
 import TileControls from "./TileControls";
-
-const useStyles = makeStyles({
-  mapBuilderContainer: {
-    position: 'relative',
-    width: 'auto',
-    border: '1px solid black',
-    padding: 0,
-    margin: 0
-  },
-  tileControls: {
-    display: "none",
-    position: "absolute",
-    width: "100px",
-    boxShadow: "1px 1px 4px -1px grey",
-
-    "& button": {
-      width: "100%",
-      backgroundColor: "white",
-      border: "none",
-      margin: 0,
-      padding: "10px",
-      transition: "all 0.3s ease-out",
-
-      "& + button": {
-        borderTop: "1px solid gainsboro",
-      },
-
-      "&:hover": {
-        backgroundColor: "#d5f88f",
-        transition: "all 0.3s ease-in",
-      },
-    },
-  }
-});
 
 // infinite grid demo: https://codesandbox.io/s/kkndq?file=/src/index.js:200-206
 // snapping & shadow tile demo: https://codepen.io/pierrebleroux/pen/gGpvxJ?editors=0010
 export default function InfiniteCanvas(props) {
-  // const classes = useStyles();
 
-  let { tileSize, columns, rows, viewState } = props;
+  let { tileSize, columns, rows } = props;
+  
   if (tileSize === undefined || tileSize === null) {
     tileSize = 100;
   }
@@ -56,37 +19,29 @@ export default function InfiniteCanvas(props) {
     columns = 10;
   }
   if (rows === undefined || rows === null) {
-    rows = 6;
+    rows = 4;
   }
 
-  const stageRef = React.useRef();
+  const stageRef = React.useRef(null);
+  const stageParentRef = React.useRef(null);
 
-  const [tilesLocked, setTilesLocked] = React.useState(true);
+  const [viewState, setViewState] = React.useState(false);
+
+  const [tilesLocked, setTilesLocked] = React.useState(false);
   const [gridCentered, setGridCentered] = React.useState(true);
-  const [stagePosition, setStagePosition] = React.useState({ x: 200, y: 0 });
+  const [stagePosition, setStagePosition] = React.useState({ x: 0, y: 0 });
   const [grid, setGrid] = React.useState({
     tileSize: tileSize,
     columns: columns,
     rows: rows,
-    stageWidth: window.innerWidth,
-    stageHeight: window.innerHeight,
-    startX: tileSize * columns * -tileSize - stagePosition.x,
-    startY: tileSize * rows * -tileSize - stagePosition.y,
-    endX: tileSize * columns * tileSize + stagePosition.x,
-    endY: tileSize * rows * tileSize + stagePosition.y,
+    containerWidth: tileSize * columns,
+    containerHeight: tileSize * rows,
+    startX: tileSize * columns * -tileSize,
+    startY: tileSize * rows * -tileSize,
+    endX: tileSize * columns * tileSize,
+    endY: tileSize * rows * tileSize,
   });
   const [coordinateSquares, setCoordinateSquares] = React.useState([]);
-
-  const [backgroundRect, setBackgroundRect] = React.useState({
-    // width: grid.stageWidth + stagePosition.x * 2,
-    // height: grid.stageHeight + stagePosition.y * 2,
-    width: window.innerWidth,
-    height: window.innerHeight,
-    fill: 'white',
-    strokeWidth: 0,
-    x: -stagePosition.x,
-    y: stagePosition.y
-  });
 
   const [shadowTileParams, setShadowTileParams] = React.useState({
     x: 0,
@@ -104,37 +59,78 @@ export default function InfiniteCanvas(props) {
   const [mapLayout, setMapLayout] = React.useState([]);
 
   /**
-   * SETTING HEIGHT & WIDTH OF STAGE & BG RECT
-   * these shouldn't change ever, so we'll set them once
-   * and then leave them alone
+   * SETTING HEIGHT & WIDTH OF STAGE based on stage container offset
    */
   React.useEffect(() => {
-    const offset = document.querySelector("#map-builder-stage-container").parentNode.offsetTop + 30;
+    // console.log(stageParentRef.current.style.height);
+    
+    if(stageParentRef.current) {
+      let offsetTop = stageParentRef.current.offsetTop;
 
-    if(grid.stageHeight !== window.innerHeight - offset) {
-      setBackgroundRect({
-        ...backgroundRect,
-        height: window.innerHeight - offset,
-        width: window.innerWidth - 100
-      });
-  
       setGrid({
         ...grid,
-        stageWidth: window.innerHeight - 100,
-        stageHeight: window.innerHeight - offset
+        containerWidth: window.innerWidth,
+        containerHeight: window.innerHeight - offsetTop - 8
       });
 
-      document.querySelectorAll(".konvajs-content")[0].style.height = window.innerHeight - offset;
+      stageParentRef.current.style.width = window.innerWidth - 9 + 'px';
+      stageParentRef.current.style.height = window.innerHeight - offsetTop - 9 + 'px';
     }
+
+    if(!props.infiniteGrid) {
+      setGrid({
+        ...grid,
+        startX: 0,
+        startY: 0,
+        endX: grid.tileSize * grid.columns,
+        endY: grid.tileSize * grid.rows
+      });
+    }
+
+    // create grid on page load
+    createGrid();
   
-  }, [grid]);
+  }, [stageParentRef]);
 
   /**
    * INFINITE GRID *ONLY*
    */
   React.useEffect(() => {
-    // console.log("infinite grid setup triggered")
-    const gridInit = updateGridProps();
+    console.log("infinite grid?", props.infiniteGrid, "coordinateSquares.length?", coordinateSquares.length);
+    if(props.infiniteGrid) {
+      createGrid();
+    }
+
+  }, [stagePosition]);
+
+  /**
+   * UPDATING LOCAL STORAGE
+   */
+  React.useEffect(() => {
+    const savedMap = localStorage.getItem('dungen_map');
+    if(savedMap !== undefined) {
+      const parsedMap = JSON.parse(savedMap);
+
+      if(parsedMap.layout !== undefined && parsedMap.layout !== mapLayout) {
+        localStorage.setItem('dungen_map', JSON.stringify(mapLayout));
+      }
+    }
+    
+    // eslint-disable-next-line
+  }, [mapLayout]);
+
+  /**
+   * MAP LAYOUT FOR PREVIOUSLY SAVED MAPS
+   */
+  // React.useEffect(() => {
+  //   // does nothing for now
+  // }, [mapLayout]);
+
+  /**
+   * GRID METHODS
+   */
+  const createGrid = () => {
+    const gridInit = props.infiniteGrid ? updateGridProps(stagePosition) : { ...grid, startX: 0, startY: 0, endX: props.tileSize * props.columns, endY: props.tileSize * props.rows };
 
     var i = 0;
     const gridColors = [
@@ -176,71 +172,23 @@ export default function InfiniteCanvas(props) {
       }
     }
     setCoordinateSquares(cSquares);
-    // eslint-disable-next-line
-  }, [stagePosition]);
+  }
+  
+  const updateGridProps = (position = null) => {
+    if(position === null) { position = stagePosition; }
 
-  /**
-   * MAP LAYOUT FOR NEW MAPS ONLY
-   * if there's an ID, handle that with the useEffect below!
-   */
-  React.useEffect(() => {
-    // console.log("map layout use effect triggered");
-    if (mapLayout.length === 0) {
-      const layout = [
-        {
-          groupKey: "tg-1",
-          imgKey: "tm-1",
-          x: 0,
-          y: 0,
-          image_src: "http://localhost:3030/assets/dungeon/LowRes/2EDC01.jpg",
-          rotation: 0,
-          scale: { x: 1, y: 1 },
-        },
-        {
-          groupKey: "tg-2",
-          imgKey: "tm-2",
-          x: 1,
-          y: 1,
-          image_src: "http://localhost:3030/assets/dungeon/LowRes/2EDC02.jpg",
-          rotation: 0,
-          scale: { x: 1, y: 1 },
-        },
-      ];
+      const startX = Math.floor((-position.x - grid.containerWidth) / grid.tileSize) * grid.tileSize;
+      const endX = Math.floor((-position.x + grid.containerWidth * 2) / grid.tileSize) * grid.tileSize;
+      const startY = Math.floor((-position.y - grid.containerHeight) / grid.tileSize) *  grid.tileSize;
+      const endY = Math.floor((-position.y + grid.containerHeight * 2) / grid.tileSize) * grid.tileSize;
 
-      setMapLayout(layout);
-    }
-
-    // eslint-disable-next-line
-  }, []);
-
-  /**
-   * MAP LAYOUT FOR PREVIOUSLY SAVED MAPS
-   */
-  React.useEffect(() => {
-    // does nothing for now
-  }, [mapLayout]);
-
-  /**
-   * GRID METHODS
-   */
-  const updateGridProps = () => {
     const gridInit = {
       ...grid,
-      startX:
-        props.infiniteGrid ? Math.floor((-stagePosition.x - grid.stageWidth) / grid.tileSize) * grid.tileSize : 0,
-      endX:
-        props.infiniteGrid ? Math.floor((-stagePosition.x + grid.stageWidth * 2) / grid.tileSize) *grid.tileSize : grid.stageWidth,
+      startX: startX,
+      endX: endX,
 
-      startY:
-        props.infiniteGrid ? Math.floor((-stagePosition.y - grid.stageHeight) / grid.tileSize) *  grid.tileSize : 0,
-      endY:
-        props.infiniteGrid ? Math.floor((-stagePosition.y + grid.stageHeight * 2) / grid.tileSize) * grid.tileSize : grid.stageHeight,
-      // windowWidth: grid.tileSize * grid.columns, // tileSize * columns
-      // windowHeight: grid.tileSize * grid.rows, // tileSize * rows
-      // startX: Math.floor( ( -stagePosition.x - windowWidth ) / grid.tileSize ) * grid.tileSize,
-      // endX: Math.floor( ( -stagePosition.x + windowWidth * 2 ) / grid.tileSize ) * grid.tileSize,
-      // startY: Math.floor( ( -stagePosition.y - windowHeight ) / grid.tileSize ) * grid.tileSize,
-      // endY: Math.floor( ( -stagePosition.y + windowHeight * 2 ) / grid.tileSize ) * grid.tileSize
+      startY: startY,
+      endY: endY,
     };
     setGrid(gridInit);
     return gridInit;
@@ -251,32 +199,23 @@ export default function InfiniteCanvas(props) {
   };
 
   const recenterGrid = () => {
+    console.log("recentering grid from", stagePosition);
     if (stagePosition.x !== 0 || stagePosition.y !== 0) {
-      setStagePosition({ x: 200, y: 0 });
-      setBackgroundRect({
-        ...backgroundRect,
-        x: 200,
-        y: 0
-      })
+      setStagePosition({ x: 0, y: 0 });
       setGridCentered(true);
     }
   };
 
-  const handleGridDrag = (e) => {
-    // const x = e.currentTarget.x();
-    // const y = e.currentTarget.y();
-    setStagePosition(e.currentTarget.position());
-      // setBackgroundRect({
-      //   ...backgroundRect,
-      //   x: -e.currentTarget.x(),
-      //   y: -e.currentTarget.y()
-      // });
+  const handleGridDragEnd = (e) => {
+    if(stageRef.current && e.target.x() !== 0 || e.target.y() !== 0) {
+      setStagePosition(e.currentTarget.position());
       setGridCentered(false);
-      updateGridProps();
+      updateGridProps(e.currentTarget.position());
+    }
   };
 
   const handleStageClick = (e) => {
-    // console.log(e.target.attrs.className !== "tile-image")
+    console.log(e.target)
     const target = e.target;
     if (target.attrs.className !== "tile-image") {
       const menuNode = document.querySelector("#tile-controls");
@@ -288,6 +227,7 @@ export default function InfiniteCanvas(props) {
    * TILE METHODS
    */
   const handleTileDragStart = (e) => {
+    console.log('dragging tile', e.target.position())
     // anything that should be done when the user STARTS dragging a tile
     // this is essentially also a SINGLE CLICK response, so be careful!
     setShadowTileParams({
@@ -341,6 +281,38 @@ export default function InfiniteCanvas(props) {
     }
   };
 
+  const handleNewTileDrop = (e) => {
+    e.preventDefault();
+
+    const tileData = JSON.parse(e.dataTransfer.getData("dropped_tile"));
+
+    // console.log("retrieved data", tileData);
+
+    // console.log("target", e.target);
+    stageRef.current.setPointersPositions(e)
+
+    const srPos = stageRef.current.getPointerPosition();
+
+    const xCoord = Math.round((srPos.x - stagePosition.x) / grid.tileSize) * grid.tileSize;
+    const yCoord = Math.round((srPos.y - stagePosition.y) / grid.tileSize) * grid.tileSize;
+
+    const tile = {
+      groupKey: `tg-${tileData.TileId}`,
+      imgKey: `tm-${tileData.TileId}`,
+      TileId: tileData.TileId,
+      x: xCoord / grid.tileSize,
+      y: yCoord / grid.tileSize,
+      image_src: tileData.image_src,
+      rotation: 0,
+      scale: { x: 1, y: 1 },
+    };
+
+    setMapLayout([
+      ...mapLayout,
+      tile
+    ]);
+  };
+
   /**
    * TILE CONTROLS "CONTEXT MENU"
    */
@@ -348,90 +320,72 @@ export default function InfiniteCanvas(props) {
     e.evt.preventDefault();
 
     const target = e.target;
-    const containerRect = stageRef.container().getBoundingClientRect();
+
     const menuNode = document.querySelector("#tile-controls");
 
     if (target === stageRef || target.attrs.className !== "tile-image") {
+      // console.log("right clicked on empty stage, closing menu");
       menuNode.style.display = "none";
       return;
     }
 
     if (target.attrs.className === "tile-image") {
+      // console.log("right clicked on TILE, opening menu");
+      const xCoord = Math.floor(e.evt.clientX / grid.tileSize) *  grid.tileSize;
+      const yCoord = Math.round(e.evt.clientY / grid.tileSize) *  grid.tileSize;
+      // console.log("xCoord", xCoord, "yCoord", yCoord)
       menuNode.style.display = "initial";
-      menuNode.style.top =
-        containerRect.top + stageRef.getPointerPosition().y - 40 + "px";
-      menuNode.style.left =
-        containerRect.left + stageRef.getPointerPosition().x - 40 + "px";
+      menuNode.style.top = yCoord - (grid.tileSize) + 'px';
+      menuNode.style.left = xCoord - (grid.tileSize) + 'px';
+      // menuNode.style.top = containerRect.offsetTop - (pos.y * 2) - 80 + "px";
+      // menuNode.style.left = containerRect.offsetLeft - (pos.x * 2) - 80 + "px";
     }
   };
 
-  const handleNewTileDrop = (e) => {
-    // e.preventDefault();
-    console.log("tile dropped!", e);
-    console.log("retrieved image", e.dataTransfer.getData("img"));
-
-    stageRef.current.setPointersPositions(e);
-    const srPos = stageRef.current.getPointerPosition();
-
-    const xCoord = Math.round(srPos.x / grid.tileSize) * grid.tileSize;
-    const yCoord = Math.round(srPos.y / grid.tileSize) * grid.tileSize;
-    const x = xCoord > grid.maxX ? grid.maxX : xCoord < 0 ? 0 : xCoord;
-    const y = yCoord > grid.maxY ? grid.maxY : yCoord < 0 ? 0 : yCoord;
-  };
-
   return (
-    //  className={classes.mapBuilderContainer}
-    <div style={{width: "100%", display: "flex", flexFlow: "row no-wrap", justifyContent: "center"}}>
-      {/* Map Controls */}
-      <MapControls controlsData={{ centerGrid: { props: {onClick: recenterGrid}, args: {gridCentered: gridCentered}, text: gridCentered ? "Grid is centered" : "Center Grid" }, toggleTileLock: { props: {checked: tilesLocked, onChange: handleTileLock, name: "toggleTileLock"}, args: { visible: props.infiniteGrid }} }} />
+    <>
+      <MapControlsDrawer controlsData={{ centerGrid: { props: {onClick: recenterGrid}, args: {gridCentered: gridCentered}, text: gridCentered ? "Grid is centered" : "Center Grid" }, toggleTileLock: { props: {checked: tilesLocked, onChange: handleTileLock, name: "toggleTileLock"}, args: { visible: props.infiniteGrid }} }} />
 
-      <div
-        id="map-builder-stage-container"
-        style={{overflow: "hidden", maxWidth: "70%", border: "2px solid red", margin: "0 auto", display: "block", flex: "1 0 auto"}}
-        onDrop={(e) => handleNewTileDrop(e)}
-        onDragOver={(e) => e.preventDefault()}
-      >
-        <Stage
-          id="mapBuilder"
-          ref={stageRef}
-          width={grid.stageWidth}
-          height={grid.stageHeight}
-          draggable={tilesLocked}
-          onClick={(e) => handleStageClick(e)}
-          onContextMenu={(e) => handleRightClick(e)}
-          style={{ margin: "0", padding: "0" }}
-          onDragEnd={(e) => handleGridDrag(e)}
+        {/* MAP CANVAS CONTAINER */}
+        <div
+          ref={stageParentRef}
+          id="map-builder-stage-container"
+          onDrop={(e) => handleNewTileDrop(e)}
+          onDragOver={(e) => e.preventDefault()}
+          style={{overflow: "hidden", position: "relative", margin: "0 auto", background: "white", border: "4px solid black", width: grid.containerWidth, height: grid.containerWidth}}
         >
-          {/* background (white or color or repeating tile [pattern]) */}
-          <Layer width={window.innerWidth - stagePosition.x} x={stagePosition.x}>
-            <Rect {...backgroundRect} />
-          </Layer>
-
-          {/* grid coordinate/"checkerboard" squares layer */}
-          <Layer
-            visible={!props.viewState} 
-            width={window.innerWidth - stagePosition.x}
-            x={props.infiniteGrid ? stagePosition.x : stagePosition.x + 100}
+          <Stage
+            container="#map-builder-stage-container"
+            ref={stageRef}
+            width={window.innerWidth}
+            height={window.innerHeight}
+            draggable={tilesLocked}
+            x={stagePosition.x}
             y={stagePosition.y}
+            onClick={(e) => handleStageClick(e)}
+            onContextMenu={(e) => handleRightClick(e)}
+            // onDragStart={(e) => {console.log("started dragging grid from", e.currentTarget.position())}}
+            onDragEnd={(e) => handleGridDragEnd(e)}
           >
-            {coordinateSquares}
-          </Layer>
+            {/* grid coordinate/"checkerboard" squares layer */}
+            <Layer visible={!props.viewState}>
+              {coordinateSquares}
+            </Layer>
 
-          {/* "shadow" tiles */}
-          <Layer id="shadow-tile-container" width={window.innerWidth - stagePosition.x} x={stagePosition.x}>
+            {/* "shadow" tiles */}
+            <Layer id="shadow-tile-container" x={0} y={0}>
             <Rect {...shadowTileParams} />
-          </Layer>
+            </Layer>
 
-          {/* ACTUAL TILES LAYER */}
-          <Layer
+            {/* ACTUAL TILES LAYER */}
+            <Layer
             id="tiles-layer"
-            width={window.innerWidth - stagePosition.x} 
-            x={props.infiniteGrid ? stagePosition.x : stagePosition.x + 100}
-            y={stagePosition.y}
-          >
-            {mapLayout.map((tile) => (
-              <Tile
-                key={tile.groupKey}
+            x={0}
+            y={0}
+            >
+            {mapLayout.map((tile, idx) => (
+              <CanvasTile
+                key={idx}
                 draggable={!tilesLocked}
                 imgKey={tile.imgKey}
                 image_src={tile.image_src}
@@ -446,16 +400,12 @@ export default function InfiniteCanvas(props) {
                 onDragEnd={handleTileDragEnd}
               />
             ))}
-          </Layer>
-        </Stage>
+            </Layer>
+          </Stage>
         
-        {/* NOT Canvas elements */}
-        <TileControls
-          id="tile-controls"
-          // classes={classes.tileControls}
-          display="none"
-        />
-      </div>
-    </div>
+          {/* NOT Canvas elements */}
+          <TileControls id="tile-controls" display="none" />
+        </div>
+    </>
   );
 }

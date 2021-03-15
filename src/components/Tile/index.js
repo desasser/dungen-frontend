@@ -11,7 +11,7 @@ export default function Tile({item, handleDoubleClick }) {
   })
 
   React.useEffect(() => {
-    console.log("TILE", item.orientation);
+    console.log("TILE", item);
     let scale = "scale(1,1)";
     if(item.mirror !== undefined && item.mirror !== null) {
       scale = (item.orientation == 90 || item.orientation == -90 || item.orientation == 270 || item.orientation == -270) ? `scaleY(${item.mirror})` : `scaleX(${item.mirror})`;

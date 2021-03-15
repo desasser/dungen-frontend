@@ -5,19 +5,16 @@ import { useParams, useHistory } from "react-router-dom";
 // import ActionBtn from '../../components/ActionBtn'
 // import RouterBtn from '../../components/RouterBtn'
 import { makeStyles } from "@material-ui/core/styles";
+import { Box, Container, Typography, TextField, Button } from "@material-ui/core";
 // import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 // import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
-import { Box, Container, Typography, TextField, Button } from "@material-ui/core";
-// import Typography from '@material-ui/core/Typography';
-// import TextField from '@material-ui/core/TextField';
-// import Button from '@material-ui/core/Button';
 
 import API from "../../utils/API";
 import snail from "../../images/DisapproverSnail.png";
 
 import SaveBar from "../../components/SaveBar";
 import AuthBar from "../../components/AuthBar";
-// import SliderDrawer from '../../components/SliderDrawer'
+import SliderDrawer from '../../components/SliderDrawer'
 import MapCanvas from "../../components/MapCanvas";
 
 const useStyles = makeStyles({
@@ -94,7 +91,7 @@ const useStyles = makeStyles({
     fontFamily: "SpaceAndAstronomy",
     fontSize: "30px",
     marginTop: 20,
-    marginLeft: 80,
+    // marginLeft: 80,
     flex: 1,
     // color: '#eb4511',
     // fontWeight: 900
@@ -102,12 +99,12 @@ const useStyles = makeStyles({
   titleBtn: {
     color: "white",
     alignSelf: "flex-end",
-    // marginRight: 20
+    marginRight: 20
   },
   titleWrapper: {
     display: "flex",
     flexWrap: "wrap",
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
     width: "80%",
   },
@@ -147,15 +144,7 @@ export default function MapBuilder(props) {
   const [titleState, setTitleState] = useState(false);
   // for the map title
   const [mapTitle, setMapTitle] = useState("Untitled Map");
-  // for adding a new tile to the map grid
-  const [addThisTile, setAddThisTile] = useState({
-    tileid: null,
-    mapTileId: null,
-    environment: "",
-    bg: "",
-    x: null,
-    y: null,
-  });
+
   // FOR SNACKBAR NOTIFICATION!
   const [saved, setSavedState] = useState(false);
   // FOR SNACKBAR NOTIFICATION!
@@ -186,15 +175,6 @@ export default function MapBuilder(props) {
         .catch((err) => console.error(err));
     }
   }, []);
-
-  // locking is now in MapCanvas as part of the controls UI
-  // const handleLock = () => {
-  //   if (lockState) {
-  //     setLockState(false);
-  //   } else {
-  //     setLockState(true);
-  //   }
-  // }
 
   const toggleSavedState = () => {
     setSavedState(false);
@@ -322,38 +302,16 @@ export default function MapBuilder(props) {
     return newTile;
   };
 
-  /**
-   * renderMap, viewMap, clearMap moved to MapCanvas
-   * now part of Controls UI
-   */
-  // const renderMap = (e) => {
-  //   // true = render map after saving
-  //   console.log("RENDER THE DAMN MAP")
-  //   //saveMapToDB(true);
-  // }
-
-  // const viewMap = () => {
-  //   setViewState((prev) => !prev)
-  // }
-
-  // const clearMap = (e) => {
-  //   console.log("clear the grid")
-  //   localStorage.removeItem('snail_map');
-  //   setLoadedMapData({ name: "" });
-  // }
-
   // this gets the required data from the tile being dragged
   // creates an object, and sets the addThisTile state
   // to send to MapCanvas for placing on the canvas
   const handleDraggableItem = (e) => {
-    // console.log(e.target.dataset.tileid);
-    setAddThisTile({
-      ...addThisTile,
-      tileid: e.target.dataset.tileid,
-      maptileid: e.target.dataset.maptileid,
-      environment: e.target.dataset.environment,
-      bg: e.target.dataset.image,
-    });
+    const tileData = {
+      TileId: e.target.dataset.tileid,
+      image_src: e.target.src
+      // image_src: e.target.style.backgroundImage.substring(5, e.target.style.backgroundImage.length - 2)
+    }
+    e.dataTransfer.setData('dropped_tile', JSON.stringify(tileData));
   };
 
   const handleTitleSubmit = (event) => {
@@ -396,14 +354,15 @@ export default function MapBuilder(props) {
       {/* MAP BUILDER */}
       <MapCanvas
         loadThisMap={id}
-        viewState={viewState}
         toggleSavedState={toggleSavedState}
         toggleAuthState={toggleAuthState}
-        infiniteGrid={true}
+        infiniteGrid={false}
         tileSize={100}
         rows={10}
         columns={10}
       />
+
+      <SliderDrawer handleDraggableItem={handleDraggableItem} />
 
       {/* SNACKBAR NOTIFICATIONS */}
       <SaveBar saved={saved} toggleSavedState={toggleSavedState} />

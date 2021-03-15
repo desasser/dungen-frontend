@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LoginModal(props) {
-  console.log(props)
+  // console.log(props)
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -73,7 +73,7 @@ export default function LoginModal(props) {
 
   const history = useHistory(props);
   useEffect(() => {
-    console.log(props)
+    // console.log(props)
     if (props.isLoggedIn) {
       handleClose()
     }
@@ -83,8 +83,8 @@ export default function LoginModal(props) {
     navigator.userAgent
   );
 
-  console.log('check me out!', navigator.userAgent);
-  console.log('mobile?', isMobile);
+  // console.log('check me out!', navigator.userAgent);
+  // console.log('mobile?', isMobile);
 
   return (
     <>

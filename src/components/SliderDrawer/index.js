@@ -127,10 +127,13 @@ const TileDrawer = withStyles({
 export default function SliderDrawer({ handleDraggableItem }) {
   const classes = useStyles();
   const [state, setState] = useState({
-    isDrawerOpened: true
+    isDrawerOpened: false
   })
   const [tileSet, setTileSet] = useState([]);
   const [loadState, setLoadState] = useState(false);
+  // Material-UI warning "out-of-range value `1` for the select component"
+  // I know this *works*, so is there any way to suppress this alert?
+  // we get 3+ per page load
   const [environmentState, setEnvironmentState] = useState('1');
   const [environmentListState, setEnvironmentListState] = useState([]);
 
