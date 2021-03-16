@@ -1,9 +1,6 @@
 import React from 'react'
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 
-// circular menu
-// import { CircleMenu, ActionBtn } from 'react-circular-menu'
-// import 'react-circular-menu/styles.css';
 import ActionBtn from '../ActionBtn'
 
 const useStyles = makeStyles({
@@ -24,42 +21,35 @@ const useStyles = makeStyles({
 export default function TileControls(props) {
   const classes = useStyles();
 
-  const handleClick = e => {
-    console.log(e.target);
-  }
-
   return (
-    <div id={props.id} className={classes.CircleMenuContainer} onClick={(e) => handleClick(e)}>
+    <div id={props.id} className={classes.CircleMenuContainer}>
         <ActionBtn
-          onClick={(e) => handleClick(e)}
+          onClick={props.handleTileControlAction}
           tooltip="Rotate Left"
+          data-action="rotateLeft"
         >
           CCW
         </ActionBtn>
         <ActionBtn
-          onClick={(e) => handleClick(e)}
+          onClick={props.handleTileControlAction}
           tooltip="Rotate Right"
+          data-action="rotateRight"
         >
           C-W
         </ActionBtn>
         <ActionBtn
-          onClick={(e) => handleClick(e)}
+          onClick={props.handleTileControlAction}
           tooltip="Mirror"
+          data-action="mirror"
         >
           MRR
         </ActionBtn>
         <ActionBtn
-          onClick={(e) => handleClick(e)}
+          onClick={props.handleTileControlAction}
           tooltip="Delete"
+          data-action="delete"
         >
           DEL
-        </ActionBtn>
-        <ActionBtn
-          onClick={(e) => handleClick(e)}
-          tooltip="Test"
-          className={classes.test}
-        >
-          TEST
         </ActionBtn>
     </div>
   )

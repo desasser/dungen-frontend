@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Container, Typography, Drawer, Divider, IconButton, Switch, Grid } from '@material-ui/core';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
-import { purple, pink, lightGreen, lime, deepOrange } from '@material-ui/core/colors';
+import { purple, red, pink, blue, lightGreen, lime, deepOrange } from '@material-ui/core/colors';
 import {
   Reorder as ReorderIcon, 
   ChevronLeft as ChevronLeftIcon, 
@@ -96,14 +96,14 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   recenter: {
-    backgroundColor: deepOrange[300],
+    backgroundColor: lime[300],
     // color: 'white'
   },
   clearMap: {
-    backgroundColor: deepOrange[300],
+    backgroundColor: red[300],
     color: 'white',
     '&:hover': {
-      backgroundColor: deepOrange[500]
+      backgroundColor: red[500]
     },
     '&.Mui-disabled': {
       color: 'darkgrey',
@@ -116,6 +116,18 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 8,
     '&:hover': {
       backgroundColor: deepOrange[500]
+    },
+    '&.Mui-disabled': {
+      color: 'darkgrey',
+      backgroundColor: 'rgba(100,100,100,0.5)'
+    }
+  },
+  hidePins: {
+    backgroundColor: blue[300],
+    // color: 'white',
+    marginLeft: 8,
+    '&:hover': {
+      backgroundColor: blue[500]
     },
     '&.Mui-disabled': {
       color: 'darkgrey',
@@ -182,14 +194,14 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   previewImage: {
-    backgroundColor: pink[200],
+    backgroundColor: lime[200],
     flex: "0 0 auto",
     justifySelf: "flex-end",
-    color: "white",
+    // color: "white",
     marginTop: "1rem",
     
     '&:hover': {
-      backgroundColor: pink[400]
+      backgroundColor: lime[400]
     }
   },
 }));
@@ -199,17 +211,17 @@ const TilesGridSwitch = withStyles({
     margin: 0
   },
   switchBase: {
-    color: lime[300],
+    color: pink[300],
 
     '& + $track': {
-      backgroundColor: lime[300]
+      backgroundColor: pink[300]
     },
 
     '&$checked': {
-      color: deepOrange[400],
+      color: purple[400],
     },
     '&$checked + $track': {
-      backgroundColor: deepOrange[400],
+      backgroundColor: purple[400],
     },
   },
   checked: {},
@@ -218,7 +230,23 @@ const TilesGridSwitch = withStyles({
 
 const PreviewWithPinsSwitch = withStyles({
   switchBase: {
-    color: lime[400],
+    color: 'gainsboro',
+
+    '&$checked': {
+      color: lime[400],
+    },
+    '&$checked + $track': {
+      backgroundColor: lime[400],
+    },
+  },
+  checked: {},
+  track: {},
+})(Switch);
+
+const TogglePinVisibilitySwitch = withStyles({
+  switchBase: {
+    color: 'gainsboro',
+
     '&$checked': {
       color: lime[400],
     },
@@ -265,6 +293,12 @@ export default function SliderDrawer({ controlsData }) {
   const { isDrawerOpened } = state;
 
   const [previewWithPins, setPreviewWithPins] = useState(false);
+  const [pinsVisible, setPinsVisible] = useState(controlsData.togglePins.pinsVisible);
+
+  const togglePins = e => {
+    setPinsVisible(prev => !prev);
+    controlsData.togglePins.props.onClick(e);
+  }
 
   return (
     <Box>
@@ -300,9 +334,9 @@ export default function SliderDrawer({ controlsData }) {
         <Container className={classes.controlsContainer} spacing={1}>
           <Grid component="label" container alignItems="center" spacing={1}>
             <Grid item style={{color: "white", fontFamily: "sans-serif", margin: '0', padding: '0'}}>Move Tiles</Grid>
-            <Grid item style={{margin: '0', padding: '0'}}>
-              <TilesGridSwitch {...controlsData.toggleTileLock.props} />
-            </Grid>
+              <Grid item style={{margin: '0', padding: '0'}}>
+                <TilesGridSwitch {...controlsData.toggleTileLock.props} />
+              </Grid>
             <Grid item style={{color: "white", fontFamily: "sans-serif", margin: '0', padding: '0'}}>Move Grid</Grid>
           </Grid>
           {/* {controlsData.toggleTileLock.args.visible ?
@@ -313,12 +347,21 @@ export default function SliderDrawer({ controlsData }) {
           <ActionBtn classes={controlsData.centerGrid.args.gridCentered ? classes.centerGrid : `${classes.centerGrid} ${classes.recenter}`} {...controlsData.centerGrid.props} disabled={controlsData.centerGrid.args.gridCentered}>
             {controlsData.centerGrid.text}
           </ActionBtn>
+          <br/>
           <ActionBtn classes={classes.clearMap} {...controlsData.clearMap.props} disabled={controlsData.clearMap.args.mapLayoutLength === 0}>
             {controlsData.clearMap.text}
           </ActionBtn>
           <ActionBtn classes={classes.clearPins} {...controlsData.clearPins.props} disabled={controlsData.clearPins.args.mapPinsLength === 0}>
             {controlsData.clearPins.text}
           </ActionBtn>
+
+          <Grid component="label" container alignItems="center" spacing={1}>
+            <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Hide Pins</Grid>
+            <Grid item>
+            <TogglePinVisibilitySwitch onClick={(e) => togglePins(e)} checked={pinsVisible} />
+            </Grid>
+            <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Show Pins</Grid>
+          </Grid>
         </Container>
         
         <Divider />

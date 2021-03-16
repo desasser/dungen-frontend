@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, useHistory } from 'react-router-dom';
-import { Stage, Collection, Layer, Group, Rect, Text, Path } from "react-konva";
+import { Stage, Layer, Group, Rect, Text, Path } from "react-konva";
+import { Spring, config, animated } from 'react-spring/renderprops-konva'
 
 import MapControlsDrawer from './MapControlsDrawer';
 
@@ -35,7 +36,10 @@ export default function InfiniteCanvas(props) {
   const [todaysDate, setTodaysDate] = React.useState();
 
   const [activePin, setActivePin] = React.useState(null);
+  const [draggingPin, setDraggingPin] = React.useState({x: 0, y: 0});
   const [mapPins, setMapPins] = React.useState([]);
+  const [pinsVisible, setPinsVisible] = React.useState(true);
+  const [contextMenuActive, setContextMenuActive] = React.useState(false);
 
   const [tilesLocked, setTilesLocked] = React.useState(false);
   const [gridCentered, setGridCentered] = React.useState(true);
@@ -285,31 +289,38 @@ export default function InfiniteCanvas(props) {
   };
 
   const handleStageClick = (e) => {
+    setContextMenuActive(false);
 
     const target = e.target;
+
     if (target.attrs.className !== "tile-image") {
       const menuNode = document.querySelector("#tile-controls");
       menuNode.style.display = "none";
+      setContextMenuActive(false);
     }
 
-    if(activePin !== null && e.evt.which === 1) {
-      const dt = handleDateTime('datetime');
-      let fillColor = 'forestgreen';
+    if(activePin !== null && e.evt.which === 1 && target.attrs.className !== "map-pin") {
+      setDraggingPin({x: 0, y: 0});
+      const idx = uuidv4();
+
+      let fillColor = 'forestgreen'; // type1
       if(activePin === 'type2') { fillColor = 'firebrick'; }
       if(activePin === 'type3') { fillColor = 'orchid'; }
       if(activePin === 'type4') { fillColor = 'dodgerblue'; }
       if(activePin === 'type5') { fillColor = 'salmon'; }
 
       const pin = {
-        idx: dt,
+        idx: idx,
         type: activePin,
         x: e.evt.clientX - stagePosition.x - 5,
         y: e.evt.clientY - stagePosition.y - grid.tileSize * 1.9,
         fill: fillColor,
-        data: null
+        data: null,
       }
       setMapPins([...mapPins, pin]);
+      setContextMenuActive(false);
     }
+    console.log(contextMenuActive)
   };
 
   /**
@@ -337,6 +348,7 @@ export default function InfiniteCanvas(props) {
    * TILE METHODS
    */
   const handleTileDragStart = (e) => {
+    console.log("handleTileDragStart", e);
     // anything that should be done when the user STARTS dragging a tile
     // this is essentially also a SINGLE CLICK response, so be careful!
     const xCoord = Math.round(e.target.x() / grid.tileSize) * grid.tileSize;
@@ -359,14 +371,19 @@ export default function InfiniteCanvas(props) {
     const xCoord = Math.round(target.x() / grid.tileSize) * grid.tileSize;
     const yCoord = Math.round(target.y() / grid.tileSize) * grid.tileSize;
 
-    const layer = target.getLayer();
-    const targetRect = e.target.getClientRect();
+    const layerChildren = stageRef.current.children[2].children;
 
-    layer.children.each(child => {
-      if(layer.children.length > 1 && child === target) return;
+    if(layerChildren.length === 1) {
+      setLastLegitSquare({x: xCoord, y: yCoord});
+      setShadowTileParams({
+        ...shadowTileParams,
+        x: xCoord,
+        y: yCoord,
+      });
 
-      if( layer.children.length === 1 || !hasIntersection(child.getClientRect(), targetRect) ) {
-
+    } else {
+      const filteredChildren = layerChildren.filter(child => child.attrs.x === xCoord && child.attrs.y === yCoord)
+      if(filteredChildren.length === 0) {
         setLastLegitSquare({x: xCoord, y: yCoord});
         setShadowTileParams({
           ...shadowTileParams,
@@ -374,51 +391,17 @@ export default function InfiniteCanvas(props) {
           y: yCoord,
         });
       }
-    });
-  }
-
-  const hasIntersection = (r1, r2) => {
-    return !(
-      r2.x > r1.x + grid.tileSize ||
-      r2.x + grid.tileSize < r1.x ||
-      r2.y > r1.y + grid.tileSize ||
-      r2.y + grid.tileSize < r1.y
-    );
+    }
   }
 
   const handleTileDragEnd = (e) => {
     const target = e.target;
     const id = target.id();
 
-    const layer = target.getLayer();
-    const targetRect = e.target.getClientRect();
-    let x = Math.round(e.target.x() / grid.tileSize) * grid.tileSize;
-    let y = Math.round(e.target.y() / grid.tileSize) * grid.tileSize;
+    target.to({...lastLegitSquare, duration: 0});
+    const {x, y} = lastLegitSquare;
 
-    layer.children.each(child => {
-      if(layer.children.length > 1 && child === target) {
-        target.to({x: x, y: y, duration: 0})
-      };
-
-      if(layer.children.length === 1 || !hasIntersection(child.getClientRect(), targetRect)) {
-        // x = x > grid.maxX ? grid.maxX : x < grid.minX ? grid.minX : x;
-        // y = y > grid.maxY ? grid.maxY : y < grid.minY ? grid.minY : y;
-        target.to({
-          x: x,
-          y: y,
-          duration: 0,
-        });
-        updateTileCoordinates(id, x, y);
-
-      } else {
-        target.to({...lastLegitSquare, duration: 0});
-        x = lastLegitSquare.x;
-        y = lastLegitSquare.y;
-      }
-
-      updateTileCoordinates(id, x, y);
-    });
-
+    updateTileCoordinates(id, x, y);
     setShadowTileParams({
       ...shadowTileParams,
       visible: false,
@@ -474,8 +457,10 @@ export default function InfiniteCanvas(props) {
    */
   const handleRightClick = (e) => {
     e.evt.preventDefault();
+    setContextMenuActive(false);
     setActivePin(null);
     const target = e.target;
+    console.log(target);
 
     const menuNode = document.querySelector("#tile-controls");
 
@@ -486,20 +471,26 @@ export default function InfiniteCanvas(props) {
     }
 
     if (target.attrs.className === "tile-image") {
-
+      target.strokeWidth(2);
+      target.stroke("red");
+      console.log(target.strokeWidth());
       const xCoord = Math.floor(e.evt.clientX / grid.tileSize) *  grid.tileSize;
       const yCoord = Math.round(e.evt.clientY / grid.tileSize) *  grid.tileSize;
 
       menuNode.style.display = "initial";
       menuNode.style.top = yCoord - (grid.tileSize) + 'px';
       menuNode.style.left = xCoord - (grid.tileSize) + 'px';
-      // menuNode.style.top = containerRect.offsetTop - (pos.y * 2) - 80 + "px";
-      // menuNode.style.left = containerRect.offsetLeft - (pos.x * 2) - 80 + "px";
+      setContextMenuActive(true);
     }
   };
 
+  /**
+   * PINS
+   */
   const handlePinClick = (e) => {
     const pinType = e.target.closest('button').dataset.pintype;
+    console.log(pinType);
+ 
     if(activePin !== pinType || activePin === null) {
       setActivePin(pinType);
     } else {
@@ -507,8 +498,24 @@ export default function InfiniteCanvas(props) {
     }
   }
 
+  const handlePinDragEnd = (e) => {
+    const idx = e.target.id();
+
+    const pins = [...mapPins];
+    for(var i = 0; i < pins.length; i++) {
+      let pin = pins[i];
+      if(pin.idx === idx) {
+        pin.x = e.target.x();
+        pin.y = e.target.y();
+      }
+    }
+    
+    setMapPins(pins);
+    setDraggingPin({x: 0, y: 0});
+  }
+
   const handlePinOnClick = (e) => {
-    console.log("handlePinOnClick", e.target);
+    console.log("handlePinOnClick", e);
   }
 
   const clearPins = () => {
@@ -516,6 +523,13 @@ export default function InfiniteCanvas(props) {
     setActivePin(null);
   }
 
+  const togglePins = e => {
+    setPinsVisible(e.target.checked)
+  }
+
+  /**
+   * PREVIEW / SAVE / ETC. HANDLING
+   */
   const previewImage = (previewWithPins) => {
     let target = stageRef.current.children[2];
 
@@ -576,6 +590,10 @@ export default function InfiniteCanvas(props) {
           args: { mapPinsLength: mapPins.length },
           text: mapPins.length > 0 ? 'Clear Pins' : 'No Pins'
         },
+        togglePins: {
+          props: {onClick: togglePins},
+          pinsVisible: pinsVisible
+        },
         previewImage: {
           onClick: previewImage,
           args: {mapLayoutLength: mapLayout.length},
@@ -604,6 +622,8 @@ export default function InfiniteCanvas(props) {
             onContextMenu={(e) => handleRightClick(e)}
             // onDragStart={(e) => {console.log("started dragging grid from", e.currentTarget.position())}}
             onDragEnd={(e) => handleGridDragEnd(e)}
+            onMouseEnter={(e) => tilesLocked ? stageRef.current.container().style.cursor = 'move' : stageRef.current.container().style.cursor = 'default'}
+            onMouseLeave={(e) => stageRef.current.container().style.cursor = 'default'}
           >
             {/* grid coordinate/"checkerboard" squares layer */}
             <Layer visible={!props.viewState}>
@@ -624,37 +644,77 @@ export default function InfiniteCanvas(props) {
             >
             {
               mapLayout.map((tile) => 
-                <CanvasTile
+                <Spring
                   key={tile.idx}
-                  id={tile.idx}
-                  draggable={!tilesLocked}
-                  imgKey={tile.imgKey}
-                  image_src={tile.image_src}
-                  width={grid.tileSize}
-                  height={grid.tileSize}
-                  rotation={tile.rotation}
-                  scale={tile.scale}
-                  x={tile.x * grid.tileSize}
-                  y={tile.y * grid.tileSize}
-                  onDragStart={handleTileDragStart}
-                  onDragMove={handleTileDragMove}
-                  onDragEnd={handleTileDragEnd}
-                />
+                  from={{ dash: 100 }}
+                  to={{ dash: 0 }}
+                >
+                  {props => (
+                    <CanvasTile
+                      id={tile.idx}
+                      draggable={!tilesLocked}
+                      imgKey={tile.imgKey}
+                      image_src={tile.image_src}
+                      width={grid.tileSize}
+                      height={grid.tileSize}
+                      rotation={tile.rotation}
+                      scale={tile.scale}
+                      x={tile.x * grid.tileSize}
+                      y={tile.y * grid.tileSize}
+                      onDragStart={handleTileDragStart}
+                      onDragMove={handleTileDragMove}
+                      onDragEnd={handleTileDragEnd}
+                      // stroke path props
+                      strokeDashoffset={contextMenuActive ? props.dash : 0}
+                    />
+                  )}
+                </Spring>
               )
             }
             </Layer>
-            <Layer id="pins-layer" x={0} y={0}>
+            {/* MAP PINS */}
+            <Layer id="pins-layer" x={0} y={0} visible={pinsVisible}>
               {
-              mapPins.map(pin => 
-                <Path
+              mapPins.map(pin => {
+                let x = pin.x; let y = pin.y;
+                if(draggingPin.x === 0 && draggingPin.y === 0) {
+                  x = pin.x;
+                  y = pin.y - (grid.tileSize / 5);
+                } else {
+                  x = draggingPin.x > pin.x ? pin.x + (grid.tileSize / 10) : pin.x - (grid.tileSize / 10);
+                  y = draggingPin.y > pin.y ? pin.y + (grid.tileSize / 10) : pin.y - (grid.tileSize / 10);
+                }
+                // console.log("spring xy", x, y);
+                return (<Spring
                   key={`$pin-{pin.x}-${pin.y}`}
-                  x={pin.x} 
-                  y={pin.y} 
-                  fill={pin.fill}
-                  strokeWidth={0} data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
-                  onClick={(e) => handlePinOnClick(e)} 
-                />
-              )
+                  // native
+                  from={{ 
+                    opacity: draggingPin ? 0 : 1,
+                    x: x,
+                    y: y,
+                  }}
+                  to={{ y: pin.y, opacity: 1, x: pin.x }}
+                  config={{velocity: 5, friction: 10, mass: 2}}
+                  // config={{mass: 2, tension: 270, friction: 40, clamp: false, velocity: 2}}
+                  draggable={!tilesLocked}
+                >
+                  {props => (
+                    <animated.Path
+                    className="map-pin"
+                    id={pin.idx}
+                    x={props.x} 
+                    y={props.y} 
+                    fill={pin.fill}
+                    draggable={!tilesLocked}
+                    strokeWidth={0}
+                    data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
+                    onClick={(e) => handlePinOnClick(e)}
+                    onDragStart={(e) => setDraggingPin({x: e.target.x(), y: e.target.y()})}
+                    onDragEnd={(e) => handlePinDragEnd(e)}
+                  />
+                  )}
+                </Spring>)
+              })
               }
             </Layer>
           </Stage>
