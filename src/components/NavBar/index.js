@@ -17,32 +17,32 @@ import { useHistory } from 'react-router-dom';
 import Hidden from '@material-ui/core/Hidden';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import Box from '@material-ui/core/Box';
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
+    display: 'flex',
+    justifyContent: 'space-between',
     position: 'sticky',
     top: 0,
     zIndex: 10,
+    width: '90%',
+    margin: '0 auto'
   },
   title: {
-    flexGrow: 1,
-    fontFamily: 'ESKARGOT',
     cursor: 'pointer',
-    fontWeight: '700',
   },
   navBar: {
-    backgroundColor: '#8eb1c7',
-    color: 'black',
-    width: '100vw'
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    width: '100vw',
   },
   navLink: {
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy',
-    fontSize: '20px',
-    marginLeft: '20px',
-    color: '#36434b',
+    marginLeft: '30px',
+    marginRight: '30px',
+    color: theme.palette.secondary.contrastText,
   },
   menuStyle: {
     '& .MuiMenu-paper': {
@@ -135,15 +135,15 @@ export default function MenuAppBar(props) {
         setErrorState({
           error: true
         })
-      setLoginState({
-      userName: "",
-      password: ""
-      })
-      console.log(loginState)
-      setErrorState({
-        errorState: false
-      })
-        
+        setLoginState({
+          userName: "",
+          password: ""
+        })
+        console.log(loginState)
+        setErrorState({
+          errorState: false
+        })
+
         localStorage.removeItem("token");
         console.log("token has been removed. Error Login. NavBar line: 148")
         return error
@@ -227,9 +227,9 @@ export default function MenuAppBar(props) {
   }
 
   return (
-    <div className={classes.root}>
+    <div>
       <AppBar position="static" className={classes.navBar} > {/*color='secondary'*/}
-        <Toolbar>
+        <Toolbar className={classes.root}>
           {/* XS NAVIGATION */}
           <Hidden smUp>
             <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleXSClick}>
@@ -244,11 +244,11 @@ export default function MenuAppBar(props) {
               onClose={handleXSClose}
               className={classes.menuStyle}
             >
-              <MenuItem onClick={handleXSClose}><Link to='/builder' className={classes.menuItemStyle}>MAP BUILDER</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}><Link to='/builder' className={classes.menuItemStyle}>BUILDER</Link></MenuItem>
               <Divider />
               <MenuItem onClick={handleXSClose}><Link to='/dashboard' className={classes.menuItemStyle}>SAVED MAPS</Link></MenuItem>
               <Divider />
-              
+
               <FormGroup>
                 {!props.user.isLoggedIn ? <MenuItem>
                   <Link className={classes.menuItemStyle}>
@@ -258,44 +258,50 @@ export default function MenuAppBar(props) {
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
                   <Link className={classes.menuItemStyle}>
-                      LOGOUT?
+                    LOGOUT?
                 </Link>
-                  </MenuItem>}
+                </MenuItem>}
               </FormGroup>
             </Menu>
             {/* MOBILE MENU */}
           </Hidden>
           {/* XS NAVIGATION */}
 
-          {/* NAVIGATION LINKS */}
-          <Hidden xsDown>
-            <Link to="/builder" color="white" variant="body2" className={classes.navLink}>Map Builder </Link>
-            {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
-            </span> : null}
-          </Hidden>
-          {/* NAVIGATION LINKS */}
-
           {/* LOGO HEADER */}
-          <Typography variant='h3' className={classes.title} onClick={titleClick}>
+          <Typography variant='h2' className={classes.title} onClick={titleClick}>
             DunGen
           </Typography>
           {/* LOGO HEADER */}
 
-          {/* WELCOME USER */}
+          {/* NAVIGATION LINKS */}
           <Hidden xsDown>
-            {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
-            <FormGroup>
-              {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
-                credentials={loginState}  handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
-              /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
-                Logout?
-              </MenuItem></span>}
-            </FormGroup>
-            {auth && (
-              <div>
-                {props.user.isLoggedIn ? <span> <AccountCircle style={{ fontSize: '50px', color: '#eb4511ff' }} /> </span> : null}
-              </div>
-            )}
+            <Box style={{display:'flex'}}>
+              <Link to="/builder" className={classes.navLink}>
+                <Typography variant='h5'>
+                  Builder
+              </Typography>
+              </Link>
+              {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
+              </span> : null}
+              {/* NAVIGATION LINKS */}
+
+              {/* WELCOME USER */}
+              {props.user.isLoggedIn ? <Typography variant="h5" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
+              <FormGroup>
+                {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
+                  credentials={loginState} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+                /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
+                  <Typography variant='h5'>
+                    Logout?
+                </Typography>
+                </MenuItem></span>}
+              </FormGroup>
+              {auth && (
+                <div>
+                  {props.user.isLoggedIn ? <span> <AccountCircle style={{ fontSize: '50px', color: '#eb4511ff' }} /> </span> : null}
+                </div>
+              )}
+            </Box>
           </Hidden>
           {/* WELCOME USER */}
 
