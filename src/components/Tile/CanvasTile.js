@@ -5,22 +5,26 @@ import useImage from 'use-image'
 
 export default function CanvasTile(props) {
   const [image] = useImage(`${props.image_src}`, 'Anonymous');
-  const args = {...props}
-  delete args.image_src
-
+  
   return (
-    <Group stroke={args.stroke} strokeWidth={0.5}>
-      <animated.Path
-        data="M 0 0 H 100 V 100 H 0 L 0 0"
-        x={args.x}
-        y={args.y}
-        strokeDasharray={args.width * 2 + args.length * 2}
-        strokeDashoffset={args.dash}
-      />
+    <Group
+      id={props.id}
+      x={props.x}
+      y={props.y}
+      draggable={props.draggable}
+      onDragStart={props.onDragStart}
+      onDragMove={props.onDragMove}
+      onDragEnd={props.onDragEnd}
+      offset={{x: -(props.width / 2), y: -(props.height / 2)}}
+    >
       <Image
         className="tile-image"
-        {...args}
         image={image}
+        width={props.width}
+        height={props.height}
+        rotation={props.rotation}
+        scale={props.scale}
+        offset={{x: props.width / 2, y: props.height / 2}}
       />
     </Group>
     // <Spring>

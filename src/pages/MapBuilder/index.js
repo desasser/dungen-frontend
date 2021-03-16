@@ -17,6 +17,8 @@ import AuthBar from "../../components/AuthBar";
 import SliderDrawer from '../../components/SliderDrawer'
 import MapCanvas from "../../components/MapCanvas";
 
+import LoginModal from '../../components/LoginModal'
+
 const useStyles = makeStyles({
   tileGrid: {
     display: "flex",
@@ -306,6 +308,7 @@ export default function MapBuilder(props) {
   // creates an object, and sets the addThisTile state
   // to send to MapCanvas for placing on the canvas
   const handleDraggableItem = (e) => {
+    document.querySelector("#tile-controls").style.display = 'none';
     const tileData = {
       TileId: e.target.dataset.tileid,
       image_src: e.target.src
@@ -324,7 +327,7 @@ export default function MapBuilder(props) {
   );
 
   return !isMobile ? (
-    <div>
+    <Box>
       {/* MAP TITLE */}
       <Container className={classes.titleWrapper}>
         <Typography variant="h2" className={classes.title}>
@@ -369,7 +372,7 @@ export default function MapBuilder(props) {
       <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
       <AuthBar auth={auth} toggleAuthState={toggleAuthState} />
 
-    </div>
+    </Box>
   ) : (
     // else statement for mobile users
     <Box>

@@ -295,6 +295,14 @@ export default function SliderDrawer({ controlsData }) {
   const [previewWithPins, setPreviewWithPins] = useState(false);
   const [pinsVisible, setPinsVisible] = useState(controlsData.togglePins.pinsVisible);
 
+  React.useEffect(() => {
+    const savedMap = localStorage.getItem('dungen_map') !== null ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+
+    if(savedMap !== null) {
+      setPinsVisible(savedMap.pinsVisible);
+    }
+  }, []);
+
   const togglePins = e => {
     setPinsVisible(prev => !prev);
     controlsData.togglePins.props.onClick(e);
@@ -358,7 +366,7 @@ export default function SliderDrawer({ controlsData }) {
           <Grid component="label" container alignItems="center" spacing={1}>
             <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Hide Pins</Grid>
             <Grid item>
-            <TogglePinVisibilitySwitch onClick={(e) => togglePins(e)} checked={pinsVisible} />
+            <TogglePinVisibilitySwitch onClick={(e) => togglePins(e)} checked={pinsVisible}  id="togglePinsVisible" />
             </Grid>
             <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Show Pins</Grid>
           </Grid>
