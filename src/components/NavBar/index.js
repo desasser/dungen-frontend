@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
   navBar: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
-    width: '100vw',
     height: '75px'
   },
   navLink: {
@@ -47,20 +46,18 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '10px',
     color: theme.palette.secondary.contrastText,
   },
-  menuStyle: {
-    '& .MuiMenu-paper': {
-      backgroundColor: '#cad8e0'
-    }
-  },
+  // menuStyle: {
+  //   '& .MuiMenu-paper': {
+  //     backgroundColor: '#cad8e0'
+  //   }
+  // },
   menuItemStyle: {
-    color: 'black',
+    color: theme.palette.secondary.contrastText,
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy'
   },
   menuItemStyleLogin: {
-    color: 'black',
+    color: theme.palette.secondary.contrastText,
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy',
   },
 }));
 
@@ -233,10 +230,17 @@ export default function MenuAppBar(props) {
     <div>
       <AppBar position="static" className={classes.navBar} > {/*color='secondary'*/}
         <Toolbar className={classes.root}>
+
+          {/* LOGO HEADER */}
+          <Typography variant='h2' className={classes.title} onClick={titleClick}>
+            DunGen
+          </Typography>
+          {/* LOGO HEADER */}
+          
           {/* XS NAVIGATION */}
           <Hidden smUp>
             <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleXSClick}>
-              <MenuIcon />
+              <MenuIcon color='secondary' fontSize='large' />
             </IconButton>
             {/* MOBILE MENU */}
             <Menu
@@ -247,9 +251,21 @@ export default function MenuAppBar(props) {
               onClose={handleXSClose}
               className={classes.menuStyle}
             >
-              <MenuItem onClick={handleXSClose}><Link to='/builder' className={classes.menuItemStyle}>BUILDER</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}>
+                <Link to='/builder' className={classes.menuItemStyle}>
+                  <Typography variant='h6'>
+                    Builder
+                  </Typography>
+                </Link>
+              </MenuItem>
               <Divider />
-              <MenuItem onClick={handleXSClose}><Link to='/dashboard' className={classes.menuItemStyle}>SAVED MAPS</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}>
+                <Link to='/dashboard' className={classes.menuItemStyle}>
+                  <Typography variant='h6'>
+                    Saved Maps
+                  </Typography>
+                </Link>
+              </MenuItem>
               <Divider />
 
               <FormGroup>
@@ -261,8 +277,10 @@ export default function MenuAppBar(props) {
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
                   <Link className={classes.menuItemStyle}>
-                    LOGOUT?
-                </Link>
+                    <Typography variant='h6'>
+                      Logout
+                  </Typography>
+                  </Link>
                 </MenuItem>}
               </FormGroup>
             </Menu>
@@ -270,25 +288,21 @@ export default function MenuAppBar(props) {
           </Hidden>
           {/* XS NAVIGATION */}
 
-          {/* LOGO HEADER */}
-          <Typography variant='h2' className={classes.title} onClick={titleClick}>
-            DunGen
-          </Typography>
-          {/* LOGO HEADER */}
+
 
           {/* NAVIGATION LINKS */}
           <Hidden xsDown>
-            <Box style={{display:'flex'}}>
+            <Box style={{ display: 'flex' }}>
               <Link to="/builder" className={classes.navLink}>
                 <Typography variant='h5'>
                   Builder
               </Typography>
               </Link>
-              {props.user.isLoggedIn ? <Link to="/dashboard" className={classes.navLink}> 
-              <Typography variant='h5' >
-                Saved Maps
+              {props.user.isLoggedIn ? <Link to="/dashboard" className={classes.navLink}>
+                <Typography variant='h5' >
+                  Saved Maps
               </Typography> </Link>
-               : null}
+                : null}
               {/* NAVIGATION LINKS */}
 
               {/* WELCOME USER */}
@@ -297,14 +311,14 @@ export default function MenuAppBar(props) {
                 {!props.user.isLoggedIn ? <LoginModal edge="start" onClick={logInPopUp}
                   credentials={loginState} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
                 /> : <MenuItem onClick={logout} className={classes.navLink}>
-                  <Typography variant='h5' style={{marginTop: '-5px', marginLeft: '-10px'}}>
+                  <Typography variant='h5' style={{ marginTop: '-5px', marginLeft: '-10px' }}>
                     Logout?
                 </Typography>
                 </MenuItem>}
               </FormGroup>
               {auth && (
                 <div>
-                  {props.user.isLoggedIn ?  <AccountCircle style={{ fontSize: '50px', color: '#f8b24c' }} />  : null}
+                  {props.user.isLoggedIn ? <AccountCircle style={{ fontSize: '50px', color: '#f8b24c' }} /> : null}
                 </div>
               )}
             </Box>

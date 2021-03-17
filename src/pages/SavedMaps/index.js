@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%'
   },
   savedTitle: {
-    // fontWeight: 'bold',
+    color: theme.palette.primary.main,
     textAlign: 'center',
     marginTop: 20,
     marginBottom: 20,
