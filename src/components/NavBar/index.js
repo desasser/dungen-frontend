@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     zIndex: 10,
     width: '90%',
-    margin: '0 auto'
+    margin: '0 auto',
+    alignItems: 'center'
   },
   title: {
     cursor: 'pointer',
@@ -37,11 +38,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
     width: '100vw',
+    height: '75px'
   },
   navLink: {
     textDecoration: 'none',
     marginLeft: '30px',
     marginRight: '30px',
+    marginTop: '10px',
     color: theme.palette.secondary.contrastText,
   },
   menuStyle: {
@@ -281,24 +284,27 @@ export default function MenuAppBar(props) {
                   Builder
               </Typography>
               </Link>
-              {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
-              </span> : null}
+              {props.user.isLoggedIn ? <Link to="/dashboard" className={classes.navLink}> 
+              <Typography variant='h5' >
+                Saved Maps
+              </Typography> </Link>
+               : null}
               {/* NAVIGATION LINKS */}
 
               {/* WELCOME USER */}
-              {props.user.isLoggedIn ? <Typography variant="h5" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
+              {/* {props.user.isLoggedIn ? <Typography variant="h5" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null} */}
               <FormGroup>
-                {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
+                {!props.user.isLoggedIn ? <LoginModal edge="start" onClick={logInPopUp}
                   credentials={loginState} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
-                /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
-                  <Typography variant='h5'>
+                /> : <MenuItem onClick={logout} className={classes.navLink}>
+                  <Typography variant='h5' style={{marginTop: '-5px', marginLeft: '-10px'}}>
                     Logout?
                 </Typography>
-                </MenuItem></span>}
+                </MenuItem>}
               </FormGroup>
               {auth && (
                 <div>
-                  {props.user.isLoggedIn ? <span> <AccountCircle style={{ fontSize: '50px', color: '#eb4511ff' }} /> </span> : null}
+                  {props.user.isLoggedIn ?  <AccountCircle style={{ fontSize: '50px', color: '#f8b24c' }} />  : null}
                 </div>
               )}
             </Box>

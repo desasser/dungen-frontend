@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import RouterBtn from '../../components/RouterBtn'
@@ -8,50 +8,31 @@ import dragon from '../../images/968914319.jpg';
 import temple from '../../images/fantasy-wallpaper-psdvault-18.jpg';
 import { motion } from "framer-motion";
 import Hidden from '@material-ui/core/Hidden';
+import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
   containerBanner: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    background: 'gray',
-    display: "flex",
-    margin: "0 auto",
-    padding: "10% 18%",
     backgroundImage: `url(${dragon})`,
-    // backgroundImage: `url(${temple})`,
-    backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
-    maxWidth: "none",
-    height: '60vh',
+    maxWidth: "100%",
+    height: 'calc(100vh - 75px)',
     display: 'flex',
-    flexWrap: 'wrap'
-  },
-  synopsis: {
-    width: '50%',
-    marginLeft: '1em',
-    marginTop: '3em',
-    border: '0.5em #8eb1c7 solid',
-    borderRadius: '0.5em',
-    padding: '2em',
-    backgroundColor: 'white'
-  },
-  synHeader: {
-    paddingBottom: '0.5em',
-    fontFamily: 'SpaceAndAstronomy',
-    fontWeight: 'bold'
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end'
   },
   buildButton: {
-    backgroundColor: '#eb4511',
-    height: '5em',
-    padding: '1em',
-    fontSize: '1.5em',
-    margin: '20px',
-    fontFamily: 'SpaceAndAstronomy',
+    backgroundColor: theme.palette.secondary.main,
+    padding: '0.5em 1.5em',
+    marginBottom: '50px',
+    marginTop: '30px',
+    fontFamily: 'Immortal',
+    fontSize: '2.5em',
     fontWeight: 'bold'
+  },
+  synopsis: {
+    color: theme.palette.secondary.contrastText,
+    fontSize: '3.5em',
+    marginRight: 0
   },
   synHeaderSmall: {
     paddingBottom: '0.5em',
@@ -86,12 +67,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center'
   },
-  splashContent: {
-    width: '80%',
-    margin: '0 auto',
-    display: 'flex',
-    alignItems: 'center'
-  },
   splashTextOne: {
     fontWeight: 'bold',
     fontSize: '80px',
@@ -116,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'ESKARGOT',
     cursor: 'grab',
     position: 'relative',
-    top:'-90px',
+    top: '-90px',
     left: '70px'
   }
 }));
@@ -127,12 +102,37 @@ export default function Splash() {
 
 
   return (
-    <div className={classes.root}>
+    <div>
       <Grid item xs={12} >
-        <Container className={classes.containerBanner} >
+        <Container className={classes.containerBanner} style={{ height: 'calc(100vh-75px)' }}>
+          {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
+          <Hidden smUp>
+            <Container className={classes.splashContentSmall}>
+              <Container className={classes.synopsisSmall}>
+                <Typography variant='h5' className={classes.synHeaderSmall}>
+                  Dungen Building should be easy.
+                </Typography>
+                <Typography variant="body2" >
+                  A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
+                </Typography>
+              </Container>
+              <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButtonSmall} disableRippe={true} variant="contained" />
+            </Container>
+          </Hidden>
+          {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
 
-          {/* Full Screen */}
+          {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
           <Hidden xsDown>
+            <Box style={{width: '30%'}}>
+              <Typography variant='h4' className={classes.synopsis}>
+                Dungen Building should be easy.
+              </Typography>
+              <RouterBtn to="/builder" name="Build" classes={classes.buildButton} disableRippe={true} variant="contained" />
+            </Box>
+          </Hidden>
+          {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
+          {/* Full Screen */}
+          {/* <Hidden xsDown>
             <motion.div className={classes.splashTextOne}
               drag
               dragConstraints={{
@@ -187,10 +187,10 @@ export default function Splash() {
               }}>
               Butts
           </motion.div>
-          </Hidden>
+          </Hidden> */}
 
           {/* Mobile Physics Playground */}
-          <Hidden smUp>
+          {/* <Hidden smUp>
             <motion.div className={classes.splashTextOneMobile}
               drag
               dragConstraints={{
@@ -245,41 +245,8 @@ export default function Splash() {
               }}>
                 Butts
             </motion.div>
-          </Hidden>
+          </Hidden>*/}
         </Container >
-
-        {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
-        <Hidden smUp>
-          <Container className={classes.splashContentSmall}>
-            <Container className={classes.synopsisSmall}>
-              <Typography variant='h5' className={classes.synHeaderSmall}>
-                Dungen Building should be easy.
-                    </Typography>
-              <Typography variant="body2" >
-                A no nonsense approach to making dungeons because the hardest part of the game should be keeeping eveyone alive. Create an account and save your maps for later or just start building a map!
-                    </Typography>
-            </Container>
-            <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButtonSmall} disableRippe={true} variant="contained" />
-          </Container>
-        </Hidden>
-        {/* HIDE THESE ELEMENTS WHEN SCREEN IS SM OR LARGER */}
-
-        {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
-        <Hidden xsDown>
-          <Container className={classes.splashContent}>
-            <Container className={classes.synopsis}>
-              <Typography variant='h5' className={classes.synHeader}>
-                Dungen Building should be easy.
-              </Typography>
-              <Typography variant="body2" >
-                A no nonsense approach to making dungeons because the hardest part of the game should be keeeping everyone alive. Create an account and save your maps for later or just start building a map!
-              </Typography>
-            </Container>
-            <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButton} disableRippe={true} variant="contained" />
-          </Container>
-        </Hidden>
-        {/* HIDE THESE ELEMENTS WHEN SCREEN SIZE IS XS */}
-
       </Grid>
     </div>
   )

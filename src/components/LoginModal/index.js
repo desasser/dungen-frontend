@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
   },
   navLink: {
     textDecoration: 'none',
-    marginLeft: '40px',
     color: theme.palette.secondary.contrastText,
   },
   menuItem: {
@@ -99,8 +98,7 @@ export default function LoginModal(props) {
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
-        }}
-        
+        }} 
       >
         <Fade in={open}>
           <div className={classes.paper}>
