@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Box, Grow } from '@material-ui/core'
 import { Trail, animated } from 'react-spring/renderprops'
-import { RotateLeft, RotateRight, Flip, Delete } from '@material-ui/icons'
+import { RotateLeft, RotateRight, Flip, Delete, BugReport } from '@material-ui/icons'
 import ActionBtn from '../ActionBtn'
 
 const useStyles = makeStyles({
@@ -22,6 +22,16 @@ const useStyles = makeStyles({
     transition: 'all 0.3s ease'
   },
   controlsContainer: {
+    flex: 1,
+    position: 'relative', 
+    width: 200, 
+    height: 200,
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'flex-start',
+    transition: 'all 0.3s ease'
+  },
+  controlsContainer2: {
     flex: 1,
     position: 'relative', 
     width: 200, 
@@ -54,7 +64,6 @@ export default function TileControls(props) {
 
   const [controlsOpen, setControlsOpen] = React.useState(false);
   const [controlsPosition, setControlsPosition] = React.useState({top: 400, left: 400})
-  let rotationAmount = -90;
 
   const AnimatedActionBtn = animated(ActionBtn);
 
@@ -86,8 +95,16 @@ export default function TileControls(props) {
       tooltip: 'Delete',
       content: <Delete />,
       onClick: props.handleTileControlAction
+    },
+    {
+      key: 'tb',
+      action: 'test',
+      tooltip: 'Test',
+      content: <BugReport />,
+      onClick: props.handleTileControlAction
     }
   ]
+  let rotationAmount = -(360 / controls.length);
 
   React.useEffect(() => {
     setControlsOpen(props.contextMenuActive);
@@ -96,19 +113,30 @@ export default function TileControls(props) {
   }, [props.contextMenuActive, props.top, props.left])
 
   return (
-    <Grow in={controlsOpen}>
-      <Box className={classes.CircleMenuContainer} style={{...controlsPosition}}>
-        <div className={classes.controlsContainer}>
-        {controls.map(control => {
-          rotationAmount += 90;
-          return (
-            <div key={control.key} className={classes.buttonContainer} data-action={control.action} tooltip={control.tooltip} onClick={control.onClick} style={{ transform: `rotate(${rotationAmount}deg)` }}>
-              <div style={{ transform: `rotate(-${rotationAmount}deg)` }}>{control.content}</div>
-            </div>
-          )
-        })}
+    <>
+    {controls.map(control => {
+      rotationAmount += (360 / controls.length);
+      return (
+        <div key={control.key} className={classes.buttonContainer2} data-action={control.action} tooltip={control.tooltip} onClick={control.onClick} style={{ ...controlsPosition, transform: `rotate(${rotationAmount}deg)` }}>
+          <div style={{ transform: `rotate(-${rotationAmount}deg)` }}>{control.content}</div>
         </div>
-      </Box>
-    </Grow>
+      )
+    })}
+    </>
+
+    // <Grow in={controlsOpen}>
+    //   <Box className={classes.CircleMenuContainer} style={{...controlsPosition}}>
+    //     <div className={classes.controlsContainer}>
+    //     {controls.map(control => {
+    //       rotationAmount += (360 / controls.length);
+    //       return (
+    //         <div key={control.key} className={classes.buttonContainer} data-action={control.action} tooltip={control.tooltip} onClick={control.onClick} style={{ transform: `rotate(${rotationAmount}deg)` }}>
+    //           <div style={{ transform: `rotate(-${rotationAmount}deg)` }}>{control.content}</div>
+    //         </div>
+    //       )
+    //     })}
+    //     </div>
+    //   </Box>
+    // </Grow>
   )
 }
