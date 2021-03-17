@@ -26,16 +26,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-//ADD SIZE TO THE TABLE -- how are we deliniating size?
-//NOTE: Props are coming from the Map builder page? or here?
+
+//NOTE: Props are coming from the Map builder page? or TO the MapBuilder Page?
 
 function StartMap(props) {
 
     const classes = useStyles();
-
-    const [radioDisabled, setRadioDisabled] = React.useState(false);
-
-
 
     const [newMap, setMapState] = useState({
         name: "",
@@ -47,14 +43,7 @@ function StartMap(props) {
         init: true
     })
 
-    // React.useEffect(() => {
-    //     {
-    //         console.log("trying")
-    //         handleRadio()
 
-    //     }
-
-    // }, [newMap])
 
     const handleInputChange = event => {
         const { name, value } = event.target;
@@ -65,16 +54,13 @@ function StartMap(props) {
             ...newMap,
             [name]: value
         })
-        // handleRadio()
-
-
     }
 
     const handleMapSubmit = event => {
         console.log("closing tiem")
         API.saveMap(newMap).then(res => {
             console.log("trying to to save a map")
-            setMapState
+
         })
         props.onClose()
 
@@ -124,40 +110,40 @@ function StartMap(props) {
                                 checked={newMap.infinite}
                                 onChange={handleCheck}
                                 name="infinite" />}
-                            label="infinite Map?"
+                            label="Build on an infinite Map?"
                         />
                     </FormControl>
                     {!newMap.infinite ?
-                    <> 
-                    <Typography variant="h6">
-                        Pick your map size
+                        <>
+                            <Typography variant="h6">
+                                Then, let's pick a map size.
                     </Typography>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel id="rows"> Rows </InputLabel>
-                        <Select
-                            native
-                            name="row"
-                            onChange={handleInputChange}
-                        >
-                            <option aria-label="rows" value="" />
-                            <option value={10}>10</option>
-                            <option value={15}>15</option>
-                            <option value={20}>20</option>
-                        </Select>
-                    </FormControl>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel id="columns"> Columns </InputLabel>
-                        <Select
-                            native
-                            name="column"
-                            onChange={handleInputChange}
-                        >
-                            <option aria-label="rows" value="" />
-                            <option value={10}>10</option>
-                            <option value={15}>15</option>
-                            <option value={20}>20</option>
-                        </Select>
-                    </FormControl> </> : ""}
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="rows"> Rows </InputLabel>
+                                <Select
+                                    native
+                                    name="row"
+                                    onChange={handleInputChange}
+                                >
+                                    <option aria-label="rows" value="" />
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
+                                    <option value={20}>20</option>
+                                </Select>
+                            </FormControl>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel id="columns"> Columns </InputLabel>
+                                <Select
+                                    native
+                                    name="column"
+                                    onChange={handleInputChange}
+                                >
+                                    <option aria-label="rows" value="" />
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
+                                    <option value={20}>20</option>
+                                </Select>
+                            </FormControl> </> : ""}
                 </div>
             </div>
             <div>
@@ -172,7 +158,7 @@ function StartMap(props) {
 
             <Button
                 // onClick={props.onClose} 
-                onClick={handleMapSubmit}> To Building! </Button>
+                onClick={handleMapSubmit}> Start Building! </Button>
         </FormControl>
 
     )
