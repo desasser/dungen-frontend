@@ -47,9 +47,6 @@ function StartMap(props) {
 
     const handleInputChange = event => {
         const { name, value } = event.target;
-        console.log(props)
-        console.log(event.target.name)
-        console.log(event.target.value)
         setMapState({
             ...newMap,
             [name]: value
@@ -61,7 +58,7 @@ function StartMap(props) {
         API.saveMap(newMap).then(res => {
             console.log("trying to to save a map")
 
-        })
+        }).catch(err=> console.error(err))
         props.onClose()
 
     }
