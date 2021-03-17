@@ -9,6 +9,7 @@ export default function CanvasTile(props) {
   return (
     <Group
       id={props.id}
+      className="tile-image-group"
       x={props.x}
       y={props.y}
       draggable={props.draggable}
@@ -16,6 +17,8 @@ export default function CanvasTile(props) {
       onDragMove={props.onDragMove}
       onDragEnd={props.onDragEnd}
       offset={{x: -(props.width / 2), y: -(props.height / 2)}}
+      onMouseEnter={props.onMouseEnter}
+      onMouseLeave={props.onMouseLeave}
     >
       <Image
         className="tile-image"
