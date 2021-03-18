@@ -10,7 +10,6 @@ import CanvasTile from "../Tile/CanvasTile";
 import TileControls from "./TileControls";
 
 // exporting image from canvas
-// import imageDataURI from 'image-data-uri'
 const { v4: uuidv4 } = require('uuid');
 
 const useStyles = makeStyles({
@@ -92,6 +91,41 @@ export default function InfiniteCanvas(props) {
   });
   const [lastLegitSquare, setLastLegitSquare] = React.useState({x: 0, y: 0});
 
+  const fillColor = {
+    type1: 'forestgreen',
+    type2: 'firebrick',
+    type3: 'orchid',
+    type4: 'dodgerblue',
+    type5: 'salmon'
+  }
+
+  const [shadowPinParams, setShadowPinParams] = React.useState({
+    className: 'shadow-pin',
+    x: 0,
+    y: 0,
+    fill: fillColor.type1,
+    opacity: 0,
+    // draggable: !tilesLocked,
+    strokeWidth: 0,
+    data: "M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27",
+    visible: false
+  })
+  // <animated.Path
+  //   className="map-pin"
+  //   id={pin.idx}
+  //   x={props.x} 
+  //   y={props.y} 
+  //   fill={pin.fill}
+  //   draggable={!tilesLocked}
+  //   strokeWidth={0}
+  //   data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
+  //   onClick={(e) => handlePinOnClick(e)}
+  //   onDragStart={(e) => setDraggingPin({x: e.target.x(), y: e.target.y()})}
+  //   onDragEnd={(e) => handlePinDragEnd(e)}
+  //   onMouseEnter={() => handleMouseEnter('pin', 'pointer')}
+  //   onMouseLeave={handleMouseLeave}
+  // />
+
   const [mapLayout, setMapLayout] = React.useState([]);
 
   /**
@@ -136,6 +170,9 @@ export default function InfiniteCanvas(props) {
       }
     }
 
+    if(props.draggingTile) {
+      setContextMenuActive(false);
+    }
     // create grid on page load
     createGrid();
   
@@ -247,11 +284,26 @@ export default function InfiniteCanvas(props) {
     // AND the target is NOT just the stage, change the cursor
     if(target !== 'stage' && !tilesLocked) {
       stageRef.current.container().style.cursor = cursorStyle
-
     }
 
     if(target === 'tile' && !tilesLocked && activePin !== null) {
       stageRef.current.container().style.cursor = "crosshair"
+    }
+  }
+
+  const handleMouseMoveOverStage = () => {
+    if(activePin !== null) {
+      // console.log("shadow pin should show up now with color", fillColor[activePin])
+      const mousePos = stageRef.current.getPointerPosition();
+
+      setShadowPinParams({
+        ...shadowPinParams,
+        fill: fillColor[activePin],
+        x: mousePos.x - stagePosition.x,
+        y: mousePos.y - stagePosition.y - (grid.tileSize / 3),
+        visible: true,
+        opacity: 0.5
+      })
     }
   }
 
@@ -355,6 +407,7 @@ export default function InfiniteCanvas(props) {
 
     if(e.evt.which === 3) {
       setActivePin(null);
+
     } else {
       setContextMenuActive(false);
     }
@@ -363,18 +416,14 @@ export default function InfiniteCanvas(props) {
       setDraggingPin({x: 0, y: 0});
       const idx = uuidv4();
 
-      let fillColor = 'forestgreen'; // type1
-      if(activePin === 'type2') { fillColor = 'firebrick'; }
-      if(activePin === 'type3') { fillColor = 'orchid'; }
-      if(activePin === 'type4') { fillColor = 'dodgerblue'; }
-      if(activePin === 'type5') { fillColor = 'salmon'; }
+      
 
       const pin = {
         idx: idx,
         type: activePin,
         x: e.evt.clientX - stagePosition.x - 5,
         y: e.evt.clientY - stagePosition.y - grid.tileSize * 1.9,
-        fill: fillColor,
+        fill: fillColor[activePin],
         data: null,
       }
       setMapPins([...mapPins, pin]);
@@ -532,8 +581,8 @@ export default function InfiniteCanvas(props) {
       const yCoord = target.attrs.y;
 
       setTileControlsPosition({
-        left: xCoord + stagePosition.x - 25 + 'px',
-        top: yCoord + stagePosition.y - 25 + 'px'
+        left: xCoord + stagePosition.x - 25,
+        top: yCoord + stagePosition.y - 25
       });
 
       setContextMenuActive(true);
@@ -543,6 +592,7 @@ export default function InfiniteCanvas(props) {
 
   const handleTileControlAction = (e) => {
     let action = e.target.closest("button") !== null ? e.target.closest("button").dataset.action : null;
+    console.log("MapCanvas/index ln. 548:", action);
 
     if(action !== null) {
       let tile = activeTile.children[0];
@@ -604,10 +654,19 @@ export default function InfiniteCanvas(props) {
   const handlePinClick = (e) => {
     const pinType = e.target.closest('button').dataset.pintype;
  
-    if(activePin !== pinType || activePin === null) {
+    if(pinsVisible && (activePin !== pinType || activePin === null)) {
       setActivePin(pinType);
+      setShadowPinParams({
+        ...shadowPinParams,
+        visible: true
+      })
+
     } else {
       setActivePin(null);
+      setShadowPinParams({
+        ...shadowPinParams,
+        visible: false
+      })
     }
   }
 
@@ -736,6 +795,7 @@ export default function InfiniteCanvas(props) {
           onContextMenu={(e) => handleRightClick(e)}
           onDragEnd={(e) => handleGridDragEnd(e)}
           onMouseEnter={() => handleMouseEnter('stage', 'move')}
+          onMouseMove={() => handleMouseMoveOverStage()}
           onMouseLeave={handleMouseLeave}
         >
           {/* grid coordinate/"checkerboard" squares layer */}
@@ -743,20 +803,14 @@ export default function InfiniteCanvas(props) {
             {coordinateSquares}
           </Layer>
 
-          {/* "shadow" tiles */}
+          {/* "shadow" tile (for placement) */}
           <Layer id="shadow-tile-container" x={0} y={0}>
           <Rect {...shadowTileParams} />
           </Layer>
 
           {/* ACTUAL TILES LAYER */}
-          <Layer
-          id="tiles-layer"
-          x={0}
-          y={0}
-          
-          >
-          {
-            mapLayout.map((tile) => 
+          <Layer id="tiles-layer" x={0} y={0} >
+            {mapLayout.map((tile) => 
               <CanvasTile
                 key={tile.idx}
                 id={tile.idx}
@@ -775,13 +829,8 @@ export default function InfiniteCanvas(props) {
                 onMouseEnter={() => handleMouseEnter('tile', 'move')}
                 onMouseLeave={handleMouseLeave}
               />
-            )
-          }
-          </Layer>
-          {/* MAP PINS */}
-          <Layer id="pins-layer" x={0} y={0} visible={pinsVisible}>
-            {
-            mapPins.map(pin => {
+            )}
+            {mapPins.map(pin => {
               let x = pin.x; let y = pin.y;
               if(draggingPin.x === 0 && draggingPin.y === 0) {
                 x = pin.x;
@@ -813,6 +862,7 @@ export default function InfiniteCanvas(props) {
                   draggable={!tilesLocked}
                   strokeWidth={0}
                   data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
+                  visible={pinsVisible}
                   onClick={(e) => handlePinOnClick(e)}
                   onDragStart={(e) => setDraggingPin({x: e.target.x(), y: e.target.y()})}
                   onDragEnd={(e) => handlePinDragEnd(e)}
@@ -821,8 +871,17 @@ export default function InfiniteCanvas(props) {
                 />
                 )}
               </Spring>)
-            })
-            }
+            })}
+          </Layer>
+          
+          {/* MAP PINS */}
+          {/* <Layer id="pins-layer" x={0} y={0} visible={pinsVisible}>
+           
+          </Layer> */}
+        
+          {/* "shadow" pin (for placement) */}
+          <Layer id="shadow-pin-container" x={0} y={0}>
+            <Path {...shadowPinParams} />
           </Layer>
         </Stage>
       

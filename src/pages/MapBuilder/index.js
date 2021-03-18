@@ -276,39 +276,38 @@ export default function MapBuilder(props) {
 
   // gets tiles from local storage
   // and runs each one through the newMapTile function
-  const createMapTiles = (mapId) => {
-    const mapLayout = JSON.parse(localStorage.getItem("snail_map")).layout;
+  // const createMapTiles = (mapId) => {
+  //   const mapLayout = JSON.parse(localStorage.getItem("snail_map")).layout;
 
-    let mapTiles = [];
-    for (var i = 0; i < mapLayout.length; i++) {
-      const tile = newMapTile(mapId, mapLayout[i]);
-      mapTiles.push(tile);
-    }
+  //   let mapTiles = [];
+  //   for (var i = 0; i < mapLayout.length; i++) {
+  //     const tile = newMapTile(mapId, mapLayout[i]);
+  //     mapTiles.push(tile);
+  //   }
 
-    return mapTiles;
-  };
+  //   return mapTiles;
+  // };
 
   // builds object with data required for MapTiles table
   // separated from createMapTiles for use in other functions
-  const newMapTile = (mapId, tileData) => {
-    // console.log("tileData -> newMapTile", tileData);
-    let newTile = {
-      MapId: parseInt(mapId),
-      TileId: parseInt(tileData.tileId),
-      xCoord: parseInt(tileData.x),
-      yCoord: parseInt(tileData.y),
-      orientation: tileData.orientation,
-      mirror: tileData.mirror,
-    };
-    // console.log(newTile);
-    return newTile;
-  };
+  // const newMapTile = (mapId, tileData) => {
+  //   // console.log("tileData -> newMapTile", tileData);
+  //   let newTile = {
+  //     MapId: parseInt(mapId),
+  //     TileId: parseInt(tileData.tileId),
+  //     xCoord: parseInt(tileData.x),
+  //     yCoord: parseInt(tileData.y),
+  //     orientation: tileData.orientation,
+  //     mirror: tileData.mirror,
+  //   };
+  //   // console.log(newTile);
+  //   return newTile;
+  // };
 
   // this gets the required data from the tile being dragged
   // creates an object, and sets the addThisTile state
   // to send to MapCanvas for placing on the canvas
   const handleDraggableItem = (e) => {
-    document.querySelector("#tile-controls").style.display = 'none';
     const tileData = {
       TileId: e.target.dataset.tileid,
       image_src: e.target.src

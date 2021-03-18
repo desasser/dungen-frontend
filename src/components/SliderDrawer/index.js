@@ -204,7 +204,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
         variant='persistent'
         open={isDrawerOpened}
         onClose={handleDrawerClose}
-        onClick={() => document.querySelector("#tile-controls").style.display = 'none'}
+        // onClick={() => document.querySelector("#tile-controls").style.display = 'none'}
       >
         <Container className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose} className={classes.drawerCloseBtn}>

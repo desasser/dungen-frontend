@@ -376,28 +376,28 @@ export default function SliderDrawer({ controlsData }) {
 
         {/* PINS */}
         <Container>
-          <div className={controlsData.pins.activePin === 'type1' ? `${classes.pin} pin-type1 ${classes.activePin}` : `${classes.pin} pin-type1`}>
-            <IconButton {...controlsData.pins.props} data-pintype="type1">
-              <AccountCircle />
-            </IconButton>
-          </div>
-          <div className={controlsData.pins.activePin === 'type2' ? `${classes.pin} pin-type2 ${classes.activePin}` : `${classes.pin} pin-type2`}>
-            <IconButton {...controlsData.pins.props} data-pintype="type2">
-              <Flare />
-            </IconButton>
-          </div>
-          <div className={controlsData.pins.activePin === 'type3' ? `${classes.pin} pin-type3 ${classes.activePin}` : `${classes.pin} pin-type3`}>
-            <IconButton {...controlsData.pins.props} data-pintype="type3">
-              <Star />
-            </IconButton>
-          </div>
-          <div className={controlsData.pins.activePin === 'type4' ? `${classes.pin} pin-type4 ${classes.activePin}` : `${classes.pin} pin-type4`}>
-            <IconButton {...controlsData.pins.props} data-pintype="type4">
+          <div className={controlsData.pins.activePin === 'type1' ? `${classes.pin} pin-type1 ${classes.activePin}` : `${classes.pin} pin-type1`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+            <IconButton {...controlsData.pins.props} data-pintype="type1" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
               <GpsFixed />
             </IconButton>
           </div>
-          <div className={controlsData.pins.activePin === 'type5' ? `${classes.pin} pin-type5 ${classes.activePin}` : `${classes.pin} pin-type5`}>
-            <IconButton {...controlsData.pins.props} data-pintype="type5">
+          <div className={controlsData.pins.activePin === 'type2' ? `${classes.pin} pin-type2 ${classes.activePin}` : `${classes.pin} pin-type2`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+            <IconButton {...controlsData.pins.props} data-pintype="type2" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+              <Flare />
+            </IconButton>
+          </div>
+          <div className={controlsData.pins.activePin === 'type3' ? `${classes.pin} pin-type3 ${classes.activePin}` : `${classes.pin} pin-type3`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+            <IconButton {...controlsData.pins.props} data-pintype="type3" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+              <Star />
+            </IconButton>
+          </div>
+          <div className={controlsData.pins.activePin === 'type4' ? `${classes.pin} pin-type4 ${classes.activePin}` : `${classes.pin} pin-type4`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+            <IconButton {...controlsData.pins.props} data-pintype="type4" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+              <AccountCircle />
+            </IconButton>
+          </div>
+          <div className={controlsData.pins.activePin === 'type5' ? `${classes.pin} pin-type5 ${classes.activePin}` : `${classes.pin} pin-type5`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+            <IconButton {...controlsData.pins.props} data-pintype="type5" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
               <Help />
             </IconButton>
           </div>
