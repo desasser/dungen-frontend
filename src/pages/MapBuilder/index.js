@@ -16,7 +16,6 @@ import SaveBar from '../../components/SaveBar'
 import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
 import snail from '../../images/DisapproverSnail.png';
-import ErrorBoundary from '../../components/ErrorBoundary';
 import StartMapModal from '../../components/StartMapModal'
 
 const useStyles = makeStyles({
@@ -164,9 +163,9 @@ export default function MapBuilder(props) {
   const logIn = props.users.isLoggedIn;
   // console.log(logIn);
 
-  const [open, setOpen] = React.useState(props.openModal);
+  const [open, setOpen] = useState(props.openModal);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (id !== undefined) {
 
       API.getSingleMap(id)
@@ -178,7 +177,7 @@ export default function MapBuilder(props) {
           }
         })
         .catch(err => console.error(err));
-    } 
+    }
   }, []);
 
   const handleLock = () => {
@@ -259,7 +258,6 @@ export default function MapBuilder(props) {
       API.deleteAllMapTilesForMap(id)
         .then(results => {
           console.log(results);
-
           for (var i = 0; i < savedMap.layout.length; i++) {
             // console.log(savedMap.layout[i]);
             let tile = newMapTile(id, savedMap.layout[i]);
@@ -270,17 +268,14 @@ export default function MapBuilder(props) {
               })
               .catch(err => console.error(err));
           }
-
           console.log("TO RENDER, OR NOT TO RENDER?", render);
           if (render) {
             history.push(`/render/${id}`);
           } else {
             history.push(`/builder/${id}`);
           }
-
         })
         .catch(err => console.error(err));
-
       // for(var i = 0; i < savedMap.layout.length; i++) {
       //   // console.log(savedMap.layout[i]);
       //   let tile = newMapTile(id, savedMap.layout[i]);
@@ -329,7 +324,6 @@ export default function MapBuilder(props) {
       const tile = newMapTile(mapId, mapLayout[i]);
       mapTiles.push(tile);
     }
-
     return mapTiles;
   }
 
@@ -369,6 +363,7 @@ export default function MapBuilder(props) {
 
   return !isMobile ? (
     <Box>
+      <StartMapModal openModal={open}/>
       {/* MAP TITLE */}
       <Container className={classes.titleWrapper}>
         <Typography variant="h2" className={classes.title}>
@@ -394,7 +389,7 @@ export default function MapBuilder(props) {
           </form>
         )}
       </Container>
-      
+
       {/* MAP BUILDER */}
       <MapCanvas
         loadThisMap={id}
@@ -412,7 +407,6 @@ export default function MapBuilder(props) {
       {/* SNACKBAR NOTIFICATIONS */}
       <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
       <AuthBar auth={auth} toggleAuthState={toggleAuthState} />
-
     </Box>
   ) : (
     // else statement for mobile users

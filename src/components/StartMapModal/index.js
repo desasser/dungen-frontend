@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import StartMap from "../StartMap";
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -9,70 +9,70 @@ import Typography from '@material-ui/core/Typography';
 
 
 const useStyles = makeStyles((theme) => ({
-    modal: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        // zIndex: 20000
-    },
-    paper: {
-        backgroundColor: '#8eb1c7',
-        borderRadius: '0.5em',
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3),
-        outline: 'none'
-    },
-   
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // zIndex: 20000
+  },
+  paper: {
+    backgroundColor: '#8eb1c7',
+    borderRadius: '0.5em',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    outline: 'none'
+  },
+
 }));
 
 function StartMapModal(props) {
 
-    const classes = useStyles();
+  const classes = useStyles();
 
-    const [open, setOpen] = React.useState(props.openModal);
+  const [open, setOpen] = useState(props.openModal);
 
-   const handleClose = () => {
-        setOpen(false);
-    };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    React.useEffect(() => {
-        console.log("This is a new map modal thing", props.openModal)
-        const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
-        console.log(savedMap)
-      if (savedMap === null || savedMap.layout.length === 0) {
-        setOpen(props.openModal)
-      } else {
-        setOpen(false)
-      }
-    },[] )
+  useEffect(() => {
+    console.log("This is a new map modal thing", props.openModal)
+    const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+    console.log(savedMap)
+    if (savedMap === null || savedMap.layout.length === 0) {
+      setOpen(props.openModal)
+    } else {
+      setOpen(false)
+    }
+  }, [])
 
-    return (
-        <>
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={open}
-                onClose={handleClose}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
+  return (
+    <>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
 
-            >
-                <Fade in={open}>
-                    <div className={classes.paper}>
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
 
 
 
-                        <StartMap onClose={handleClose}/>
+            <StartMap onClose={handleClose} />
 
-                    </div>
-                </Fade>
-            </Modal>
-        </>
-    )
+          </div>
+        </Fade>
+      </Modal>
+    </>
+  )
 
 }
 

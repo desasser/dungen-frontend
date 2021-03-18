@@ -26,10 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
   navLink: {
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy',
-    fontSize: '20px',
-    marginLeft: '20px',
-    color: '#36434b'
+    color: theme.palette.secondary.contrastText,
   },
   menuItem: {
     color: 'black',
@@ -88,9 +85,9 @@ export default function LoginModal(props) {
 
   return (
     <>
-      <p type="button" className={!isMobile ? classes.navLink : classes.menuItem} onClick={handleOpen} style={{cursor: 'pointer'}}>
-        LOGIN
-      </p>
+      <Typography variant='h5' type="button" className={!isMobile ? classes.navLink : classes.menuItem} onClick={handleOpen} style={{cursor: 'pointer'}}>
+        Login
+      </Typography>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -101,8 +98,7 @@ export default function LoginModal(props) {
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
-        }}
-        
+        }} 
       >
         <Fade in={open}>
           <div className={classes.paper}>
