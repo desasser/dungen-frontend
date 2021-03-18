@@ -155,7 +155,7 @@ function App() {
             </Route>
 
             <Route exact path="/builder">
-              <MapBuilder users={users} />
+              <MapBuilder users={users} openModal={true}/>
             </Route>
             <Route exact path="/builder/:id">
               <MapBuilder users={users} />

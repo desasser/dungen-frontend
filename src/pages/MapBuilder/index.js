@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import SliderDrawer from '../../components/SliderDrawer'
 import IconBtn from '../../components/IconBtn'
@@ -16,6 +16,8 @@ import SaveBar from '../../components/SaveBar'
 import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
 import snail from '../../images/DisapproverSnail.png';
+import ErrorBoundary from '../../components/ErrorBoundary';
+import StartMapModal from '../../components/StartMapModal'
 
 const useStyles = makeStyles({
   tileGrid: {
@@ -57,7 +59,7 @@ const useStyles = makeStyles({
   clearBtn: {
     '&:hover': {
       backgroundColor: '#eb4511',
-    color: 'white',
+      color: 'white',
     },
     width: 100,
     height: 60,
@@ -161,8 +163,11 @@ export default function MapBuilder(props) {
   const history = useHistory();
   let { id } = useParams();
 
+  const [open, setOpen] = React.useState(props.openModal);
+
   React.useEffect(() => {
     if (id !== undefined) {
+
       API.getSingleMap(id)
         .then(res => {
           // console.log(res)
@@ -172,8 +177,9 @@ export default function MapBuilder(props) {
           }
         })
         .catch(err => console.error(err));
-    }
+    } 
   }, []);
+
   const logIn = props.users.isLoggedIn
   console.log(logIn)
 
@@ -228,9 +234,9 @@ export default function MapBuilder(props) {
             }
           }
           setSavedState(true);
-          
+
           console.log("TO RENDER, OR NOT TO RENDER?", render);
-          if(render) {
+          if (render) {
             history.push(`/render/${newMapId}`);
           } else {
             history.push(`/builder/${newMapId}`);
@@ -250,7 +256,7 @@ export default function MapBuilder(props) {
             // map title updated!
           })
           .catch(err => console.error(err));
-        }
+      }
 
       API.deleteAllMapTilesForMap(id)
         .then(results => {
@@ -268,7 +274,7 @@ export default function MapBuilder(props) {
           }
 
           console.log("TO RENDER, OR NOT TO RENDER?", render);
-          if(render) {
+          if (render) {
             history.push(`/render/${id}`);
           } else {
             history.push(`/builder/${id}`);
@@ -334,7 +340,7 @@ export default function MapBuilder(props) {
     console.log("RENDER THE DAMN MAP")
     saveMapToDB(true);
   }
-  
+
   const viewMap = () => {
     setViewState((prev) => !prev)
   }
@@ -370,36 +376,41 @@ export default function MapBuilder(props) {
 
   return (
     !isMobile ?
-      (<Container>
+      (
         <Container>
-          <Container className={classes.titleWrapper}>
-            <Typography variant='h2' className={classes.title}>{mapTitle}</Typography>
-            {!titleState ? <Button onClick={() => setTitleState(true)} className={classes.titleBtn}>Edit Title</Button> :
-              <form onSubmit={handleTitleSubmit}>
-                <TextField id="filled-basic" label="Map Title" variant="filled" value={mapTitle} onChange={(e) => setMapTitle(e.target.value)} className={classes.titleInput} />
-              </form>}
-          </Container>
+          <StartMapModal openModal={open} />
 
-          {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
-          <SliderDrawer handleDraggableItem={handleDraggableItem} />
-          {/* GRID BOX */}
-          <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginTop: '25px', padding: '0px' }}>
-            <Grid addThisTile={addThisTile} loadThisMap={id} viewState={viewState} />
-          </Container>
-          {/* TODO: This functionality is for future development */}
-          {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
+          <Container>
+
+            <Container className={classes.titleWrapper}>
+              <Typography variant='h2' className={classes.title}>{mapTitle}</Typography>
+              {!titleState ? <Button onClick={() => setTitleState(true)} className={classes.titleBtn}>Edit Title</Button> :
+                <form onSubmit={handleTitleSubmit}>
+                  <TextField id="filled-basic" label="Map Title" variant="filled" value={mapTitle} onChange={(e) => setMapTitle(e.target.value)} className={classes.titleInput} />
+                </form>}
+            </Container>
+
+            {/* The "handleDraggableItem" prop here is to get the data for the AddThisTile const */}
+            <SliderDrawer handleDraggableItem={handleDraggableItem} />
+            {/* GRID BOX */}
+            <Container className="grid-base" style={{ outline: '#8eb1c7 15px solid', height: '1000px', width: '1000px', marginTop: '25px', padding: '0px' }}>
+
+              <Grid addThisTile={addThisTile} loadThisMap={id} viewState={viewState} />
+            </Container>
+            {/* TODO: This functionality is for future development */}
+            {/* <IconBtn name='icon' classes={classes.iconBtn} onClick={handleLock}>
           {lockState ? <LockOutlinedIcon /> : <LockOpenOutlinedIcon />}
           </IconBtn> */}
-          <Container className={classes.btnWrapper}>
-            {/* <ActionBtn name='CLEAR' classes={classes.clearBtn} action={clearMap} />
+            <Container className={classes.btnWrapper}>
+              {/* <ActionBtn name='CLEAR' classes={classes.clearBtn} action={clearMap} />
             <ActionBtn name='RENDER' classes={classes.renderBtn} action={renderMap} /> */}
-            <ActionBtn name={!viewState ? 'PREVIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
-            <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMap} />
+              <ActionBtn name={!viewState ? 'PREVIEW' : 'BUILD'} classes={classes.routerBtn} action={viewMap} />
+              <ActionBtn name='SAVE' classes={classes.actionBtn} action={saveMap} />
+            </Container>
           </Container>
-        </Container>
-        <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
-        <AuthBar auth={auth} toggleAuthState={toggleAuthState} />
-      </Container>) :
+          <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
+          <AuthBar auth={auth} toggleAuthState={toggleAuthState} />
+        </Container>) :
       (
         <Container>
           <Typography variant='h3' className={classes.mobileMapBuilder}>
