@@ -172,6 +172,13 @@ export default function InfiniteCanvas(props) {
 
     if(props.draggingTile) {
       setContextMenuActive(false);
+      setActivePin(null);
+      setShadowPinParams({
+        ...shadowPinParams,
+        opacity: 0,
+        x: 0,
+        y: 0
+      })
     }
     // create grid on page load
     createGrid();
