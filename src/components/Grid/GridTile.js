@@ -1,7 +1,7 @@
 import React from 'react'
 import './style.scss'
 
-export default function Tile({item, handleDoubleClick }) {
+export default function GridTile({item, handleDoubleClick }) {
   const [inlineStyles, setInlineStyles] = React.useState({
     background: "#f00",
     transform: `rotate(${item.orientation}deg) scale(1,1)`,

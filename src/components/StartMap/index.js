@@ -54,13 +54,13 @@ function StartMap(props) {
     }
 
     const handleMapSubmit = event => {
-        console.log("closing tiem")
+        console.log("cSM57 form submitted", event)
         API.saveMap(newMap).then(res => {
-            console.log("trying to to save a map")
+            console.log("trying to to save a map");
 
         }).catch(err=> console.error(err))
-        props.onClose()
 
+        props.onClose(newMap)
     }
 
     const handleCheck = event => {
@@ -156,7 +156,7 @@ function StartMap(props) {
 
             <Button
                 // onClick={props.onClose} 
-                onClick={handleMapSubmit}> Start Building! </Button>
+                onClick={(e) => handleMapSubmit(e)}> Start Building! </Button>
         </FormControl>
 
     )

@@ -1,21 +1,28 @@
 import React from "react";
-import Container from '@material-ui/core/Container';
-import './style.scss'
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 
-export default function DraggableTile({ tileId, children, imageURL, handleOnDragStart }) {
+const useStyles = makeStyles({
+  tilesetTile: {
+    width: 100,
+    height: 100,
+    borderTop: '8px solid palegoldenrod',
+    borderLeft: '8px solid goldenrod',
+    borderRight: '8px solid midnightblue',
+    borderBottom: '8px solid midnightblue',
+  }
+});
 
-  // const handleDraggableDragStart = (e) => {
-  //   e.dataTransfer.setData("text/plain", "");
-  // }
+export default function DraggableTile({ tileId, imageURL, handleDraggableItem }) {
+  const classes = useStyles();
 
   return (
     <img 
-      className="droppable-element"
+      className={`${classes.tilesetTile} droppable-element`}
       data-tileid={tileId}
       draggable={true}
       unselectable="on"
       src={imageURL}
-      onDragStart={handleOnDragStart}
+      onDragStart={handleDraggableItem}
     />
     // <div
     //   className="droppable-element"
