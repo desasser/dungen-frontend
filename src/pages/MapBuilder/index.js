@@ -1,23 +1,23 @@
-import React, { useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
-
-// import IconBtn from '../../components/IconBtn'
-// import ActionBtn from '../../components/ActionBtn'
-// import RouterBtn from '../../components/RouterBtn'
-import { makeStyles } from "@material-ui/core/styles";
-import { Box, Container, Typography, TextField, Button } from "@material-ui/core";
-// import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-// import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
-
-import API from "../../utils/API";
-import snail from "../../images/DisapproverSnail.png";
-
-import SaveBar from "../../components/SaveBar";
-import AuthBar from "../../components/AuthBar";
+import React, { useState, useEffect } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
 import SliderDrawer from '../../components/SliderDrawer'
-import MapCanvas from "../../components/MapCanvas";
-
-import LoginModal from '../../components/LoginModal'
+import IconBtn from '../../components/IconBtn'
+import ActionBtn from '../../components/ActionBtn'
+import RouterBtn from '../../components/RouterBtn'
+import { makeStyles } from '@material-ui/core/styles';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
+import MapCanvas from '../../components/MapCanvas';
+import { Container, Box, Typography, TextField, Button } from '@material-ui/core';
+// import Typography from '@material-ui/core/Typography';
+// import TextField from '@material-ui/core/TextField';
+// import Button from '@material-ui/core/Button';
+import SaveBar from '../../components/SaveBar'
+import AuthBar from '../../components/AuthBar'
+import API from '../../utils/API';
+import snail from '../../images/DisapproverSnail.png';
+import ErrorBoundary from '../../components/ErrorBoundary';
+import StartMapModal from '../../components/StartMapModal'
 
 const useStyles = makeStyles({
   tileGrid: {
@@ -57,9 +57,9 @@ const useStyles = makeStyles({
     fontSize: "18px",
   },
   clearBtn: {
-    "&:hover": {
-      backgroundColor: "#eb4511",
-      color: "white",
+    '&:hover': {
+      backgroundColor: '#eb4511',
+      color: 'white',
     },
     width: 100,
     height: 60,
@@ -164,8 +164,11 @@ export default function MapBuilder(props) {
   const logIn = props.users.isLoggedIn;
   // console.log(logIn);
 
+  const [open, setOpen] = React.useState(props.openModal);
+
   React.useEffect(() => {
     if (id !== undefined) {
+
       API.getSingleMap(id)
         .then((res) => {
           // console.log(res)
@@ -174,9 +177,17 @@ export default function MapBuilder(props) {
             // setLoadedMapData(res.data);
           }
         })
-        .catch((err) => console.error(err));
-    }
+        .catch(err => console.error(err));
+    } 
   }, []);
+
+  const handleLock = () => {
+    if (lockState) {
+      setLockState(false);
+    } else {
+      setLockState(true);
+    }
+  }
 
   const toggleSavedState = () => {
     setSavedState(false);
@@ -187,126 +198,157 @@ export default function MapBuilder(props) {
   };
 
   const saveMap = () => {
-    //saveMapToDB(false);
-  };
+    saveMapToDB(false);
+  }
 
-  // TODO: REBUILD THIS
-  // const saveMapToDB = (render) => {
-  //   let lsMap = JSON.parse(localStorage.getItem('snail_map'));
+  const saveMapToDB = (render) => {
+    let savedMap = JSON.parse(localStorage.getItem('dungen_map'));
+    console.log(id, id === null, id === undefined);
+    console.log('check me', props);
+    let results;
 
-  //   console.log(id, id === null, id === undefined);
-  //   console.log('check me', props);
-  //   let results;
+    if (logIn === false) {
+      setAuthState(true)
+    }
+    if (id === null || id === undefined) {
+      console.log("NO ID, SAVING NEW MAP")
+      // console.log(e.target);
+      const mapLayout = savedMap.layout;
 
-  //   if (logIn === false) {
-  //     setAuthState(true)
-  //   }
-  //   if (id === null || id === undefined) {
-  //     console.log("NO ID, SAVING NEW MAP")
-  //     // console.log(e.target);
-  //     const mapLayout = lsMap !== null ? lsMap.layout : null;
+      results = API.saveMap({ UserId: props.users.id, name: mapTitle, image_url: "" })
+        .then(savedMap => {
+          // console.log(savedMap.data);
+          const newMapId = savedMap.data.id;
 
-  //     results = API.saveMap({ UserId: props.users.id, name: mapTitle, image_url: "" })
-  //       .then(savedMap => {
-  //         // console.log(savedMap.data);
-  //         const newMapId = savedMap.data.id;
+          const newMapTiles = createMapTiles(newMapId);
 
-  //         const newMapTiles = createMapTiles(newMapId);
+          for (var i = 0; i < newMapTiles.length; i++) {
+            if (newMapTiles[i].TileId !== null) {
+              API.saveMapTile(newMapTiles[i])
+                .then(savedMapTile => {
+                  // mapTile successfully saved!
+                })
+                .catch(err => console.error(err));
+            }
+          }
+          setSavedState(true);
 
-  //         for (var i = 0; i < newMapTiles.length; i++) {
-  //           if (newMapTiles[i].TileId !== null) {
-  //             API.saveMapTile(newMapTiles[i])
-  //               .then(savedMapTile => {
-  //                 // mapTile successfully saved!
-  //               })
-  //               .catch(err => console.error(err));
-  //           }
-  //         }
-  //         setSavedState(true);
+          console.log("TO RENDER, OR NOT TO RENDER?", render);
+          if (render) {
+            history.push(`/render/${newMapId}`);
+          } else {
+            history.push(`/builder/${newMapId}`);
+          }
+        })
+        .catch(err => console.error(err));
 
-  //         console.log("TO RENDER, OR NOT TO RENDER?", render);
-  //         if(render) {
-  //           history.push(`/render/${newMapId}`);
-  //         } else {
-  //           history.push(`/builder/${newMapId}`);
-  //         }
-  //       })
-  //       .catch(err => console.error(err));
+    } else {
+      console.log("ID PROVIDED, SAVING MAP TILES FOR SPECIFIED MAP")
+      // we should probably ask the user if they want to save a NEW map
+      // or save over the existing map
+      // but that's a "later guy" problem, imho
+      if (savedMap.mapTitle !== mapTitle) {
+        results = API.updateMap({ id: id, name: mapTitle })
+          .then(results => {
+            setSavedState(true)
+            // map title updated!
+          })
+          .catch(err => console.error(err));
+      }
 
-  //   } else {
-  //     console.log("ID PROVIDED, SAVING MAP TILES FOR SPECIFIED MAP")
-  //     // we should probably ask the user if they want to save a NEW map
-  //     // or save over the existing map
-  //     // but that's a "later guy" problem, imho
-  //     if (lsMap.mapTitle !== mapTitle) {
-  //       results = API.updateMap({ id: id, name: mapTitle })
-  //         .then(results => {
-  //           setSavedState(true)
-  //           // map title updated!
-  //         })
-  //         .catch(err => console.error(err));
-  //       }
+      API.deleteAllMapTilesForMap(id)
+        .then(results => {
+          console.log(results);
 
-  //     API.deleteAllMapTilesForMap(id)
-  //       .then(results => {
-  //         console.log(results);
+          for (var i = 0; i < savedMap.layout.length; i++) {
+            // console.log(savedMap.layout[i]);
+            let tile = newMapTile(id, savedMap.layout[i]);
+            API.saveMapTile(tile)
+              .then(results => {
+                setSavedState(true)
+                console.log(results);
+              })
+              .catch(err => console.error(err));
+          }
 
-  //         for (var i = 0; i < lsMap.layout.length; i++) {
-  //           // console.log(savedMap.layout[i]);
-  //           let tile = newMapTile(id, lsMap.layout[i]);
-  //           API.saveMapTile(tile)
-  //             .then(results => {
-  //               setSavedState(true)
-  //               console.log(results);
-  //             })
-  //             .catch(err => console.error(err));
-  //         }
+          console.log("TO RENDER, OR NOT TO RENDER?", render);
+          if (render) {
+            history.push(`/render/${id}`);
+          } else {
+            history.push(`/builder/${id}`);
+          }
 
-  //         console.log("TO RENDER, OR NOT TO RENDER?", render);
-  //         if(render) {
-  //           history.push(`/render/${id}`);
-  //         } else {
-  //           history.push(`/builder/${id}`);
-  //         }
+        })
+        .catch(err => console.error(err));
 
-  //       })
-  //       .catch(err => console.error(err));
-  //   }
-  // }
+      // for(var i = 0; i < savedMap.layout.length; i++) {
+      //   // console.log(savedMap.layout[i]);
+      //   let tile = newMapTile(id, savedMap.layout[i]);
+      //   API.saveMapTile(tile)
+      //   .then(results => {
+      //     console.log(results);
+      //   })
+      //   .catch(err => console.error(err));
 
-  // gets tiles from local storage
-  // and runs each one through the newMapTile function
-  // const createMapTiles = (mapId) => {
-  //   const mapLayout = JSON.parse(localStorage.getItem("snail_map")).layout;
+      //   // if(tile.mapTileId === undefined || tile.mapTileId === null) {
+      //   //   API.saveMapTile(tile)
+      //   //   .then(results => {
+      //   //     console.log(results);
+      //   //   })
+      //   //   .catch(err => console.error(err));
 
-  //   let mapTiles = [];
-  //   for (var i = 0; i < mapLayout.length; i++) {
-  //     const tile = newMapTile(mapId, mapLayout[i]);
-  //     mapTiles.push(tile);
-  //   }
+      //   // } else {
+      //   //   API.updateMapTile(tile)
+      //   //   .then(results => {
+      //   //     console.log(results.data);
+      //   //   })
+      //   //   .catch(err => console.error(err));
+      //   // }
+      // }
+    }
+  }
 
-  //   return mapTiles;
-  // };
+  const newMapTile = (mapId, tileData) => {
+    // console.log("tileData -> newMapTile", tileData);
+    let newTile = {
+      MapId: parseInt(mapId),
+      TileId: parseInt(tileData.tileId),
+      xCoord: parseInt(tileData.x),
+      yCoord: parseInt(tileData.y),
+      orientation: tileData.orientation,
+      mirror: tileData.mirror
+    }
+    // console.log(newTile);
+    return newTile;
+  }
 
-  // builds object with data required for MapTiles table
-  // separated from createMapTiles for use in other functions
-  // const newMapTile = (mapId, tileData) => {
-  //   // console.log("tileData -> newMapTile", tileData);
-  //   let newTile = {
-  //     MapId: parseInt(mapId),
-  //     TileId: parseInt(tileData.tileId),
-  //     xCoord: parseInt(tileData.x),
-  //     yCoord: parseInt(tileData.y),
-  //     orientation: tileData.orientation,
-  //     mirror: tileData.mirror,
-  //   };
-  //   // console.log(newTile);
-  //   return newTile;
-  // };
+  const createMapTiles = (mapId) => {
+    const mapLayout = JSON.parse(localStorage.getItem('dungen_map')).layout;
+    let mapTiles = [];
+    for (var i = 0; i < mapLayout.length; i++) {
+      const tile = newMapTile(mapId, mapLayout[i]);
+      mapTiles.push(tile);
+    }
 
-  // this gets the required data from the tile being dragged
-  // creates an object, and sets the addThisTile state
-  // to send to MapCanvas for placing on the canvas
+    return mapTiles;
+  }
+
+  const renderMap = (e) => {
+    // true = render map after saving
+    console.log("RENDER THE DAMN MAP")
+    saveMapToDB(true);
+  }
+
+  const viewMap = () => {
+    setViewState((prev) => !prev)
+  }
+
+  const clearMap = (e) => {
+    console.log("clear the grid")
+    localStorage.removeItem('dungen_map');
+    // setLoadedMapData({ name: "" });
+  }
+
   const handleDraggableItem = (e) => {
     const tileData = {
       TileId: e.target.dataset.tileid,
