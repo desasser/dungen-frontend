@@ -64,7 +64,8 @@ function StartMap(props) {
     }
 
     const handleCheck = event => {
-        setMapState({ ...newMap, [event.target.name]: event.target.checked });
+        setMapState({ ...newMap, [event.target.name]: event.target.checked, row: !newMap.infinite ? null : newMap.row , column: !newMap.infinite ? null: newMap.column });
+        // setMapState({...newMap, row: null, column: null})
     };
 
 
