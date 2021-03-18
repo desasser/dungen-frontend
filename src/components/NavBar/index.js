@@ -21,10 +21,11 @@ import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    boxSizing: 'border-box',
     flexGrow: 1,
     position: 'sticky',
     top: 0,
-    zIndex: 10,
+    zIndex: 9999,
   },
   title: {
     flexGrow: 1,
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   navBar: {
     backgroundColor: '#8eb1c7',
     color: 'black',
-    width: '100vw'
+    // width: '100vw'
   },
   navLink: {
     textDecoration: 'none',
@@ -181,7 +182,7 @@ export default function MenuAppBar(props) {
   };
 
   const signUpBtn = click => {
-    console.log(click)
+    // console.log(click)
     if (formSwitch.login === true) {
       setFormSwitch({ login: false })
       setFormMsg({ Msg: "Create an Account" })
@@ -251,13 +252,13 @@ export default function MenuAppBar(props) {
               
               <FormGroup>
                 {!props.user.isLoggedIn ? <MenuItem>
-                  <Link className={classes.menuItemStyle}>
+                  <Link to='' className={classes.menuItemStyle}>
                     <LoginModal edge="start" onClick={logInPopUp}
                       handleSubmit={handleSubmit} credentials={loginState} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={props.user} login={formSwitch} error={errorState}
                     />
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
-                  <Link className={classes.menuItemStyle}>
+                  <Link to='' className={classes.menuItemStyle}>
                       LOGOUT?
                 </Link>
                   </MenuItem>}

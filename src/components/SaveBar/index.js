@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SavedBar(props) {
-    console.log(props)
+    // console.log(props)
     const classes = useStyles();
 
 

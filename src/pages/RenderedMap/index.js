@@ -113,6 +113,7 @@ export default function RenderedMap(props) {
   // TODO: Maybe can't be done front side?
   React.useEffect(() => {
     console.log("RENDER THIS ID:", id)
+
     if (id !== undefined) {
       API.renderMap(id)
       .then(mapData => {
@@ -127,6 +128,13 @@ export default function RenderedMap(props) {
         .catch(err => console.error(err));
       })
       .catch(err => console.error(err));
+    } else {
+      const savedURI = localStorage.getItem('dungen_map_image');
+      console.log(savedURI);
+      if(savedURI !== null) {
+        setMapData({image_url: savedURI, mapTitle: "UNKNOWN", mapId: null})
+        setRendered(true);
+      }
     }
   }, [])
 
@@ -141,7 +149,7 @@ export default function RenderedMap(props) {
       </Typography>
       <Container className={classes.largeMap} >
         {/* TODO: Add ternary operator to check if the image has finished rendering or not */}
-        {!rendered ? <FancyLinearProgress /> : <img src={mapData.img_url} alt={mapData.mapTitle} />}
+        {!rendered ? <FancyLinearProgress /> : <img src={mapData.image_url} alt={mapData.mapTitle} />}
       </Container>
       {/* <ActionBtn name='SAVE' classes={classes.actionBtn} /> */}
       <ActionBtn name='EDIT' classes={classes.actionBtn} action={editButtonAction} />
