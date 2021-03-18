@@ -130,6 +130,7 @@ function App() {
   };
 
   return (
+<<<<<<< HEAD
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <div style={{ background: theme.palette.primary.mainGradient, minHeight: '100vh' }}>
@@ -174,6 +175,53 @@ function App() {
         </Router>
       </div>
     </ThemeProvider>
+=======
+    <div className="App">
+      <Router>
+        <NavBar user={users} />
+        <Switch>
+          <Route exact path="/" component={Splash} />
+
+          <Route exact path="/login">
+            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} 
+            // switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} 
+            isLoggedIn={users.isLoggedIn}  />
+          </Route>
+          <Route exact path="/">
+            <Splash />
+          </Route>
+
+          <Route exact path="/dashboard">
+            {users.isLoggedIn ? <SavedMaps users={users} /> : <Nope />}
+          </Route>
+          <Route exact path="/503">
+            <Nope />
+          </Route>
+          
+          <Route exact path="/builder">
+            <MapBuilder users={users} openModal={true}/>
+          </Route>
+          <Route exact path="/builder/:id">
+            <MapBuilder users={users}/>
+          </Route>
+          
+          <Route exact path="/preview">
+            {users.isLoggedIn ? <RenderedMap /> : <Nope />}
+          </Route>
+
+          <Route exact path="/render/:id">
+            {users.isLoggedIn ? <RenderedMap /> : <Nope />}
+          </Route>
+
+          <Route component={FourOhNope} />
+
+          <Route exact path="/503">
+            <Nope />
+          </Route>
+        </Switch>
+      </Router>
+    </div>
+>>>>>>> dev
   );
 }
 
