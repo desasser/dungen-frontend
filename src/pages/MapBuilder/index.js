@@ -16,7 +16,7 @@ import SaveBar from '../../components/SaveBar'
 import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
 import snail from '../../images/DisapproverSnail.png';
-import ErrorBoundary from '../../components/ErrorBoundary';
+// import ErrorBoundary from '../../components/ErrorBoundary';
 import StartMapModal from '../../components/StartMapModal'
 
 const useStyles = makeStyles({
@@ -369,6 +369,7 @@ export default function MapBuilder(props) {
 
   return !isMobile ? (
     <Box>
+      <StartMapModal openModal={open} />
       {/* MAP TITLE */}
       <Container className={classes.titleWrapper}>
         <Typography variant="h2" className={classes.title}>
