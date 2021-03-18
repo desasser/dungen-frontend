@@ -8,7 +8,7 @@ import API from '../../utils/API';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import DraggableTile from '../Tile/DraggableTile';
+import DraggableTile from '../MapTile/DraggableTile';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -234,7 +234,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
           <Container className={classes.tileWrapper}>
 
             {tileSet.length > 0 ?
-              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />) : (
+              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleDraggableItem={handleDraggableItem} />) : (
                 (!loadState ? (
                   // <CircularProgress />
                   <LinearProgress />
