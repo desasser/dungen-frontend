@@ -22,7 +22,6 @@ import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-<<<<<<< HEAD
     display: 'flex',
     justifyContent: 'space-between',
     position: 'sticky',
@@ -31,27 +30,14 @@ const useStyles = makeStyles((theme) => ({
     width: '90%',
     margin: '0 auto',
     alignItems: 'center'
-=======
-    boxSizing: 'border-box',
-    flexGrow: 1,
-    position: 'sticky',
-    top: 0,
-    zIndex: 9999,
->>>>>>> dev
   },
   title: {
     cursor: 'pointer',
   },
   navBar: {
-<<<<<<< HEAD
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
     height: '75px'
-=======
-    backgroundColor: '#8eb1c7',
-    color: 'black',
-    // width: '100vw'
->>>>>>> dev
   },
   navLink: {
     textDecoration: 'none',
@@ -290,19 +276,12 @@ export default function MenuAppBar(props) {
                     />
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
-<<<<<<< HEAD
                   <Link className={classes.menuItemStyle}>
                     <Typography variant='h6'>
                       Logout
                   </Typography>
                   </Link>
                 </MenuItem>}
-=======
-                  <Link to='' className={classes.menuItemStyle}>
-                      LOGOUT?
-                </Link>
-                  </MenuItem>}
->>>>>>> dev
               </FormGroup>
             </Menu>
             {/* MOBILE MENU */}
