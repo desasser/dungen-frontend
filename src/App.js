@@ -10,7 +10,9 @@ import Splash from "./pages/Splash/index"
 import Nope from "./pages/503"
 import FourOhNope from "./pages/404"
 import API from "./utils/API.js"
-
+import { ThemeProvider } from '@material-ui/core/styles'
+import { CssBaseline } from '@material-ui/core';
+import theme from './theme'
 
 function App() {
 
@@ -127,66 +129,51 @@ function App() {
     }
   };
 
-  // const signUpBtn = click => {
-  //   console.log(click)
-  //   if (formSwitch.login === true) {
-  //     setFormSwitch({ login: false })
-  //     setFormMsg({ Msg: "Create an Account" })
-  //     setHapticBtn({ Btn: "Switch to: Login" })
-  //   } else {
-  //     setFormMsg({ Msg: "Please Login" })
-  //     setHapticBtn({ Btn: "Switch to: Sign Up" })
-  //     setFormSwitch({ login: true })
-  //   }
-  // }
-
-
   return (
-    <div className="App">
-      <Router>
-        <NavBar user={users} />
-        <Switch>
-          <Route exact path="/" component={Splash} />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div style={{ background: theme.palette.primary.mainGradient, minHeight: '100vh' }}>
+        <Router>
+          <NavBar user={users} />
+          <Switch>
+            <Route exact path="/" component={Splash} />
 
-          <Route exact path="/login">
-            <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange} 
-            // switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} 
-            isLoggedIn={users.isLoggedIn}  />
-          </Route>
-          <Route exact path="/">
-            <Splash />
-          </Route>
+            <Route exact path="/login">
+              <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange}
+                // switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} 
+                isLoggedIn={users.isLoggedIn} />
+            </Route>
+            <Route exact path="/">
+              <Splash />
+            </Route>
 
-          <Route exact path="/dashboard">
-            {users.isLoggedIn ? <SavedMaps users={users} /> : <Nope />}
-          </Route>
-          <Route exact path="/503">
-            <Nope />
-          </Route>
-          
-          <Route exact path="/builder">
-            <MapBuilder users={users} openModal={true}/>
-          </Route>
-          <Route exact path="/builder/:id">
-            <MapBuilder users={users}/>
-          </Route>
-          
-          <Route exact path="/preview">
-            {users.isLoggedIn ? <RenderedMap /> : <Nope />}
-          </Route>
+            <Route exact path="/dashboard">
+              {users.isLoggedIn ? <SavedMaps users={users} /> : <Nope />}
+            </Route>
+            <Route exact path="/503">
+              <Nope />
+            </Route>
 
-          <Route exact path="/render/:id">
-            {users.isLoggedIn ? <RenderedMap /> : <Nope />}
-          </Route>
+            <Route exact path="/builder">
+              <MapBuilder users={users} openModal={true}/>
+            </Route>
+            <Route exact path="/builder/:id">
+              <MapBuilder users={users} />
+            </Route>
 
-          <Route component={FourOhNope} />
+            <Route exact path="/render/:id">
+              {users.isLoggedIn ? <RenderedMap /> : <Nope />}
+            </Route>
 
-          <Route exact path="/503">
-            <Nope />
-          </Route>
-        </Switch>
-      </Router>
-    </div>
+            <Route component={FourOhNope} />
+
+            <Route exact path="/503">
+              <Nope />
+            </Route>
+          </Switch>
+        </Router>
+      </div>
+    </ThemeProvider>
   );
 }
 
