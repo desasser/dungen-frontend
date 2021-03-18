@@ -99,12 +99,12 @@ export default function InfiniteCanvas(props) {
   const [coordinateSquares, setCoordinateSquares] = React.useState([]);
 
   const [shadowTileParams, setShadowTileParams] = React.useState({
-    left: 0,
-    top: 0,
+    x: 0,
+    y: 0,
     width: grid.tileSize,
     height: grid.tileSize,
     fill: "#ff7b17",
-    opacity: 0.6,
+    opacity: 0,
     stroke: "#cf6412",
     strokeWidth: 3,
     dash: [20, 2],
@@ -424,6 +424,7 @@ export default function InfiniteCanvas(props) {
       x: mousePos.x - stagePosition.x,
       y: mousePos.y - stagePosition.y,
       visible: true,
+      opacity: 0.6
     });
   }
 
@@ -440,7 +441,7 @@ export default function InfiniteCanvas(props) {
 
     if(e.evt.which === 3) {
       setActivePin(null);
-
+ 
     } else {
       setContextMenuActive(false);
     }
@@ -452,8 +453,8 @@ export default function InfiniteCanvas(props) {
       const pin = {
         idx: idx,
         type: activePin,
-        x: e.evt.clientX - stagePosition.x - 5,
-        y: e.evt.clientY - stagePosition.y - grid.tileSize * 1.9,
+        x: e.evt.clientX - stagePosition.x - 8,
+        y: e.evt.clientY - stagePosition.y - grid.tileSize * 1.95,
         fill: fillColor[activePin],
         data: null,
       }
@@ -499,6 +500,7 @@ export default function InfiniteCanvas(props) {
       x: xCoord,
       y: yCoord,
       visible: true,
+      opacity: 0.6
     });
   };
 
@@ -543,6 +545,9 @@ export default function InfiniteCanvas(props) {
     setShadowTileParams({
       ...shadowTileParams,
       visible: false,
+      opacity: 0,
+      x: 0,
+      y: 0
     });
   };
 
