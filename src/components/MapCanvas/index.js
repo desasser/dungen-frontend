@@ -119,7 +119,7 @@ export default function InfiniteCanvas(props) {
     type4: 'dodgerblue',
     type5: 'salmon'
   }
-
+  // donjon has 19
   const environmentColors = {
     Environment_1: '#899D78',
     Environment_2: '#445640',
