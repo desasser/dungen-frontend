@@ -37,10 +37,9 @@ function StartMap(props) {
         name: "",
         environment: "",
         infinite: true,
-        row: null,
-        column: null,
-        public: false,
-        init: true
+        rows: null,
+        columns: null,
+        public: false
     })
 
 

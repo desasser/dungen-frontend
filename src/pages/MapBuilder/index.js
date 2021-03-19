@@ -142,18 +142,18 @@ export default function MapBuilder(props) {
   const classes = useStyles();
 
   // for tile "drawer"
-  const [lockState, setLockState] = useState(false);
   const [titleState, setTitleState] = useState(false);
   // for the map title
   const [mapTitle, setMapTitle] = useState("Untitled Map");
+
+  // map builder init data for new maps
+  const [newMapData, setNewMapData] = useState(null);
 
   // FOR SNACKBAR NOTIFICATION!
   const [saved, setSavedState] = useState(false);
   // FOR SNACKBAR NOTIFICATION!
   const [auth, setAuthState] = useState(false);
 
-  // STATE to track view or build mode
-  const [viewState, setViewState] = useState(false);
   // for redirecting page after saving to builder/:id
   // AND for redirecting to "render" page
   const history = useHistory();
@@ -166,9 +166,10 @@ export default function MapBuilder(props) {
 
   const [open, setOpen] = useState(props.openModal);
 
+  const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+
   useEffect(() => {
     if (id !== undefined) {
-
       API.getSingleMap(id)
         .then((res) => {
           // console.log(res)
@@ -179,15 +180,12 @@ export default function MapBuilder(props) {
         })
         .catch(err => console.error(err));
     }
-  }, []);
 
-  const handleLock = () => {
-    if (lockState) {
-      setLockState(false);
-    } else {
-      setLockState(true);
+    if(savedMap !== null && savedMap.name !== "") {
+      setMapTitle(savedMap.name);
     }
-  }
+
+  }, []);
 
   const toggleSavedState = () => {
     setSavedState(false);
@@ -208,11 +206,21 @@ export default function MapBuilder(props) {
 
   const handleTitleSubmit = (event) => {
     event.preventDefault();
+
+    if(savedMap !== null && mapTitle !== "Untitled Map") {
+      savedMap.name = mapTitle;
+      localStorage.setItem('dungen_map', JSON.stringify(savedMap));
+      console.log("pMB206 localstorage", localStorage.getItem('dungen_map'));
+    }
+
     setTitleState(false);
   };
 
   const handleStartMapFormSubmit = (mapData) => {
     console.log("pMB347", mapData);
+    if(mapData.name !== "") { setMapTitle(mapData.name); }
+    setNewMapData(mapData);
+    console.log(mapData);
   }
 
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -253,11 +261,7 @@ export default function MapBuilder(props) {
         loadThisMap={id}
         toggleSavedState={toggleSavedState}
         toggleAuthState={toggleAuthState}
-        infiniteGrid={false}
-        tileSize={100}
-        rows={10}
-        columns={10}
-        init={false}
+        init={newMapData}
       />
 
       <SliderDrawer handleDraggableItem={handleDraggableItem} />
