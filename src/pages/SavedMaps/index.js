@@ -68,7 +68,7 @@ export default function SavedMaps(props) {
   }
 
   const deleteMap = (id) => {
-    API.deleteMap(id)
+    API.deleteMap(id, props.users.token)
       .then(res => loadUserMaps())
       .catch(err => console.log(err));
   }

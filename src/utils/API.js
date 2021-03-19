@@ -57,19 +57,29 @@ const API = {
     updateMapTile: tile => {
         return axios.put(`${URL_PREFIX}/api/maptile}`, tile)
     },
-    deleteMap: mapId => {
+    deleteMap: (mapId, token) => {
         // console.log(URL_PREFIX);
-        return axios.delete(`${URL_PREFIX}/api/deleteMap/${mapId}`)
+        return axios.delete(`${URL_PREFIX}/api/deleteMap/${mapId}`, {
+          headers:{
+            authorization: `Bearer: ${token}`
+          }
+        })
     },
-    deleteMapTile: tileId => {
-        return axios.delete(`${URL_PREFIX}/api/maptile/${tileId}`)
+    deleteMapTile: (tileId, token) => {
+        return axios.delete(`${URL_PREFIX}/api/maptile/${tileId}`, {
+          headers:{
+            authorization: `Bearer: ${token}`
+          }
+        })
     },
-    deleteAllMapTilesForMap: mapId => {
+    deleteAllMapTilesForMap: (mapId, token) => {
         return axios.delete(`${URL_PREFIX}/api/deletemaptilebymap/${mapId}`)
     },
     renderMap: mapId => {
         return axios.get(`${URL_PREFIX}/api/rendermap/${mapId}`)
     }
 }
+
+// add route to delete/cancel a user's account
 
 export default API

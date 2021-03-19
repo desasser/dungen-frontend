@@ -228,7 +228,7 @@ const TilesGridSwitch = withStyles({
   track: {},
 })(Switch);
 
-const renderWithPinsSwitch = withStyles({
+const RenderWithPinsSwitch = withStyles({
   switchBase: {
     color: 'gainsboro',
 
@@ -410,7 +410,7 @@ export default function MapControls({ controlsData }) {
           {/* PREVIEW */}
           <Grid component="label" container alignItems="center" spacing={1}>
             <Grid item>
-              <renderWithPinsSwitch onClick={() => setrenderWithPins(prev => !prev)} />
+              <RenderWithPinsSwitch onClick={() => setrenderWithPins(prev => !prev)} />
             </Grid>
             <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Include Pins</Grid>
           </Grid>

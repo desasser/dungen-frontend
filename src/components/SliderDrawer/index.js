@@ -134,6 +134,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
   // Material-UI warning "out-of-range value `1` for the select component"
   // I know this *works*, so is there any way to suppress this alert?
   // we get 3+ per page load
+  //TODO: Default tile set is dungeon, always position 1 in DB? What happens if you delete it?
   const [environmentState, setEnvironmentState] = useState('1');
   const [environmentListState, setEnvironmentListState] = useState([]);
 
