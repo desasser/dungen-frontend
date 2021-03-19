@@ -6,6 +6,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -68,14 +69,50 @@ function StartMap(props) {
         // setMapState({...newMap, row: null, column: null})
     };
 
+    const [environmentState, setEnvironmentState] = useState(null)
+    const [environmentSelectState, setEnvironmentSelectState] = useState([])
 
+    // const handleChangeEnvironment = (event) => {
+    //     setTileSetState(event.target.value);
+    //   };
+
+    //  useEffect(() => {
+    //      //getting the list of available environments to use in the select dropdown later.
+    //     API.getEnvironments(environmentState)
+    //     .then(environments => {
+    //         const existingEnvironments = environments.data;
+    //         let environmentList =[];
+    //         for (let i = 0; i < environmentList.length; i++) {
+    //             const locations = {
+    //                 key: i,
+    //                 name: environmentList[i].name,
+    //                 thumbnail_url: environmentList[i].thumbnail_url,
+    //                 }
+    //                 environmentList.push(existingEnvironments);
+    //         }
+    //             setEnvironmentState(existingEnvironments)
+    //             console.log(environmentState)
+    //     })
+    //     console.log(environmentState)
+    //  }, [] )
+
+     useEffect(() => {
+    API.getEnvironments(environmentSelectState).then(environments => {
+        setEnvironmentSelectState(environments.data)
+        console.log(environmentSelectState)
+      }).catch(err => console.error(err))
+      console.log("outside the function " + environmentSelectState)
+
+    }, []);
+
+    useEffect(() => {
+console.log(environmentSelectState)
+    }, [setEnvironmentSelectState])
 
     return (
         <FormControl className={classes.formControl}>
             <div>
-                <Typography variant="h4">
-                    Let's Get Started
-                </Typography>
+                
                 <div>
                     <TextField id="standard-basic" type="text" label="Map Name" name="name"
                         onChange={handleInputChange}
@@ -83,20 +120,25 @@ function StartMap(props) {
                 </div>
                 <div>
                     <FormControl>
-                        <InputLabel id="environment"> Environment</InputLabel>
+                    <InputLabel id="demo-simple-select-label" style={{ color: '#707078', position: 'relative', left: '0%', top: '.3%' }}> Environment</InputLabel>
                         <Select
-                            native
+                            
+                            labelId="select-environment"
+                            id="select-environment"
                             name="environment"
-                            // label="Working Environment"
+                            value={environmentState}
                             onChange={handleInputChange}
-
+                            className={classes.selectMenu}
                         >
-                            <option aria-label="Environment" value="" />
-                            <option value={"Environment_1"}>Environment_1</option>
-                            <option value={"Environment_2"}>Environment_2</option>
-                            <option value={"Environment_3"}>Environment_3</option>
-                            <option value={"Environment_4"}>Environment_4</option>
+                            {environmentSelectState.map(environment => <MenuItem 
+                            key ={environment.id}
+                            value = {environment.id}
+                            className={classes.menuItemStyle}
+                            >
+                                {environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}
+                            </MenuItem>)}
                         </Select>
+                        
                     </FormControl>
                 </div>
                 <div>
