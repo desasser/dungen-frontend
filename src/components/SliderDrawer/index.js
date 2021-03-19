@@ -13,6 +13,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import StartMap from "../StartMap";
 
 const useStyles = makeStyles((theme) => ({
   sideNav: {
@@ -127,16 +128,15 @@ const TileDrawer = withStyles({
 export default function SliderDrawer({ handleDraggableItem }) {
   const classes = useStyles();
   const [state, setState] = useState({
-    isDrawerOpened: false
+    isDrawerOpened: true
   })
   const [tileSet, setTileSet] = useState([]);
   const [loadState, setLoadState] = useState(false);
   // Material-UI warning "out-of-range value `1` for the select component"
   // I know this *works*, so is there any way to suppress this alert?
   // we get 3+ per page load
-  //TODO: Default tile set is dungeon, always position 1 in DB? What happens if you delete it?
-  const [environmentState, setEnvironmentState] = useState('1');
-  const [environmentListState, setEnvironmentListState] = useState([]);
+  const [tileSetState, setTileSetState] = useState('1');
+  const [tileSetListState, setTileSetListState] = useState([]);
 
   const theme = useTheme();
 
@@ -152,15 +152,15 @@ export default function SliderDrawer({ handleDraggableItem }) {
     })
   }
 
-  const handleChangeEnvironment = (event) => {
-    setEnvironmentState(event.target.value);
+  const handleChangeTileSet = (event) => {
+    setTileSetState(event.target.value);
   };
 
   const { isDrawerOpened } = state;
 
   useEffect(() => {
-    // GET ALL TILES FROM ONE ENVIRONMENT, RERUN WHEN ENVIRONMENT IS CHANGED
-    API.getTilesByEnvironment(environmentState)
+    // GET ALL TILES FROM ONE TileSets, RERUN WHEN TileSets IS CHANGED
+    API.getTilesByTileSet(tileSetState)
       .then(tiles => {
         const list = tiles.data;
         let tileList = [];
@@ -168,7 +168,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
           const tile = {
             key: i,
             tileId: list[i].id,
-            environment: list[i].Environment.name,
+            tileSet: list[i].TileSet.name,
             imageURL: list[i].image_url
           }
           tileList.push(tile);
@@ -177,12 +177,12 @@ export default function SliderDrawer({ handleDraggableItem }) {
         setLoadState(true);
       })
       .catch(err => console.error(err))
-  }, [environmentState]);
+  }, [tileSetState]);
 
   useEffect(() => {
-    // FETCH ALL ENVIRONMENTS
-    API.getEnvironments().then(environments => {
-      setEnvironmentListState(environments.data)
+    // FETCH ALL TileSets
+    API.getTileSets().then(tileSets => {
+      setTileSetListState(tileSets.data)
     }).catch(err => console.error(err))
   }, []);
 
@@ -207,6 +207,11 @@ export default function SliderDrawer({ handleDraggableItem }) {
         onClose={handleDrawerClose}
         // onClick={() => document.querySelector("#tile-controls").style.display = 'none'}
       >
+        {/*==================== Calvin's doing something wierd ===================*/}
+        
+        <StartMap />
+        
+        {/*==================== Calvin's done doing something wierd ===================*/}
         <Container className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose} className={classes.drawerCloseBtn}>
             {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
@@ -218,24 +223,24 @@ export default function SliderDrawer({ handleDraggableItem }) {
             Dungeon Tiles
           </Typography>
 
-          {/* Drop down menu for environment change */}
-          <InputLabel id="demo-simple-select-label" style={{ color: '#707078', position: 'relative', left: '-35%', top: '.3%' }}>Environment</InputLabel>
+          {/* Drop down menu for tileSet change */}
+          <InputLabel id="demo-simple-select-label" style={{ color: '#707078', position: 'relative', left: '-35%', top: '.3%' }}>Tile Sets</InputLabel>
           <Select
-            labelId="select-environment"
-            id="select-environment"
-            value={environmentState}
-            onChange={handleChangeEnvironment}
+            labelId="select-tileSet"
+            id="select-tileSet"
+            value={tileSetState}
+            onChange={handleChangeTileSet}
             className={classes.selectMenu}
           >
-            {/* MAP OVER ALL ENVIRONMENTS AND CREATE MENU ITEMS */}
-            {environmentListState.map(environment => <MenuItem key={environment.id} value={environment.id} className={classes.menuItemStyle}>{environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}</MenuItem>)}
+            {/* MAP OVER ALL TILESETS AND CREATE MENU ITEMS */}
+            {tileSetListState.map(tileSet => <MenuItem key={tileSet.id} value={tileSet.id} className={classes.menuItemStyle}>{tileSet.name.charAt(0).toUpperCase() + tileSet.name.slice(1)}</MenuItem>)}
           </Select>
 
           {/* Tile display */}
           <Container className={classes.tileWrapper}>
 
             {tileSet.length > 0 ?
-              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} environment={tile.environment} imageURL={tile.imageURL} handleDraggableItem={handleDraggableItem} />) : (
+              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />) : (
                 (!loadState ? (
                   // <CircularProgress />
                   <LinearProgress />

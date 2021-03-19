@@ -27,12 +27,16 @@ const API = {
         // console.log(tiles)
         return axios.get(`${URL_PREFIX}/api/tiles`)
     },
-    getTilesByEnvironment: environment => {
-      return axios.get(`${URL_PREFIX}/api/tiles/${environment}`)
+    getTilesByTileSet: tileSet => {
+      return axios.get(`${URL_PREFIX}/api/tiles/${tileSet}`)
   },
-    getEnvironments: () => {
+    getTileSets: () => {
       // console.log(tiles)
-      return axios.get(`${URL_PREFIX}/api/Environments`)
+      return axios.get(`${URL_PREFIX}/api/TileSets`)
+    },
+    getEnvironments:  () => {
+        console.log("working API");
+        return axios.get(`${URL_PREFIX}/api/Environments`)
     },
     // add USER ID into the query
     getUserMaps: userId => {
