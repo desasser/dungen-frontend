@@ -6,6 +6,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -50,52 +51,98 @@ function StartMap(props) {
             ...newMap,
             [name]: value
         })
+        console.log(event.target.name)
+        console.log(event.target.value)
     }
 
     const handleMapSubmit = event => {
-        console.log("cSM57 form submitted", event)
+        console.log("form submitted", event)
         API.saveMap(newMap).then(res => {
             console.log("trying to to save a map");
 
-        }).catch(err=> console.error(err))
+        }).catch(err => console.error(err))
 
         props.onClose(newMap)
     }
 
     const handleCheck = event => {
-        setMapState({ ...newMap, [event.target.name]: event.target.checked, row: !newMap.infinite ? null : newMap.row , column: !newMap.infinite ? null: newMap.column });
+        setMapState({ ...newMap, [event.target.name]: event.target.checked, row: !newMap.infinite ? null : newMap.row, column: !newMap.infinite ? null : newMap.column });
         // setMapState({...newMap, row: null, column: null})
     };
 
+    const [environmentState, setEnvironmentState] = useState(null)
+    const [environmentSelectState, setEnvironmentSelectState] = useState([])
 
+    // const handleChangeEnvironment = (event) => {
+    //     setTileSetState(event.target.value);
+    //   };
+
+    //  useEffect(() => {
+    //      //getting the list of available environments to use in the select dropdown later.
+    //     API.getEnvironments(environmentState)
+    //     .then(environments => {
+    //         const existingEnvironments = environments.data;
+    //         let environmentList =[];
+    //         for (let i = 0; i < environmentList.length; i++) {
+    //             const locations = {
+    //                 key: i,
+    //                 name: environmentList[i].name,
+    //                 thumbnail_url: environmentList[i].thumbnail_url,
+    //                 }
+    //                 environmentList.push(existingEnvironments);
+    //         }
+    //             setEnvironmentState(existingEnvironments)
+    //             console.log(environmentState)
+    //     })
+    //     console.log(environmentState)
+    //  }, [] )
+
+    useEffect(() => {
+        API.getEnvironments(environmentSelectState).then(environments => {
+            setEnvironmentSelectState(environments.data)
+            console.log(environmentSelectState)
+        }).catch(err => console.error(err))
+        console.log("outside the function " + environmentSelectState)
+
+    }, []);
+
+    useEffect(() => {
+        console.log(environmentSelectState)
+    }, [setEnvironmentSelectState])
 
     return (
         <FormControl className={classes.formControl}>
             <div>
-                <Typography variant="h4">
-                    Let's Get Started
-                </Typography>
+
                 <div>
+                    <FormControl className={classes.formControl}>
                     <TextField id="standard-basic" type="text" label="Map Name" name="name"
                         onChange={handleInputChange}
                     />
+                    </FormControl>
                 </div>
                 <div>
                     <FormControl>
-                        <InputLabel id="environment"> Environment</InputLabel>
+                        <InputLabel id="demo-simple-select-label" style={{ color: '#707078', position: 'relative', left: '0%', top: '.3%' }}> Environment</InputLabel>
                         <Select
-                            native
-                            name="environment"
-                            // label="Working Environment"
-                            onChange={handleInputChange}
 
+                            labelId="select-environment"
+                            id="select-environment"
+                            name="environment"
+                            value={newMap.environment}
+                            onChange={handleInputChange}
+                            className={classes.selectMenu}
                         >
-                            <option aria-label="Environment" value="" />
-                            <option value={"Environment_1"}>Environment_1</option>
-                            <option value={"Environment_2"}>Environment_2</option>
-                            <option value={"Environment_3"}>Environment_3</option>
-                            <option value={"Environment_4"}>Environment_4</option>
+                            {environmentSelectState.map(environment => <MenuItem
+                                key={environment.id}
+                                value={environment.id}
+                                className={classes.menuItemStyle}
+
+                            >
+                                {environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}
+                            </MenuItem>)}
                         </Select>
+
                     </FormControl>
                 </div>
                 <div>
@@ -113,33 +160,18 @@ function StartMap(props) {
                     {!newMap.infinite ?
                         <>
                             <Typography variant="h6">
-                                Then, let's pick a map size.
+                                So what size is your map?
                     </Typography>
+
                             <FormControl className={classes.formControl}>
-                                <InputLabel id="rows"> Rows </InputLabel>
-                                <Select
-                                    native
-                                    name="row"
+                                <TextField id="standard-basic" type="number" label="Rows" name="row"
                                     onChange={handleInputChange}
-                                >
-                                    <option aria-label="rows" value="" />
-                                    <option value={10}>10</option>
-                                    <option value={15}>15</option>
-                                    <option value={20}>20</option>
-                                </Select>
+                                />
                             </FormControl>
                             <FormControl className={classes.formControl}>
-                                <InputLabel id="columns"> Columns </InputLabel>
-                                <Select
-                                    native
-                                    name="column"
+                                <TextField id="standard-basic" type="number" label="Columns" name="column"
                                     onChange={handleInputChange}
-                                >
-                                    <option aria-label="rows" value="" />
-                                    <option value={10}>10</option>
-                                    <option value={15}>15</option>
-                                    <option value={20}>20</option>
-                                </Select>
+                                />
                             </FormControl> </> : ""}
                 </div>
             </div>
@@ -155,7 +187,8 @@ function StartMap(props) {
 
             <Button
                 // onClick={props.onClose} 
-                onClick={(e) => handleMapSubmit(e)}> Start Building! </Button>
+                onClick={(e) => handleMapSubmit(e)}> Save Map Info 
+                </Button>
         </FormControl>
 
     )
