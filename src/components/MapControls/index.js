@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import {useState, useEffect} from 'react';
 import { Box, Container, Typography, Drawer, Divider, IconButton, Switch, Grid } from '@material-ui/core';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import { purple, red, pink, blue, lightGreen, lime, deepOrange } from '@material-ui/core/colors';
@@ -193,7 +193,7 @@ const useStyles = makeStyles((theme) => ({
       margin: '1px auto'
     }
   },
-  previewImage: {
+  renderImage: {
     backgroundColor: lime[200],
     flex: "0 0 auto",
     justifySelf: "flex-end",
@@ -228,7 +228,7 @@ const TilesGridSwitch = withStyles({
   track: {},
 })(Switch);
 
-const PreviewWithPinsSwitch = withStyles({
+const renderWithPinsSwitch = withStyles({
   switchBase: {
     color: 'gainsboro',
 
@@ -270,7 +270,7 @@ const TileDrawer = withStyles({
   }
 })(Drawer)
 
-export default function SliderDrawer({ controlsData }) {
+export default function MapControls({ controlsData }) {
   const classes = useStyles();
   const [state, setState] = useState({
     isDrawerOpened: true
@@ -292,10 +292,10 @@ export default function SliderDrawer({ controlsData }) {
 
   const { isDrawerOpened } = state;
 
-  const [previewWithPins, setPreviewWithPins] = useState(false);
+  const [renderWithPins, setrenderWithPins] = useState(false);
   const [pinsVisible, setPinsVisible] = useState(controlsData.togglePins.pinsVisible);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const savedMap = localStorage.getItem('dungen_map') !== null ? JSON.parse(localStorage.getItem('dungen_map')) : null;
 
     if(savedMap !== null) {
@@ -410,12 +410,12 @@ export default function SliderDrawer({ controlsData }) {
           {/* PREVIEW */}
           <Grid component="label" container alignItems="center" spacing={1}>
             <Grid item>
-              <PreviewWithPinsSwitch onClick={() => setPreviewWithPins(prev => !prev)} />
+              <renderWithPinsSwitch onClick={() => setrenderWithPins(prev => !prev)} />
             </Grid>
             <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Include Pins</Grid>
           </Grid>
-          <ActionBtn classes={classes.previewImage} onClick={() => {controlsData.previewImage.onClick(previewWithPins)}} disabled={controlsData.previewImage.args.mapLayoutLength === 0}>
-            {controlsData.previewImage.text}
+          <ActionBtn classes={classes.renderImage} onClick={() => {controlsData.renderImage.onClick(renderWithPins)}} disabled={controlsData.renderImage.args.mapLayoutLength === 0}>
+            {controlsData.renderImage.text}
           </ActionBtn>
         </Container>
       </TileDrawer>

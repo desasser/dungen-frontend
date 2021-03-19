@@ -161,6 +161,10 @@ function App() {
               <MapBuilder users={users} />
             </Route>
 
+            <Route exact path="/preview">
+              <RenderedMap />
+            </Route>
+
             <Route exact path="/render/:id">
               {users.isLoggedIn ? <RenderedMap /> : <Nope />}
             </Route>

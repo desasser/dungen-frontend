@@ -11,7 +11,7 @@ import ActionBtn from '../ActionBtn'
 const useStyles = makeStyles({
   CircleMenuContainer: {
     position: "absolute",
-    zIndex: 1000,
+    zIndex: 1500,
     border: '10px solid tomato', 
     boxSizing: 'border-box', 
     borderRadius: '50%', 
@@ -146,7 +146,6 @@ export default function TileControls(props) {
       <animated.div className={classes.controlsContainer}>
         {transitions.map( ({item, key, props}) => {
           rotationAmount += 360 / transitions.length;
-          console.log(rotationAmount)
           return (
             <animated.div className={classes.buttonContainer} key={key}  style={{ ...props.opacity, transform: `rotate(${rotationAmount}deg)` }}>
               <button style={{ transform: `rotate(-${rotationAmount}deg)` }} onClick={item.onClick} data-action={item.action} tooltip={item.tooltip}>{item.content}</button>

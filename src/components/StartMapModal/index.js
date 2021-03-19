@@ -4,8 +4,8 @@ import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
-import MapBuilder from "../../pages/MapBuilder"
-import Typography from '@material-ui/core/Typography';
+// import MapBuilder from "../../pages/MapBuilder"
+// import Typography from '@material-ui/core/Typography';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -31,8 +31,9 @@ function StartMapModal(props) {
 
   const [open, setOpen] = useState(props.openModal);
 
-  const handleClose = () => {
+  const handleClose = (mapData) => {
     setOpen(false);
+    props.handleFormSubmit(mapData)
   };
 
   useEffect(() => {
@@ -64,9 +65,7 @@ function StartMapModal(props) {
         <Fade in={open}>
           <div className={classes.paper}>
 
-
-
-            <StartMap onClose={handleClose} />
+            <StartMap onClose={(mapData) => handleClose(mapData)} />
 
           </div>
         </Fade>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GridLayout from 'react-grid-layout';
 import './style.scss'
 // import DraggableTile from '../Tile/DraggableTile'
-import Tile from '../Tile';
+import GridTile from '../Tile/GridTile';
 import TileControlWidget from '../TileControlWidget'
 import GridCoordsOverlay from './GridCoordsOverlay'
 import API from '../../utils/API'
@@ -420,7 +420,7 @@ export default function Grid({ addThisTile, loadThisMap, viewState }) {
           resizable="false"
         >
           
-          <Tile item={item} handleDoubleClick={handleDoubleClick} />
+          <GridTile item={item} handleDoubleClick={handleDoubleClick} />
 
           <TileControlWidget item={item} handleWidgetButtonClick={handleWidgetButtonClick} handleClickOutsideTile={handleClickOutsideTile} handleWidgetButtonClick={handleWidgetButtonClick} /> 
 
