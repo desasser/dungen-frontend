@@ -17,7 +17,7 @@ import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
 import snail from '../../images/DisapproverSnail.png';
 // import ErrorBoundary from '../../components/ErrorBoundary';
-import StartMap from '../../components/StartMapModal'
+import StartMap from '../../components/StartMap'
 
 const useStyles = makeStyles({
   tileGrid: {

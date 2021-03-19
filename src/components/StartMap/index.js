@@ -55,17 +55,17 @@ function StartMap(props) {
     }
 
     const handleMapSubmit = event => {
-        console.log("cSM57 form submitted", event)
+        console.log("form submitted", event)
         API.saveMap(newMap).then(res => {
             console.log("trying to to save a map");
 
-        }).catch(err=> console.error(err))
+        }).catch(err => console.error(err))
 
         props.onClose(newMap)
     }
 
     const handleCheck = event => {
-        setMapState({ ...newMap, [event.target.name]: event.target.checked, row: !newMap.infinite ? null : newMap.row , column: !newMap.infinite ? null: newMap.column });
+        setMapState({ ...newMap, [event.target.name]: event.target.checked, row: !newMap.infinite ? null : newMap.row, column: !newMap.infinite ? null : newMap.column });
         // setMapState({...newMap, row: null, column: null})
     };
 
@@ -96,33 +96,35 @@ function StartMap(props) {
     //     console.log(environmentState)
     //  }, [] )
 
-     useEffect(() => {
-    API.getEnvironments(environmentSelectState).then(environments => {
-        setEnvironmentSelectState(environments.data)
-        console.log(environmentSelectState)
-      }).catch(err => console.error(err))
-      console.log("outside the function " + environmentSelectState)
+    useEffect(() => {
+        API.getEnvironments(environmentSelectState).then(environments => {
+            setEnvironmentSelectState(environments.data)
+            console.log(environmentSelectState)
+        }).catch(err => console.error(err))
+        console.log("outside the function " + environmentSelectState)
 
     }, []);
 
     useEffect(() => {
-console.log(environmentSelectState)
+        console.log(environmentSelectState)
     }, [setEnvironmentSelectState])
 
     return (
         <FormControl className={classes.formControl}>
             <div>
-                
+
                 <div>
+                <FormControl className={classes.formControl}> 
                     <TextField id="standard-basic" type="text" label="Map Name" name="name"
                         onChange={handleInputChange}
                     />
+                    </FormControl>
                 </div>
                 <div>
                     <FormControl>
-                    <InputLabel id="demo-simple-select-label" style={{ color: '#707078', position: 'relative', left: '0%', top: '.3%' }}> Environment</InputLabel>
+                        <InputLabel id="demo-simple-select-label" style={{ color: '#707078', position: 'relative', left: '0%', top: '.3%' }}> Environment</InputLabel>
                         <Select
-                            
+
                             labelId="select-environment"
                             id="select-environment"
                             name="environment"
@@ -130,11 +132,11 @@ console.log(environmentSelectState)
                             onChange={handleInputChange}
                             className={classes.selectMenu}
                         >
-                            {environmentSelectState.map(environment => <MenuItem 
-                            key ={environment.id}
-                            value = {environment.id}
-                            className={classes.menuItemStyle}
-                            
+                            {environmentSelectState.map(environment => <MenuItem
+                                key={environment.id}
+                                value={environment.id}
+                                className={classes.menuItemStyle}
+
                             >
                                 {environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}
                             </MenuItem>)}
@@ -157,33 +159,18 @@ console.log(environmentSelectState)
                     {!newMap.infinite ?
                         <>
                             <Typography variant="h6">
-                                Then, let's pick a map size.
+                                So what size is your map?
                     </Typography>
+
                             <FormControl className={classes.formControl}>
-                                <InputLabel id="rows"> Rows </InputLabel>
-                                <Select
-                                    native
-                                    name="row"
+                                <TextField id="standard-basic" type="number" label="Rows" name="row"
                                     onChange={handleInputChange}
-                                >
-                                    <option aria-label="rows" value="" />
-                                    <option value={10}>10</option>
-                                    <option value={15}>15</option>
-                                    <option value={20}>20</option>
-                                </Select>
+                                />
                             </FormControl>
                             <FormControl className={classes.formControl}>
-                                <InputLabel id="columns"> Columns </InputLabel>
-                                <Select
-                                    native
-                                    name="column"
+                                <TextField id="standard-basic" type="number" label="Columns" name="column"
                                     onChange={handleInputChange}
-                                >
-                                    <option aria-label="rows" value="" />
-                                    <option value={10}>10</option>
-                                    <option value={15}>15</option>
-                                    <option value={20}>20</option>
-                                </Select>
+                                />
                             </FormControl> </> : ""}
                 </div>
             </div>
