@@ -134,11 +134,12 @@ console.log(environmentSelectState)
                             key ={environment.id}
                             value = {environment.id}
                             className={classes.menuItemStyle}
+                            
                             >
                                 {environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}
                             </MenuItem>)}
                         </Select>
-                        
+
                     </FormControl>
                 </div>
                 <div>
