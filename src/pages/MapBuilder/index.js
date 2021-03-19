@@ -17,7 +17,6 @@ import AuthBar from '../../components/AuthBar'
 import API from '../../utils/API';
 import snail from '../../images/DisapproverSnail.png';
 // import ErrorBoundary from '../../components/ErrorBoundary';
-import StartMap from '../../components/StartMap'
 
 const useStyles = makeStyles({
   tileGrid: {
@@ -221,9 +220,6 @@ export default function MapBuilder(props) {
 
   return !isMobile ? (
     <Box>
-      {/* ================================= Calvin's Doing Something? ============================ */}
-      <StartMap />
-      {/* ================================= Calvin's Done Doing Something? ============================ */}
       {/* MAP TITLE */}
       <Container className={classes.titleWrapper}>
         <Typography variant="h2" className={classes.title}>

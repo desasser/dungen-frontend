@@ -52,6 +52,8 @@ function StartMap(props) {
             ...newMap,
             [name]: value
         })
+        console.log(event.target.name)
+        console.log(event.target.value)
     }
 
     const handleMapSubmit = event => {
@@ -114,7 +116,7 @@ function StartMap(props) {
             <div>
 
                 <div>
-                <FormControl className={classes.formControl}> 
+                    <FormControl className={classes.formControl}>
                     <TextField id="standard-basic" type="text" label="Map Name" name="name"
                         onChange={handleInputChange}
                     />
@@ -128,7 +130,7 @@ function StartMap(props) {
                             labelId="select-environment"
                             id="select-environment"
                             name="environment"
-                            value={environmentState}
+                            value={newMap.environment}
                             onChange={handleInputChange}
                             className={classes.selectMenu}
                         >
@@ -186,7 +188,8 @@ function StartMap(props) {
 
             <Button
                 // onClick={props.onClose} 
-                onClick={(e) => handleMapSubmit(e)}> Start Building! </Button>
+                onClick={(e) => handleMapSubmit(e)}> Save Map Info 
+                </Button>
         </FormControl>
 
     )
