@@ -13,9 +13,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { MapOutlined } from '@material-ui/icons';
 import API from '../../utils/API';
 
-
-
-
 const useStyles = makeStyles((theme) => ({
     formControl: {
         margin: theme.spacing(2),
@@ -26,25 +23,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
-
-//NOTE: Props are coming from the Map builder page? or TO the MapBuilder Page?
-
+// props comes FROM the mapbuilder page,
+// but may be a function that's defined on the mapbuilder page
+// data is always handled where the function is defined
 function StartMap(props) {
 
     const classes = useStyles();
 
+    const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+
     const [newMap, setMapState] = useState({
-        name: "",
-        environment: "",
-        infinite: true,
-        row: null,
-        column: null,
-        public: false,
-        init: true
-    })
-
-
+        name: savedMap !== null ? savedMap.name : "",
+        environment: savedMap !== null ? savedMap.environment : '1',
+        infinite: savedMap !== null ? savedMap.infinite : true,
+        rows: savedMap !== null ? savedMap.rows : null,
+        columns: savedMap !== null ? savedMap.columns : null,
+        public: savedMap !== null ? savedMap.public : true
+    });
 
     const handleInputChange = event => {
         const { name, value } = event.target;
@@ -52,8 +47,6 @@ function StartMap(props) {
             ...newMap,
             [name]: value
         })
-        console.log(event.target.name)
-        console.log(event.target.value)
     }
 
     const handleMapSubmit = event => {
@@ -63,53 +56,31 @@ function StartMap(props) {
 
         }).catch(err => console.error(err))
 
-        props.onClose(newMap)
+        localStorage.setItem('dungen_map', JSON.stringify({...savedMap, ...newMap}))
+
+        props.handleMapData(newMap)
     }
 
     const handleCheck = event => {
-        setMapState({ ...newMap, [event.target.name]: event.target.checked, row: !newMap.infinite ? null : newMap.row, column: !newMap.infinite ? null : newMap.column });
+        setMapState({ ...newMap, [event.target.name]: event.target.checked, rows: !newMap.infinite ? null : newMap.rows, columns: !newMap.infinite ? null : newMap.columns });
         // setMapState({...newMap, row: null, column: null})
     };
 
     const [environmentState, setEnvironmentState] = useState(null)
     const [environmentSelectState, setEnvironmentSelectState] = useState([])
 
-    // const handleChangeEnvironment = (event) => {
-    //     setTileSetState(event.target.value);
-    //   };
-
-    //  useEffect(() => {
-    //      //getting the list of available environments to use in the select dropdown later.
-    //     API.getEnvironments(environmentState)
-    //     .then(environments => {
-    //         const existingEnvironments = environments.data;
-    //         let environmentList =[];
-    //         for (let i = 0; i < environmentList.length; i++) {
-    //             const locations = {
-    //                 key: i,
-    //                 name: environmentList[i].name,
-    //                 thumbnail_url: environmentList[i].thumbnail_url,
-    //                 }
-    //                 environmentList.push(existingEnvironments);
-    //         }
-    //             setEnvironmentState(existingEnvironments)
-    //             console.log(environmentState)
-    //     })
-    //     console.log(environmentState)
-    //  }, [] )
-
     useEffect(() => {
         API.getEnvironments(environmentSelectState).then(environments => {
             setEnvironmentSelectState(environments.data)
-            console.log(environmentSelectState)
+            // console.log(environmentSelectState)
         }).catch(err => console.error(err))
         console.log("outside the function " + environmentSelectState)
 
     }, []);
 
-    useEffect(() => {
-        console.log(environmentSelectState)
-    }, [setEnvironmentSelectState])
+    // useEffect(() => {
+    //     console.log(environmentSelectState)
+    // }, [setEnvironmentSelectState])
 
     return (
         <FormControl className={classes.formControl}>
@@ -119,6 +90,7 @@ function StartMap(props) {
                     <FormControl className={classes.formControl}>
                     <TextField id="standard-basic" type="text" label="Map Name" name="name"
                         onChange={handleInputChange}
+                        value={newMap.name}
                     />
                     </FormControl>
                 </div>
@@ -138,9 +110,8 @@ function StartMap(props) {
                                 key={environment.id}
                                 value={environment.id}
                                 className={classes.menuItemStyle}
-
                             >
-                                {environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}
+                                {environment.name}
                             </MenuItem>)}
                         </Select>
 
@@ -165,13 +136,15 @@ function StartMap(props) {
                     </Typography>
 
                             <FormControl className={classes.formControl}>
-                                <TextField id="standard-basic" type="number" label="Rows" name="row"
+                                <TextField id="standard-basic" type="number" label="Rows" name="rows"
                                     onChange={handleInputChange}
+                                    value={newMap.rows}
                                 />
                             </FormControl>
                             <FormControl className={classes.formControl}>
-                                <TextField id="standard-basic" type="number" label="Columns" name="column"
+                                <TextField id="standard-basic" type="number" label="Columns" name="columns"
                                     onChange={handleInputChange}
+                                    value={newMap.columns}
                                 />
                             </FormControl> </> : ""}
                 </div>

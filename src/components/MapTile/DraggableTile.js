@@ -12,13 +12,16 @@ const useStyles = makeStyles({
   }
 });
 
-export default function DraggableTile({ tileId, imageURL, handleDraggableItem }) {
+// key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem}
+
+export default function DraggableTile({ tileId, tileSet, imageURL, handleDraggableItem }) {
   const classes = useStyles();
 
   return (
     <img 
       className={`${classes.tilesetTile} droppable-element`}
       data-tileid={tileId}
+      data-tileset={tileSet}
       draggable={true}
       unselectable="on"
       src={imageURL}

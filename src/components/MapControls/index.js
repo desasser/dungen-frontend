@@ -13,6 +13,8 @@ import {
   GpsFixed
 } from '@material-ui/icons';
 
+import { useHotkeys } from 'react-hotkeys-hook';
+
 import ActionBtn from '../ActionBtn'
 
 const useStyles = makeStyles((theme) => ({
@@ -292,7 +294,7 @@ export default function MapControls({ controlsData }) {
 
   const { isDrawerOpened } = state;
 
-  const [renderWithPins, setrenderWithPins] = useState(false);
+  const [renderWithPins, setRenderWithPins] = useState(false);
   const [pinsVisible, setPinsVisible] = useState(controlsData.togglePins.pinsVisible);
 
   useEffect(() => {
@@ -307,6 +309,18 @@ export default function MapControls({ controlsData }) {
     setPinsVisible(prev => !prev);
     controlsData.togglePins.props.onClick(e);
   }
+
+  /**
+   * HOTKEYS
+   */
+
+  // pins
+  useHotkeys('ctrl+1, command+1', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type1' ? 'type1' : null));
+  useHotkeys('ctrl+2, command+2', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type2' ? 'type2' : null));
+  useHotkeys('ctrl+3, command+3', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type3' ? 'type3' : null));
+  useHotkeys('ctrl+4, command+4', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type4' ? 'type4' : null));
+  useHotkeys('ctrl+5, command+5', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type5' ? 'type5' : null));
+  useHotkeys('esc', (e) => controlsData.pinKeyboardShortcuts(e, null) );
 
   return (
     <Box>
@@ -410,7 +424,7 @@ export default function MapControls({ controlsData }) {
           {/* PREVIEW */}
           <Grid component="label" container alignItems="center" spacing={1}>
             <Grid item>
-              <RenderWithPinsSwitch onClick={() => setrenderWithPins(prev => !prev)} />
+              <RenderWithPinsSwitch onClick={() => setRenderWithPins(prev => !prev)} />
             </Grid>
             <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Include Pins</Grid>
           </Grid>

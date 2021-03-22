@@ -88,6 +88,9 @@ const API = {
   },
   renderMap: mapId => {
     return axios.get(`${URL_PREFIX}/api/rendermap/${mapId}`)
+  },
+  getEncounters: opts => {
+    return axios.get(`${URL_PREFIX}/api/encounter/donjon/${opts.n_pc}/${opts.level}/${opts.difficulty}/${opts.environment}/${opts.loot_type}/${opts.number}`)
   }
 }
 
