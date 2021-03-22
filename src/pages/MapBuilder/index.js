@@ -262,7 +262,7 @@ export default function MapBuilder(props) {
         init={newMapData}
       />
 
-      <SliderDrawer handleDraggableItem={handleDraggableItem} />
+      <SliderDrawer handleDraggableItem={handleDraggableItem} handleMapData={handleStartMapFormSubmit} />
 
       {/* SNACKBAR NOTIFICATIONS */}
       <SaveBar saved={saved} toggleSavedState={toggleSavedState} />

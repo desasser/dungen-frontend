@@ -144,8 +144,8 @@ export default function InfiniteCanvas(props) {
   const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
   const [mapData, setMapData] = React.useState(savedMap !== null ? {...savedMap} : {
     name: "", 
-    rows: 0,
-    columns: 0,
+    rows: props.init.rows,
+    columns: props.init.columns,
     infinite: true,
     environment: "Environment_1",
     layout: [], 
@@ -181,6 +181,7 @@ export default function InfiniteCanvas(props) {
       setMapData(newData);
       localStorage.setItem('dungen_map', JSON.stringify(newData));
     }
+    
   }, [props.init]);
 
   /**
@@ -284,6 +285,10 @@ export default function InfiniteCanvas(props) {
   React.useEffect(() => {
     if(props.init === null || props.init.infinite || grid.infinite) {
       createGrid(null, null, grid.tileSize, true);
+
+    } else {
+      createGrid(grid.rows, grid.columns, grid.tileSize, false);
+
     }
 
   }, [stagePosition]);
@@ -311,7 +316,7 @@ export default function InfiniteCanvas(props) {
    * this happens when the map layout changes
    */
   React.useEffect(() => {
-    console.log("::cMC.309:: mapData", mapData);
+    // console.log("::cMC.309:: mapData", mapData);
 
     const newData = {
       ...mapData,
@@ -635,6 +640,8 @@ export default function InfiniteCanvas(props) {
 
   const handleNewTileDrop = (e) => {
     e.preventDefault();
+
+    console.log("::cMC.643:: new tile drop", e);
 
     const tileData = JSON.parse(e.dataTransfer.getData("dropped_tile"));
     const idx = uuidv4();

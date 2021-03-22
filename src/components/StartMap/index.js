@@ -13,9 +13,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { MapOutlined } from '@material-ui/icons';
 import API from '../../utils/API';
 
-
-
-
 const useStyles = makeStyles((theme) => ({
     formControl: {
         margin: theme.spacing(2),
@@ -26,24 +23,23 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
-
-//NOTE: Props are coming from the Map builder page? or TO the MapBuilder Page?
-
+// props comes FROM the mapbuilder page,
+// but may be a function that's defined on the mapbuilder page
+// data is always handled where the function is defined
 function StartMap(props) {
 
     const classes = useStyles();
 
+    const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+
     const [newMap, setMapState] = useState({
-        name: "",
-        environment: "",
-        infinite: true,
-        rows: null,
-        columns: null,
-        public: false
-    })
-
-
+        name: savedMap !== null ? savedMap.name : "",
+        environment: savedMap !== null ? savedMap.environment : "",
+        infinite: savedMap !== null ? savedMap.infinite : true,
+        rows: savedMap !== null ? savedMap.rows : null,
+        columns: savedMap !== null ? savedMap.columns : null,
+        public: savedMap !== null ? savedMap.public : true
+    });
 
     const handleInputChange = event => {
         const { name, value } = event.target;
@@ -62,7 +58,9 @@ function StartMap(props) {
 
         }).catch(err => console.error(err))
 
-        props.onClose(newMap)
+        localStorage.setItem('dungen_map', JSON.stringify({...savedMap, ...newMap}))
+
+        props.handleMapData(newMap)
     }
 
     const handleCheck = event => {
@@ -164,12 +162,12 @@ function StartMap(props) {
                     </Typography>
 
                             <FormControl className={classes.formControl}>
-                                <TextField id="standard-basic" type="number" label="Rows" name="row"
+                                <TextField id="standard-basic" type="number" label="Rows" name="rows"
                                     onChange={handleInputChange}
                                 />
                             </FormControl>
                             <FormControl className={classes.formControl}>
-                                <TextField id="standard-basic" type="number" label="Columns" name="column"
+                                <TextField id="standard-basic" type="number" label="Columns" name="columns"
                                     onChange={handleInputChange}
                                 />
                             </FormControl> </> : ""}
