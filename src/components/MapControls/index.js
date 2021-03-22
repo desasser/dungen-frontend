@@ -12,7 +12,8 @@ import {
   Help,
   GpsFixed
 } from '@material-ui/icons';
-import API from '../../utils/API';
+
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import ActionBtn from '../ActionBtn'
 
@@ -308,6 +309,18 @@ export default function MapControls({ controlsData }) {
     setPinsVisible(prev => !prev);
     controlsData.togglePins.props.onClick(e);
   }
+
+  /**
+   * HOTKEYS
+   */
+
+  // pins
+  useHotkeys('ctrl+1, command+1', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type1' ? 'type1' : null));
+  useHotkeys('ctrl+2, command+2', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type2' ? 'type2' : null));
+  useHotkeys('ctrl+3, command+3', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type3' ? 'type3' : null));
+  useHotkeys('ctrl+4, command+4', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type4' ? 'type4' : null));
+  useHotkeys('ctrl+5, command+5', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type5' ? 'type5' : null));
+  useHotkeys('esc', (e) => controlsData.pinKeyboardShortcuts(e, null) );
 
   return (
     <Box>

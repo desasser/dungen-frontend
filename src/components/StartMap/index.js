@@ -34,7 +34,7 @@ function StartMap(props) {
 
     const [newMap, setMapState] = useState({
         name: savedMap !== null ? savedMap.name : "",
-        environment: savedMap !== null ? savedMap.environment : "",
+        environment: savedMap !== null ? savedMap.environment : '1',
         infinite: savedMap !== null ? savedMap.infinite : true,
         rows: savedMap !== null ? savedMap.rows : null,
         columns: savedMap !== null ? savedMap.columns : null,
@@ -47,8 +47,6 @@ function StartMap(props) {
             ...newMap,
             [name]: value
         })
-        console.log(event.target.name)
-        console.log(event.target.value)
     }
 
     const handleMapSubmit = event => {
@@ -64,49 +62,25 @@ function StartMap(props) {
     }
 
     const handleCheck = event => {
-        setMapState({ ...newMap, [event.target.name]: event.target.checked, row: !newMap.infinite ? null : newMap.row, column: !newMap.infinite ? null : newMap.column });
+        setMapState({ ...newMap, [event.target.name]: event.target.checked, rows: !newMap.infinite ? null : newMap.rows, columns: !newMap.infinite ? null : newMap.columns });
         // setMapState({...newMap, row: null, column: null})
     };
 
     const [environmentState, setEnvironmentState] = useState(null)
     const [environmentSelectState, setEnvironmentSelectState] = useState([])
 
-    // const handleChangeEnvironment = (event) => {
-    //     setTileSetState(event.target.value);
-    //   };
-
-    //  useEffect(() => {
-    //      //getting the list of available environments to use in the select dropdown later.
-    //     API.getEnvironments(environmentState)
-    //     .then(environments => {
-    //         const existingEnvironments = environments.data;
-    //         let environmentList =[];
-    //         for (let i = 0; i < environmentList.length; i++) {
-    //             const locations = {
-    //                 key: i,
-    //                 name: environmentList[i].name,
-    //                 thumbnail_url: environmentList[i].thumbnail_url,
-    //                 }
-    //                 environmentList.push(existingEnvironments);
-    //         }
-    //             setEnvironmentState(existingEnvironments)
-    //             console.log(environmentState)
-    //     })
-    //     console.log(environmentState)
-    //  }, [] )
-
     useEffect(() => {
         API.getEnvironments(environmentSelectState).then(environments => {
             setEnvironmentSelectState(environments.data)
-            console.log(environmentSelectState)
+            // console.log(environmentSelectState)
         }).catch(err => console.error(err))
         console.log("outside the function " + environmentSelectState)
 
     }, []);
 
-    useEffect(() => {
-        console.log(environmentSelectState)
-    }, [setEnvironmentSelectState])
+    // useEffect(() => {
+    //     console.log(environmentSelectState)
+    // }, [setEnvironmentSelectState])
 
     return (
         <FormControl className={classes.formControl}>
@@ -116,6 +90,7 @@ function StartMap(props) {
                     <FormControl className={classes.formControl}>
                     <TextField id="standard-basic" type="text" label="Map Name" name="name"
                         onChange={handleInputChange}
+                        value={newMap.name}
                     />
                     </FormControl>
                 </div>
@@ -135,9 +110,8 @@ function StartMap(props) {
                                 key={environment.id}
                                 value={environment.id}
                                 className={classes.menuItemStyle}
-
                             >
-                                {environment.name.charAt(0).toUpperCase() + environment.name.slice(1)}
+                                {environment.name}
                             </MenuItem>)}
                         </Select>
 
@@ -164,11 +138,13 @@ function StartMap(props) {
                             <FormControl className={classes.formControl}>
                                 <TextField id="standard-basic" type="number" label="Rows" name="rows"
                                     onChange={handleInputChange}
+                                    value={newMap.rows}
                                 />
                             </FormControl>
                             <FormControl className={classes.formControl}>
                                 <TextField id="standard-basic" type="number" label="Columns" name="columns"
                                     onChange={handleInputChange}
+                                    value={newMap.columns}
                                 />
                             </FormControl> </> : ""}
                 </div>
