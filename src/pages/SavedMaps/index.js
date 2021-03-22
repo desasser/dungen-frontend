@@ -7,6 +7,7 @@ import API from '../../utils/API';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import RouterBtn from '../../components/RouterBtn';
 import Divider from '@material-ui/core/Divider';
+import SuperDrawer from '../../components/SuperDrawer';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -75,12 +76,13 @@ export default function SavedMaps(props) {
 
   return (
     <Container >
+      <SuperDrawer></SuperDrawer>
       <Typography variant='h2' className={classes.savedTitle}>Your Map Case</Typography>
       <Divider variant="middle" />
       <Container className={classes.savedMapCard} maxWidth={false}>
         {userMaps.length > 0 ?
           userMaps.map(map => (
-            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} deleteMap={deleteMap} />
+            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} deleteMap={deleteMap} isOwner={true}/>
           )) : (
             (!loadState ? (
               <CircularProgress size='5em' color='primary' style={{ marginTop: '50px' }} />

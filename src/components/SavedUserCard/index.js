@@ -34,14 +34,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function SavedMapCard(props) {
+export default function SavedUserCard(props) {
   const classes = useStyles();
 
 
 
   return (
     <Card className={classes.root}>
-      <CardActionArea href={props.isOwner ? `/builder/${props.id}` : `/render/${props.id}`}>
+      <CardActionArea href={`/profile/${props.id}`}>
         <CardMedia
           className={classes.media}
           image={props.image}
