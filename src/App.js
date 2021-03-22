@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
 import BrowseMaps from './pages/BrowseMaps';
-import BrowseUsers from './pages/BrowseMaps';
+import BrowseUsers from './pages/BrowseUsers';
 import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";

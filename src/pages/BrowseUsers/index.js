@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import SavedMapCard from '../../components/SavedMapCard';
+import UserCard from '../../components/UserCard';
 import { makeStyles } from '@material-ui/core/styles';
-import { Container, Typography, Divider } from '@material-ui/core';
+import { Container, Typography, Divider, Grid } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import API from '../../utils/API';
 
 const useStyles = makeStyles((theme) => ({
-  savedMapCard: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    width: '100%'
+  root: {
+    flexGrow: 1
   },
   savedTitle: {
     color: theme.palette.primary.main,
@@ -26,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-//NOTE FROM CALVIN added pass-down of "users" state to the function.
 export default function BrowseUsers() {
   const [users, setUsers] = useState([])
   const [loadState, setLoadState] = useState(false)
@@ -41,6 +37,7 @@ export default function BrowseUsers() {
     API.getAllUsers()
       .then(res => {
         setUsers(res.data);
+        console.log('user data', res.data)
         setLoadState(true);
       }).catch(err => {
         console.log(err);
@@ -48,15 +45,17 @@ export default function BrowseUsers() {
   }
 
   return (
-    <Container classes={classes.browseWrapper}>
-      <Typography variant='h4' style={{textAlign: 'center', marginTop: 20, fontSize: 50, fontWeight: 'bold'}}>
+    <Container >
+      <Typography variant='h4' style={{ textAlign: 'center', marginTop: 20, fontSize: 50, fontWeight: 'bold' }}>
         User Browser
       </Typography>
-      <Divider/>
-      <Container className={classes.savedMapCard} maxWidth={false}>
+      <Divider style={{marginBottom: 20}}/>
+      <Grid container className={classes.root} spacing={2} >
         {users.length > 0 ?
-          users.map(map => (
-            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} isOwner={false}/>
+          users.map(user => (
+            <Grid item md={12}>
+              <UserCard key={user.id} userName={user.userName} />
+            </Grid>
           )) : (
             (!loadState ? (
               <CircularProgress size='5em' color='primary' style={{ marginTop: '50px' }} />
@@ -69,7 +68,7 @@ export default function BrowseUsers() {
               </Container>
             ))
           )}
-      </Container>
+      </Grid>
     </Container>
   )
 }
