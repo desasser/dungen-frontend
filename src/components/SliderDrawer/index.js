@@ -125,7 +125,7 @@ const TileDrawer = withStyles({
   }
 })(Drawer)
 
-export default function SliderDrawer({ handleDraggableItem }) {
+export default function SliderDrawer({ handleMapData, handleDraggableItem }) {
   const classes = useStyles();
   const [state, setState] = useState({
     isDrawerOpened: true
@@ -209,7 +209,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
       >
         {/*==================== Calvin's doing something wierd ===================*/}
         
-        <StartMap />
+        <StartMap handleMapData={handleMapData} />
         
         {/*==================== Calvin's done doing something wierd ===================*/}
         <Container className={classes.drawerHeader}>
@@ -240,7 +240,7 @@ export default function SliderDrawer({ handleDraggableItem }) {
           <Container className={classes.tileWrapper}>
 
             {tileSet.length > 0 ?
-              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem} />) : (
+              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} handleDraggableItem={handleDraggableItem} />) : (
                 (!loadState ? (
                   // <CircularProgress />
                   <LinearProgress />
