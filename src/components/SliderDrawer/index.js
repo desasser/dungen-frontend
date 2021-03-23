@@ -232,7 +232,7 @@ export default function SliderDrawer({ handleMapData, handleDraggableItem }) {
             onChange={handleChangeTileSet}
             className={classes.selectMenu}
           >
-            {/* MAP OVER ALL ENVIRONMENTS AND CREATE MENU ITEMS */}
+            {/* MAP OVER ALL TILESETS AND CREATE MENU ITEMS */}
             {tileSetListState.map(tileSet => <MenuItem key={tileSet.id} value={tileSet.id} className={classes.menuItemStyle}>{tileSet.name.charAt(0).toUpperCase() + tileSet.name.slice(1)}</MenuItem>)}
           </Select>
 

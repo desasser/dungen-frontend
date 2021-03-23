@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
+import BrowseMaps from './pages/BrowseMaps';
+import BrowseUsers from './pages/BrowseUsers';
 import RenderedMap from './pages/RenderedMap';
 import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";
@@ -163,6 +165,14 @@ function App() {
 
             <Route exact path="/preview">
               <RenderedMap />
+            </Route>
+
+            <Route exact path="/browsemaps">
+              <BrowseMaps users={users} />
+            </Route>
+
+            <Route exact path="/browseusers">
+              <BrowseUsers users={users} />
             </Route>
 
             <Route exact path="/render/:id">

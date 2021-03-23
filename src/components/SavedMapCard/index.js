@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -7,7 +7,11 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import {Redirect} from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import StarIcon from '@material-ui/icons/Star';
+import IconButton from '@material-ui/core/IconButton';
+import API from '../../utils/API';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
   },
   btnStyle: {
-    '&:hover' :{
+    '&:hover': {
       backgroundColor: 'white',
       color: theme.palette.primary.main,
     },
@@ -36,12 +40,39 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SavedMapCard(props) {
   const classes = useStyles();
+  const [isFavorite, setFavorite] = useState({
+    isFavorited: false
+  })
 
+  const handleFavorite = () => {
+    setFavorite(prevState => !prevState);
+    const userData = {
+      favoriteId: props.id,
+      userId: props.currentUser,
+      token: props.token
+    }
+    console.log('userdata favorite', userData);
+    API.favoriteMap(userData)
+      .then(res => console.log('success!'))
+      .catch(err => console.log(err));
+  }
 
+  const handleUnfavorite = () => {
+    setFavorite(prevState => !prevState);
+    const userData = {
+      favoriteId: props.id,
+      userId: props.currentUser,
+      token: props.token
+    }
+    console.log('userdata unfavorite', userData);
+    API.unfavoriteMap(userData)
+      .then(res => console.log('success!'))
+      .catch(err => console.log(err));
+  }
 
   return (
     <Card className={classes.root}>
-      <CardActionArea href={`/builder/${props.id}`}>
+      <CardActionArea href={props.isOwner ? `/builder/${props.id}` : `/render/${props.id}`}>
         <CardMedia
           className={classes.media}
           image={props.image}
@@ -56,17 +87,35 @@ export default function SavedMapCard(props) {
           </Typography>
         </CardContent>
       </CardActionArea>
-      <CardActions style={{justifyContent:'center'}}>
-        <Button size="small" href={`/builder/${props.id}`} className={classes.btnStyle}>
-          Edit
-        </Button>
-        <Button size="small" onClick={() => props.deleteMap(props.id)} className={classes.btnStyle}>
-          Delete
-        </Button>
-        {/* <Button size="small" href="/render" className={classes.btnStyle}>
+
+      {props.isOwner ? (
+        <CardActions style={{ justifyContent: 'center' }}>
+          <Button size="small" href={`/builder/${props.id}`} className={classes.btnStyle}>
+            Edit
+          </Button>
+          <Button size="small" onClick={() => props.deleteMap(props.id)} className={classes.btnStyle}>
+            Delete
+          </Button>
+          {/* <Button size="small" href="/render" className={classes.btnStyle}>
           View
         </Button> */}
-      </CardActions>
+        </CardActions>
+      ) : (
+        <CardActions style={{ justifyContent: 'flex-end' }}>
+          {isFavorite ?
+            (
+            <IconButton aria-label="delete" onClick={handleFavorite}>
+              <StarBorderIcon />
+            </IconButton>
+            ) : (
+            <IconButton aria-label="delete" onClick={handleUnfavorite}>
+              <StarIcon />
+            </IconButton>
+            )
+          }
+        </CardActions>
+      )}
+
     </Card>
   );
 }
