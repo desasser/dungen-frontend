@@ -120,8 +120,8 @@ export default function InfiniteCanvas(props) {
   const [stagePosition, setStagePosition] = React.useState({ 
     x: (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2, 
     recenterX: (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2, 
-    y: 125,
-    recenterY: 125
+    y: 0,
+    recenterY: 0
   });
   
   const [coordinateSquares, setCoordinateSquares] = React.useState([]);
@@ -227,8 +227,8 @@ export default function InfiniteCanvas(props) {
         setStagePosition({
           x: 0,
           recenterX: 0,
-          y: 75,
-          recenterY: 75
+          y: 0,
+          recenterY: 0
         })
       }
 
@@ -236,7 +236,7 @@ export default function InfiniteCanvas(props) {
     } else {
       localStorage.setItem('dungen_map', JSON.stringify(mapData));
     }
-
+    
     updateStagePosition();
 
     createGrid();
@@ -267,19 +267,20 @@ export default function InfiniteCanvas(props) {
   React.useEffect(() => {
     if(props.init) {
       const newSavedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
-
+      console.log('mapcanvas.270:: newSavedMap (props.init):', newSavedMap);
       if(newSavedMap !== null) {
+
         setSavedMap(newSavedMap);
-        setMapData({...mapData, ...newSavedMap});
+        setMapData(newSavedMap);
         setGrid({
           ...grid,
           rows: newSavedMap.rows,
           columns: newSavedMap.columns,
           infinite: newSavedMap.infinite
         })
-
-        updateStagePosition();
       }
+
+      updateStagePosition();
     }
 
   }, [props.init])
@@ -289,6 +290,8 @@ export default function InfiniteCanvas(props) {
    */
   React.useEffect(() => {
     createGrid();
+
+    localStorage.setItem('dungen_stageposition', JSON.stringify(stagePosition));
 
   }, [stagePosition]);
 
@@ -355,13 +358,18 @@ export default function InfiniteCanvas(props) {
   // }, [mapLayout]);
 
   const updateStagePosition = () => {
-    if(!mapData.infinite) {
-      const gridWidth = (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2;
-      let gridHeight = ((window.innerHeight - (grid.tileSize * grid.rows) - grid.tileSize) / 4) + 100;
-      // make sure gridHeight is actually a *positive* number, not a negative!
-      if(gridHeight < 0) {
-        gridHeight = gridHeight * -1;
+    const savedStagePosition = localStorage.getItem('dungen_stageposition') !== undefined ? JSON.parse(localStorage.getItem('dungen_stageposition')) : null;
+
+    if(savedStagePosition !== null) {
+      setStagePosition(savedStagePosition);
+      
+      if(savedStagePosition.x !== savedStagePosition.recenterX || savedStagePosition.y !== savedStagePosition.recenterY) {
+        setGridCentered(false);
       }
+
+    } else if(!mapData.infinite) {
+      const gridWidth = (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2;
+      let gridHeight = (window.innerHeight - (grid.tileSize * grid.rows) - grid.tileSize) / 1.5;
 
       if(window.innerWidth > gridWidth) {
         setStagePosition({ ...stagePosition, x: gridWidth, recenterX: gridWidth })
@@ -370,16 +378,16 @@ export default function InfiniteCanvas(props) {
       }
       
       // the navbar is exactly 75px tall (specified height, not "responsive")
-      // **BUT** there's a drop shadow, so just make it 100
-      if(window.innerHeight - 80 > gridHeight) {
+      if(window.innerHeight - 75 > gridHeight) {
         setStagePosition({ ...stagePosition, y: gridHeight, recenterY: gridHeight })
+      } else {
+        setStagePosition({...stagePosition, y: 0, recenterY: 0})
       }
-      // else {
-      //   setStagePosition({...stagePosition, y: 100, recenterY: 100})
-      // }
-      
+
     }
+    createGrid();
   }
+
 
   const createGrid = () => {
     const gridInit = mapData.infinite ? updateGridProps(stagePosition) : { ...grid, startX: 0, startY: 0, endX: grid.tileSize * mapData.columns, endY: grid.tileSize * mapData.rows };
@@ -514,7 +522,9 @@ export default function InfiniteCanvas(props) {
    */
 
   const handleGridDragEnter = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    setContextMenuActive(false);
 
     setShadowTileParams({
       ...shadowTileParams,
@@ -589,51 +599,64 @@ export default function InfiniteCanvas(props) {
   /**
    * TILE METHODS
    */
+  const tilePos = (pos) => {
+    let xCoord = Math.round((pos.x - stagePosition.x) / grid.tileSize) * grid.tileSize;
+    let yCoord = Math.round((pos.y - stagePosition.y) / grid.tileSize) * grid.tileSize;
+
+    // if(grid.infinite) {
+    //   xCoord = Math.round((pos.x) / grid.tileSize) * grid.tileSize;
+    //   yCoord = Math.round((pos.y) / grid.tileSize) * grid.tileSize;
+    // }
+
+    return { x: xCoord, y: yCoord }
+  }
+
   const handleTileDragStart = (e) => {
     // anything that should be done when the user STARTS dragging a tile
     // this is essentially also a SINGLE CLICK response, so be careful!
-    const xCoord = Math.round(e.target.x() / grid.tileSize) * grid.tileSize;
-    const yCoord = Math.round(e.target.y() / grid.tileSize) * grid.tileSize;
-    setLastLegitSquare({x: xCoord, y: yCoord});
+    const currentPosition = { x: e.target.x() - stagePosition.x, y: e.target.y() - stagePosition.y }
+    const { x, y } = tilePos(currentPosition);
+
+    console.log("mapcanvas.598:: e.target.attrs", e.target.attrs);
+    setLastLegitSquare({x: x, y: y});
     setContextMenuActive(false);
     setActivePin(null);
 
     setShadowTileParams({
       ...shadowTileParams,
-      x: xCoord,
-      y: yCoord,
+      x: x + stagePosition.x,
+      y: y + stagePosition.y,
       visible: true,
       opacity: 0.6
     });
   };
 
   const handleTileDragMove = (e) => {
-    checkTileIntersects({ x: e.target.x(), y: e.target.y() })
+    checkTileIntersects({ x: e.target.x() + stagePosition.x, y: e.target.y() + stagePosition.y });
   }
 
   const checkTileIntersects = (pos) => {
-    const xCoord = Math.round(pos.x / grid.tileSize) * grid.tileSize;
-    const yCoord = Math.round(pos.y / grid.tileSize) * grid.tileSize;
+    const { x, y } = tilePos(pos);
 
     // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
     const layerChildren = stageRef.current.children[2].children;
 
     if(layerChildren.length === 1) {
-      setLastLegitSquare({x: xCoord, y: yCoord});
+      setLastLegitSquare({x: x, y: y});
       setShadowTileParams({
         ...shadowTileParams,
-        x: xCoord,
-        y: yCoord,
+        x: x,
+        y: y,
       });
 
     } else {
-      const filteredChildren = layerChildren.filter(child => child.attrs.x === xCoord && child.attrs.y === yCoord)
+      const filteredChildren = layerChildren.filter(child => child.attrs.x === x && child.attrs.y === y)
       if(filteredChildren.length === 0) {
-        setLastLegitSquare({x: xCoord, y: yCoord});
+        setLastLegitSquare({x: x, y: y});
         setShadowTileParams({
           ...shadowTileParams,
-          x: xCoord,
-          y: yCoord,
+          x: x,
+          y: y,
         });
       }
     }
@@ -679,12 +702,6 @@ export default function InfiniteCanvas(props) {
     const idx = uuidv4();
 
     stageRef.current.setPointersPositions(e)
-
-    // const srPos = stageRef.current.getPointerPosition();
-
-    // const xCoord = Math.round((srPos.x - stagePosition.x) / grid.tileSize) * grid.tileSize;
-    // const yCoord = Math.round((srPos.y - stagePosition.y) / grid.tileSize) * grid.tileSize;
-    console.log("mapcanvas.687:: lastLegitSquare", lastLegitSquare);
 
     const tile = {
       idx: idx,
@@ -953,7 +970,7 @@ export default function InfiniteCanvas(props) {
         onDragEnter={(e) => handleGridDragEnter(e)}
         style={{
           maxWidth: window.innerWidth,
-          maxHeight: window.innerHeight - 2, // 1 extra pixel each from map controls & tile slider drawer (why??)
+          maxHeight: window.innerHeight - 77, // 1 extra pixel each from map controls & tile slider drawer (why??)
           backgroundColor: savedMap !== null && savedMap.environment !== "" ? environmentColors[savedMap.environment] : 'ghostwhite'
         }}
       >

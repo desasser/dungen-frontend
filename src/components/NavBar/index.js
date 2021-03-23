@@ -24,12 +24,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
-    position: 'sticky',
+    position: 'relative',
     top: 0,
     zIndex: 9999,
     width: '90%',
     margin: '0 auto',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   title: {
     cursor: 'pointer',
@@ -38,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
     height: '75px',
-    position: 'absolute'
+    // position: 'absolute',
+
   },
   navLink: {
     textDecoration: 'none',

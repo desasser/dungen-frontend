@@ -151,7 +151,7 @@ export default function RenderedMap(props) {
   }
 
   return (
-    <Container style={{paddingTop: 85}}>
+    <Container>
       <Typography variant='h2' className={classes.title} ref={mapTitleRef}>
         {mapTitleRef.current}
       </Typography>
