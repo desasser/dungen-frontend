@@ -41,24 +41,20 @@ export default function UserCard(props) {
       userId: props.id,
       token: props.token
     }
-    console.log('userdata follow', userData);
     API.followUser(userData)
-      .then(res => console.log('success?'))
+      .then(res => console.log('success!'))
       .catch(err => console.log(err));
   }
 
   const unFollowUser = () => {
     setFollowed(prevState => !prevState);
-    console.log('followerid', props.currentUser);
-    console.log('userid', props.id);
     const unfollowData = {
       followerId: props.currentUser,
       userId: props.id,
-      // token: props.token
+      token: props.token
     }
-    console.log('userdata unfollow', unfollowData);
     API.unfollowUser(unfollowData)
-      .then(res => console.log('success?'))
+      .then(res => console.log('success!'))
       .catch(err => console.log(err));
   }
 

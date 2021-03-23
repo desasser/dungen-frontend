@@ -64,17 +64,6 @@ export default function BrowseUsers(props) {
     })
   }
 
-  // const followUser = (id) => {
-  //   const userData = {
-  //     followerId: props.users.id,
-  //     userId: id,
-  //     token: props.users.token
-  //   }
-  //   API.followUser(userData)
-  //     .then(res => console.log('success?'))
-  //     .catch(err => console.log(err));
-  // }
-
   return (
     <Container >
       <Typography variant='h4' style={{ textAlign: 'center', marginTop: 20, fontSize: 50, fontWeight: 'bold' }}>

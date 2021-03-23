@@ -87,6 +87,14 @@ const API = {
       }
     })
   },
+  favoriteMap: (userData) => {
+    return axios.put(`${URL_PREFIX}/api/favorite`, userData)
+  },
+  unfavoriteMap: (unfavoriteData) => {
+    return axios.delete(`${URL_PREFIX}/api/unfavorite`, {
+      data: unfavoriteData
+    })
+  },
   deleteMapTile: (tileId, token) => {
     return axios.delete(`${URL_PREFIX}/api/maptile/${tileId}`, {
       headers: {

@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 //NOTE FROM CALVIN added pass-down of "users" state to the function.
-export default function BrowseMaps() {
+export default function BrowseMaps(props) {
   const [maps, setMaps] = useState([])
   const [loadState, setLoadState] = useState(false)
   const classes = useStyles();
@@ -56,7 +56,7 @@ export default function BrowseMaps() {
       <Container className={classes.savedMapCard} maxWidth={false}>
         {maps.length > 0 ?
           maps.map(map => (
-            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} isOwner={false}/>
+            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} currentUser={props.users.id} token={props.users.token} isOwner={false}/>
           )) : (
             (!loadState ? (
               <CircularProgress size='5em' color='primary' style={{ marginTop: '50px' }} />
