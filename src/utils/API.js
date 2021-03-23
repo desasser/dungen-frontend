@@ -54,6 +54,17 @@ const API = {
   getAllUsers: () => {
     return axios.get(`${URL_PREFIX}/api/users`)
   },
+  followUser: (userData) => {
+    return axios.put(`${URL_PREFIX}/api/follow`, userData)
+  },
+  unfollowUser: (unfollowData) => {
+    return axios.delete(`${URL_PREFIX}/api/unfollow`, {
+      data: unfollowData
+    })
+  },
+  getFollows: (userId) => {
+    return axios.get(`${URL_PREFIX}/api/follows/${userId}`)
+  },
   saveMap: title => {
     // console.log(map);
     return axios.post(`${URL_PREFIX}/api/newMap`, title)

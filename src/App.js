@@ -168,11 +168,11 @@ function App() {
             </Route>
 
             <Route exact path="/browsemaps">
-              <BrowseMaps />
+              <BrowseMaps users={users} />
             </Route>
 
             <Route exact path="/browseusers">
-              <BrowseUsers />
+              <BrowseUsers users={users} />
             </Route>
 
             <Route exact path="/render/:id">

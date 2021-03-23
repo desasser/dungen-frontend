@@ -23,15 +23,21 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function BrowseUsers() {
+export default function BrowseUsers(props) {
   const [users, setUsers] = useState([])
   const [loadState, setLoadState] = useState(false)
+  const [followedUsers, setFollowedUsers] = useState([])
+  const [follows, setFollows] = useState([]);
   const classes = useStyles();
+
+  // useEffect(() => {
+  //   loadUsers()
+
+  // }, [])
 
   useEffect(() => {
     loadUsers()
   }, [])
-
 
   const loadUsers = () => {
     API.getAllUsers()
@@ -44,6 +50,31 @@ export default function BrowseUsers() {
       })
   }
 
+  const loadFollows = () => {
+    console.log('userid', props.users.id);
+    API.getFollows(props.users.id)
+    .then(res => {
+      console.log('user Follows', res.data.Follower);
+      setUsers(res.data);
+      // const currentUser = res.data.find(o => o.id === props.users.id);
+      // console.log('currentUser', currentUser)
+      // setFollows(currentUser.Follower)
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
+  // const followUser = (id) => {
+  //   const userData = {
+  //     followerId: props.users.id,
+  //     userId: id,
+  //     token: props.users.token
+  //   }
+  //   API.followUser(userData)
+  //     .then(res => console.log('success?'))
+  //     .catch(err => console.log(err));
+  // }
+
   return (
     <Container >
       <Typography variant='h4' style={{ textAlign: 'center', marginTop: 20, fontSize: 50, fontWeight: 'bold' }}>
@@ -54,7 +85,8 @@ export default function BrowseUsers() {
         {users.length > 0 ?
           users.map(user => (
             <Grid item md={12}>
-              <UserCard key={user.id} userName={user.userName} />
+              <UserCard key={user.id} id={user.id} userName={user.userName} currentUser={props.users.id} token={props.users.token}/>
+              {/* followUser={followUser} */}
             </Grid>
           )) : (
             (!loadState ? (

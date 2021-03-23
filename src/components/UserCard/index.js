@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -6,6 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import snail from '../../images/DisapproverSnail.png';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import API from '../../utils/API';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     margin: 'auto',
-    maxWidth: 500,
+    maxWidth: '80%',
   },
   image: {
     width: 128,
@@ -30,6 +32,35 @@ const useStyles = makeStyles((theme) => ({
 
 export default function UserCard(props) {
   const classes = useStyles();
+  const [followed, setFollowed] = useState(false);
+
+  const followUser = () => {
+    setFollowed(prevState => !prevState);
+    const userData = {
+      followerId: props.currentUser,
+      userId: props.id,
+      token: props.token
+    }
+    console.log('userdata follow', userData);
+    API.followUser(userData)
+      .then(res => console.log('success?'))
+      .catch(err => console.log(err));
+  }
+
+  const unFollowUser = () => {
+    setFollowed(prevState => !prevState);
+    console.log('followerid', props.currentUser);
+    console.log('userid', props.id);
+    const unfollowData = {
+      followerId: props.currentUser,
+      userId: props.id,
+      // token: props.token
+    }
+    console.log('userdata unfollow', unfollowData);
+    API.unfollowUser(unfollowData)
+      .then(res => console.log('success?'))
+      .catch(err => console.log(err));
+  }
 
   return (
     <div className={classes.root}>
@@ -51,13 +82,21 @@ export default function UserCard(props) {
                 </Typography>
               </Grid>
               <Grid item>
-                <Typography variant="body2" style={{ cursor: 'pointer' }}>
+              {!followed ? 
+                (
+                <Typography variant="body2" style={{ cursor: 'pointer' }} onClick={followUser} >
                   Follow
                 </Typography>
+                ) : (
+                <Typography variant="body2" style={{ cursor: 'pointer' }} onClick={unFollowUser} >
+                  Unfollow
+                </Typography>
+                )
+                }
               </Grid>
             </Grid>
             <Grid item>
-              <FavoriteBorderIcon />
+              {!followed ? <FavoriteBorderIcon /> : <FavoriteIcon />}
             </Grid>
           </Grid>
         </Grid>
