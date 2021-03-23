@@ -6,6 +6,7 @@ import SavedMaps from './pages/SavedMaps';
 import BrowseMaps from './pages/BrowseMaps';
 import BrowseUsers from './pages/BrowseUsers';
 import RenderedMap from './pages/RenderedMap';
+import TestPage from './pages/TestPage';
 import NavBar from "./components/NavBar/index"
 import Login from "./pages/Login";
 import Splash from "./pages/Splash/index"
@@ -173,6 +174,10 @@ function App() {
 
             <Route exact path="/browseusers">
               <BrowseUsers users={users} />
+            </Route>
+
+            <Route exact path="/testspace">
+              <TestPage />
             </Route>
 
             <Route exact path="/render/:id">
