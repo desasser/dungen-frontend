@@ -568,9 +568,7 @@ export default function InfiniteCanvas(props) {
         idx: idx,
         type: activePin,
         x: e.evt.clientX - stagePosition.x,
-        y: e.evt.clientY - stagePosition.y - 30,
-        // x: e.evt.clientX - stagePosition.x - 5,
-        // y: e.evt.clientY - stagePosition.y - grid.tileSize * 2,
+        y: e.evt.clientY - stagePosition.y - grid.tileSize,
         fill: pinColors[activePin],
         data: null,
       }
@@ -856,6 +854,18 @@ export default function InfiniteCanvas(props) {
     
   }
 
+  const handlePinDragStart = (e) => {
+    setActivePin(null);
+    setShadowPinParams({
+      ...shadowPinParams,
+      display: 'none',
+      top: -500,
+      left: -500,
+      opacity: 0
+    })
+    setDraggingPin({x: e.target.x(), y: e.target.y()});
+  }
+
   const handlePinDragEnd = (e) => {
     const idx = e.target.id();
 
@@ -1058,7 +1068,7 @@ export default function InfiniteCanvas(props) {
                   data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
                   visible={pinsVisible}
                   onClick={(e) => handlePinOnClick(e)}
-                  onDragStart={(e) => setDraggingPin({x: e.target.x(), y: e.target.y()})}
+                  onDragStart={(e) => handlePinDragStart(e)}
                   onDragEnd={(e) => handlePinDragEnd(e)}
                   onMouseEnter={(e) => handleMouseEnter(e, 'pin', 'pointer')}
                   onMouseLeave={handleMouseLeave}
