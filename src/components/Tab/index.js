@@ -15,8 +15,8 @@ export default function Tab(props) {
   const classes = useStyles();
 
   return (
-    <div>
-      <Typography variant="body1" component='span' className={classes.button}>
+    <div handleClick={() => props.handleClick(props.value)} style={{cursor: 'pointer'}}>
+      <Typography variant="body1" component='span' className={classes.button} >
         {props.children}
       </Typography>
     </div>

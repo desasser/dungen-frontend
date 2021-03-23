@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tileGrid: {
     paddingTop: 15,
-    paddingBottom: 100,
+    paddingBottom: 40,
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'column',

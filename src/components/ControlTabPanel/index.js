@@ -1,5 +1,5 @@
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
-import React from 'react';
+import React, { useState } from 'react';
 import Tab from "../../components/Tab";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,19 +17,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ControlTabPanel() {
-const classes = useStyles();
+  const classes = useStyles();
+  const [viewState, setViewState] = useState('tiles')
+
+  const handleClick = (value) => {
+    setViewState(value)
+  }
 
   return (
     <div className={classes.panel}>
-      <Tab>
-        Settings
+      <div onClick={() => handleClick('settings')}>
+        <Tab>
+          Settings
       </Tab>
-      <Tab>
-        Encounters
+      </div>
+      <div onClick={() => handleClick('encounters')}>
+        <Tab>
+          Encounters
       </Tab>
-      <Tab>
-        Tiles
+      </div>
+      <div onClick={() => handleClick('tiles')}>
+        <Tab>
+          Tiles
       </Tab>
+      </div>
     </div>
   )
 }
