@@ -209,7 +209,7 @@ export default function SliderDrawer({ handleMapData, handleDraggableItem }) {
       >
         {/*==================== Calvin's doing something wierd ===================*/}
         
-        <StartMap handleMapData={handleMapData} />
+        {/* <StartMap handleMapData={handleMapData} /> */}
         
         {/*==================== Calvin's done doing something wierd ===================*/}
         <Container className={classes.drawerHeader}>

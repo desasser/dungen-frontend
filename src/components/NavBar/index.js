@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     position: 'sticky',
     top: 0,
-    zIndex: 10,
+    zIndex: 9999,
     width: '90%',
     margin: '0 auto',
     alignItems: 'center'
@@ -37,7 +37,8 @@ const useStyles = makeStyles((theme) => ({
   navBar: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
-    height: '75px'
+    height: '75px',
+    position: 'absolute'
   },
   navLink: {
     textDecoration: 'none',

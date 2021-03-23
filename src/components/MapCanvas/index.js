@@ -8,6 +8,7 @@ import MapControls from '../MapControls';
 
 import CanvasTile from "../MapTile";
 import MapTileControls from "../MapTileControls";
+import { IsoOutlined } from "@material-ui/icons";
 
 // exporting image from canvas
 const { v4: uuidv4 } = require('uuid');
@@ -16,15 +17,17 @@ const useStyles = makeStyles({
   mapCanvasContainer: {
     overflow: "hidden",
     position: "relative", 
-    margin: "0 auto", 
+    margin: 0,
+    padding: 0,
     background: "white", 
-    border: "4px solid black", 
+    // border: "4px solid black",
   },
   shadowPin: {
     boxSizing: 'border-box',
     display: 'none',
     position: 'absolute',
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
+    opacity: 0.6,
     width: 30,
     height: 30,
     borderRadius: '50% 50% 50% 0',
@@ -41,6 +44,16 @@ const useStyles = makeStyles({
       textAlign: 'center'
     }
   },
+  shadowDivTile: {
+    position: 'absolute',
+    background: '#ff7b17',
+    border: '3px dashed #cf6412',
+    zIndex: 500,
+    width: 100,
+    height: 100,
+    opacity: 0.6,
+    display: 'block'
+  }
 })
 
 // infinite grid demo: https://codesandbox.io/s/kkndq?file=/src/index.js:200-206
@@ -50,26 +63,16 @@ export default function InfiniteCanvas(props) {
 
   const history = useHistory();
 
-  let { tileSize, columns, rows, infinite } = props.init !== null ? props.init : {tileSize: 100, columns: 10, rows: 10, infinite: true};
-
   const stageRef = React.useRef(null);
   const stageParentRef = React.useRef(null);
   const mapCanvasContainerRef = React.useRef(null);
 
-  const [viewState, setViewState] = React.useState(false);
+  const [savedMap, setSavedMap] = React.useState(localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null);
+  let { tileSize, columns, rows, infinite } = savedMap !== null ? savedMap : {tileSize: 100, columns: 10, rows: 10, infinite: true};
+  if(isNaN(rows)) { rows = 10; } else { rows = parseInt(rows) }
+  if(isNaN(columns)) { columns = 10; } else { columns = parseInt(columns) }
+  if(isNaN(tileSize)) { tileSize = 100; } else { tileSize = parseInt(tileSize) }
 
-  const [activePin, setActivePin] = React.useState(null);
-  const [draggingPin, setDraggingPin] = React.useState({x: 0, y: 0});
-  const [mapPins, setMapPins] = React.useState([]);
-  const [pinsVisible, setPinsVisible] = React.useState(true);
-  const [contextMenuActive, setContextMenuActive] = React.useState(false);
-  const [tileControlsPosition, setTileControlsPosition] = React.useState({top: 0, left: 0});
-
-  const [activeTile, setActiveTile] = React.useState(null);
-
-  const [tilesLocked, setTilesLocked] = React.useState(false);
-  const [gridCentered, setGridCentered] = React.useState(true);
-  const [stagePosition, setStagePosition] = React.useState({ x: 0, y: 0, recenterX: 0, recenterY: 0 });
   const [grid, setGrid] = React.useState({
     tileSize: tileSize,
     infinite: infinite,
@@ -86,6 +89,41 @@ export default function InfiniteCanvas(props) {
     // minX: -999,
     // minY: -999
   });
+
+  const [mapData, setMapData] = React.useState(savedMap !== null ? {...savedMap} : {
+    name: "",
+    rows: rows,
+    columns: columns,
+    tileSize: tileSize,
+    infinite: infinite,
+    environment: 1,
+    layout: [], 
+    pins: [], 
+    pinsVisible: true, 
+    public: false,
+    userId: null
+  });
+
+  const [viewState, setViewState] = React.useState(false);
+
+  const [activePin, setActivePin] = React.useState(null);
+  const [draggingPin, setDraggingPin] = React.useState({x: 0, y: 0});
+  const [mapPins, setMapPins] = React.useState([]);
+  const [pinsVisible, setPinsVisible] = React.useState(true);
+  const [contextMenuActive, setContextMenuActive] = React.useState(false);
+  const [tileControlsPosition, setTileControlsPosition] = React.useState({top: 0, left: 0});
+
+  const [activeTile, setActiveTile] = React.useState(null);
+
+  const [tilesLocked, setTilesLocked] = React.useState(false);
+  const [gridCentered, setGridCentered] = React.useState(true);
+  const [stagePosition, setStagePosition] = React.useState({ 
+    x: (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2, 
+    recenterX: (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2, 
+    y: 125,
+    recenterY: 125
+  });
+  
   const [coordinateSquares, setCoordinateSquares] = React.useState([]);
 
   const [shadowTileParams, setShadowTileParams] = React.useState({
@@ -100,7 +138,15 @@ export default function InfiniteCanvas(props) {
     dash: [20, 2],
     visible: false,
   });
-  const [lastLegitSquare, setLastLegitSquare] = React.useState({x: 0, y: 0});
+
+  const [shadowDivTileParams, setShadowDivTileParams] = React.useState({
+    left: -500,
+    top: -500,
+    opacity: 0,
+    display: 'hidden',
+    width: grid.tileSize,
+    height: grid.tileSize
+  });
 
   const pinColors = {
     type1: 'forestgreen',
@@ -109,6 +155,20 @@ export default function InfiniteCanvas(props) {
     type4: 'dodgerblue',
     type5: 'salmon'
   }
+
+  const [shadowPinParams, setShadowPinParams] = React.useState({
+    left: 0,
+    top: 0,
+    backgroundColor: pinColors['type1'],
+    // visible: false,
+    // draggable: !tilesLocked,
+    // strokeWidth: 0,
+    // data: "M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27",
+    
+  })
+
+  const [lastLegitSquare, setLastLegitSquare] = React.useState({x: 0, y: 0});
+
   // donjon has 19
   const environmentColors = [
     "black",
@@ -133,38 +193,10 @@ export default function InfiniteCanvas(props) {
     "#05a8aa",
   ]
 
-  const [shadowPinParams, setShadowPinParams] = React.useState({
-    className: 'shadow-pin',
-    left: 0,
-    top: 0,
-    backgroundColor: pinColors.type1,
-    opacity: 0,
-    display: 'hidden',
-    visible: false,
-    // draggable: !tilesLocked,
-    // strokeWidth: 0,
-    // data: "M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27",
-    
-  })
-
   const [mapLayout, setMapLayout] = React.useState([]);
 
-  const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
-  const [mapData, setMapData] = React.useState(savedMap !== null ? {...savedMap} : {
-    name: "", 
-    rows: rows,
-    columns: columns,
-    infinite: true,
-    environment: 1,
-    layout: [], 
-    pins: [], 
-    pinsVisible: true, 
-    public: false,
-    userId: null
-  });
-
   React.useEffect(() => {
-    if(savedMap !== null) {
+    if(savedMap !== null && savedMap !== mapData) {
       if(mapLayout.length === 0 && savedMap !== null && savedMap.layout !== undefined && savedMap.layout.length > 0) {
         setMapLayout([...savedMap.layout]);
       }
@@ -190,102 +222,73 @@ export default function InfiniteCanvas(props) {
           startY: 0,
           endX: tileSize * savedMap.columns,
           endY: tileSize * savedMap.rows
+        });
+      } else {
+        setStagePosition({
+          x: 0,
+          recenterX: 0,
+          y: 75,
+          recenterY: 75
         })
       }
-      createGrid(savedMap.rows, savedMap.columns, tileSize, savedMap.infinite);
 
-    } else if(props.init !== null && props.init.name !== "") {
-      // build canvas / make selections (blah blah blah) based on modal init input
-      let gridProps = {...grid}
-
-      gridProps = {
-        ...gridProps,
-        infinite: props.init.infinite,
-      }
-
-      if(!props.init.infinite) {
-        let r = isNaN(props.init.rows) ? 10 : parseInt(props.init.rows);
-        let c = isNaN(props.init.columns) ? 10 : parseInt(props.init.columns);
-
-        gridProps = {
-          ...gridProps,
-          infinite: false,
-          startX: 0,
-          startY: 0,
-          columns: c,
-          rows: r,
-          endX: grid.tileSize * c,
-          endY: grid.tileSize * r
-        }
-
-        setGrid({...gridProps})
-
-        if(window.innerWidth > grid.tileSize * gridProps.columns) {
-          const gridWidth = (window.innerWidth - (grid.tileSize * gridProps.columns)) / 2;
-          setStagePosition({ ...stagePosition, x: gridWidth, recenterX: gridWidth })
-        }
-
-        if(window.innerHeight > grid.tileSize * gridProps.rows) {
-          const gridHeight = (window.innerHeight - (grid.tileSize * gridProps.rows)) / 2;
-          setStagePosition({ ...stagePosition, y: gridHeight, recenterY: gridHeight })
-        }
-      }
-
-      // createGrid(gridProps.rows, gridProps.columns, tileSize, gridProps.infinite);
 
     } else {
-      // createGrid(grid.rows, grid.columns, grid.tileSize, grid.infinite);
-
+      localStorage.setItem('dungen_map', JSON.stringify(mapData));
     }
+
+    updateStagePosition();
+
+    createGrid();
 
   }, []);
 
-  React.useEffect(() => {
-    console.log("MapCanvas.244: props.init changed", props.init);
-  }, [props.init]);
-
-  // React.useEffect(() => {
-  //   createGrid();
-  // }, [mapData, grid]);
-
   /**
    * SETTING HEIGHT & WIDTH OF STAGE
-   * based on stage container offset
+   * to fill window, with no overflow
    * 
    */
-  React.useEffect(() => {
+   React.useEffect(() => {
     if(stageParentRef.current) {
-      let offsetTop = mapCanvasContainerRef.current.offsetTop;
+      // let offsetTop = mapCanvasContainerRef.current.offsetTop;
       setGrid({
         ...grid,
         containerWidth: window.innerWidth,
-        containerHeight: window.innerHeight - offsetTop - 2
+        containerHeight: window.innerHeight
       });
 
-      stageParentRef.current.style.width = window.innerWidth - 2 + 'px';
-      stageParentRef.current.style.height = window.innerHeight - offsetTop - 2 + 'px';
-
       if(savedMap !== null) {
-        console.log("environment", savedMap.environment)
         stageParentRef.current.style.backgroundColor = environmentColors[savedMap.environment]
       }
     }
-
-    if(mapCanvasContainerRef.current) {
-      let offsetTop = mapCanvasContainerRef.current.offsetTop;
-      stageParentRef.current.style.width = window.innerWidth - 2 + 'px';
-      stageParentRef.current.style.height = window.innerHeight - offsetTop - 2 + 'px';
-    }
   
-  }, [stageParentRef, mapCanvasContainerRef]);
+  }, [stageParentRef, stageRef, mapCanvasContainerRef]);
+
+  React.useEffect(() => {
+    if(props.init) {
+      const newSavedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+
+      if(newSavedMap !== null) {
+        setSavedMap(newSavedMap);
+        setMapData({...mapData, ...newSavedMap});
+        setGrid({
+          ...grid,
+          rows: newSavedMap.rows,
+          columns: newSavedMap.columns,
+          infinite: newSavedMap.infinite
+        })
+
+        updateStagePosition();
+      }
+    }
+
+  }, [props.init])
 
   /**
    * INFINITE GRID *ONLY*
    */
   React.useEffect(() => {
-    if(props.init === null || props.init.infinite || grid.infinite) {
-      createGrid(null, null, grid.tileSize, true);
-    }
+    createGrid();
 
   }, [stagePosition]);
 
@@ -322,10 +325,26 @@ export default function InfiniteCanvas(props) {
     };
     setMapData(newData);
 
+    createGrid();
+
     localStorage.setItem('dungen_map', JSON.stringify(newData));
 
     // eslint-disable-next-line
   }, [mapLayout, mapPins, pinsVisible]);
+
+  /**
+   * HIDING STUFF WHEN THEY'RE NOT ACTIVE
+   */
+  // React.useEffect(() => {
+  //   if(activePin === null) {
+  //     setShadowPinParams({
+  //       opacity: 0,
+  //       top: 0,
+  //       left: 0,
+  //       display: 'none'
+  //     });
+  //   }
+  // }, [activePin])
 
 
   /**
@@ -335,20 +354,44 @@ export default function InfiniteCanvas(props) {
   //   // does nothing for now
   // }, [mapLayout]);
 
-  const createGrid = (gridRows=grid.rows, gridColumns=grid.columns, gridTileSize=grid.tileSize, gridInfinite=grid.infinite) => {
-    const gridInit = gridInfinite ? updateGridProps(stagePosition) : { ...grid, startX: 0, startY: 0, endX: gridTileSize * gridColumns, endY: gridTileSize * gridRows };
-    console.log("::cMapCanvas.420:: gridInit", gridInit);
+  const updateStagePosition = () => {
+    if(!mapData.infinite) {
+      const gridWidth = (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2;
+      let gridHeight = ((window.innerHeight - (grid.tileSize * grid.rows) - grid.tileSize) / 4) + 100;
+      // make sure gridHeight is actually a *positive* number, not a negative!
+      if(gridHeight < 0) {
+        gridHeight = gridHeight * -1;
+      }
 
-    gridRows = gridRows !== null ? parseInt(gridRows) : 10;
-    gridColumns = gridColumns !== null ? parseInt(gridColumns) : 10;
-    gridTileSize = gridTileSize !== null ? parseInt(gridTileSize) : 100;
+      if(window.innerWidth > gridWidth) {
+        setStagePosition({ ...stagePosition, x: gridWidth, recenterX: gridWidth })
+      } else {
+        setStagePosition({...stagePosition, x: 0, recenterX: 0})
+      }
+      
+      // the navbar is exactly 75px tall (specified height, not "responsive")
+      // **BUT** there's a drop shadow, so just make it 100
+      if(window.innerHeight - 80 > gridHeight) {
+        setStagePosition({ ...stagePosition, y: gridHeight, recenterY: gridHeight })
+      }
+      // else {
+      //   setStagePosition({...stagePosition, y: 100, recenterY: 100})
+      // }
+      
+    }
+  }
 
+  const createGrid = () => {
+    const gridInit = mapData.infinite ? updateGridProps(stagePosition) : { ...grid, startX: 0, startY: 0, endX: grid.tileSize * mapData.columns, endY: grid.tileSize * mapData.rows };
+    
     var i = 0;
     const gridColors = [
       ["rgba(0,0,0,0.15)", "transparent"],
       ["transparent", "rgba(0,0,0,0.15)"],
     ];
+
     const cSquares = [];
+
     for (var x = gridInit.startX; x < gridInit.endX; x += gridInit.tileSize) {
       for (var y = gridInit.startY; y < gridInit.endY; y += gridInit.tileSize) {
         if (i === 4) {
@@ -383,16 +426,24 @@ export default function InfiniteCanvas(props) {
         );
       }
     }
-    setCoordinateSquares(cSquares);
+
+    if(cSquares.length > 0) {
+      setCoordinateSquares(cSquares);
+    }
   }
   
   const updateGridProps = (position = null) => {
     if(position === null) { position = stagePosition; }
+    let { containerWidth, containerHeight } = grid;
+    if(grid.infinite) {
+      containerWidth = window.innerWidth;
+      containerHeight = window.innerHeight;
+    }
 
-      const startX = Math.floor((-position.x - grid.containerWidth) / grid.tileSize) * grid.tileSize;
-      const endX = Math.floor((-position.x + grid.containerWidth * 2) / grid.tileSize) * grid.tileSize;
-      const startY = Math.floor((-position.y - grid.containerHeight) / grid.tileSize) *  grid.tileSize;
-      const endY = Math.floor((-position.y + grid.containerHeight * 2) / grid.tileSize) * grid.tileSize;
+    const startX = Math.floor((-position.x - containerWidth) / grid.tileSize) * grid.tileSize;
+    const endX = Math.floor((-position.x + containerWidth * 2) / grid.tileSize) * grid.tileSize;
+    const startY = Math.floor((-position.y - containerHeight) / grid.tileSize) *  grid.tileSize;
+    const endY = Math.floor((-position.y + containerHeight * 2) / grid.tileSize) * grid.tileSize;
 
     const gridInit = {
       ...grid,
@@ -402,45 +453,17 @@ export default function InfiniteCanvas(props) {
       startY: startY,
       endY: endY,
     };
+
     setGrid(gridInit);
     return gridInit;
   };
 
   /**
-   * DATE FUNCTION
-   */
-  const handleDateTime = (get='time') => {
-    const dt = new Date();
-    let month = (dt.getMonth() + 1);
-    let date = dt.getDate();
-    let hours = dt.getHours();
-    let minutes = dt.getMinutes();
-    let seconds = dt.getSeconds();
-
-    if(month < 10) { month = `0${month}` };
-    if(date < 10) { date = `0${date}`};
-    if(hours < 10) { hours = `0${hours}`};
-    if(minutes < 10) { minutes = `0${minutes}`};
-    if(seconds < 10) { seconds = `0${seconds}`};
-
-    let today = dt.getFullYear() +'-'+ month +'-'+ date;
-    let timestamp = hours +':'+ minutes +':'+ seconds;
-
-    if(get === 'time') {
-      return timestamp;
-    } else if(get === 'date') {
-      return today;
-    } else if(get === 'datetime' || get === 'both') {
-      return `${today}T${timestamp}`;
-    }
-
-    return null;
-  }
-
-  /**
    * GENERAL FUNCTIONS
    */
   const handleMouseEnter = (e, target, cursorStyle) => {
+    // console.log("mapcanvas.418 handleMouseEnter event", e);
+
     // if the tiles are locked (grid dragging enabled)
     // AND the target is the stage, change the cursor
     if(target === 'stage' && tilesLocked) {
@@ -464,12 +487,11 @@ export default function InfiniteCanvas(props) {
 
       setShadowPinParams({
         ...shadowPinParams,
-        backgroundColor: pinColors[activePin],
-        left: mousePos.x - stagePosition.x - 15,
-        top: mousePos.y - stagePosition.y - (grid.tileSize / 2.25),
+        left: mousePos.x - 20,
+        top: mousePos.y - 48
+        // left: mousePos.x - stagePosition.x - 15,
+        // top: mousePos.y - stagePosition.y - (grid.tileSize / 2.25),
         // visible: true,
-        display: 'inline-block',
-        opacity: 0.5
       })
     }
   }
@@ -494,19 +516,21 @@ export default function InfiniteCanvas(props) {
   const handleGridDragEnter = (e) => {
     e.preventDefault()
 
-    const mousePos = stageRef.current.getPointerPosition();
-    
     setShadowTileParams({
       ...shadowTileParams,
-      x: mousePos.x - stagePosition.x,
-      y: mousePos.y - stagePosition.y,
-      visible: true,
-      opacity: 0.6
-    });
+      opacity: 0.6,
+      visible: true
+    })
+  }
+
+  const handleGridDragOver = (e) => {
+    e.preventDefault();
+    // Math.round(pos.x / grid.tileSize) * grid.tileSize
+    checkTileIntersects({ x: Math.round(e.pageX / grid.tileSize) * grid.tileSize, y: (Math.round(e.pageY / grid.tileSize) * grid.tileSize) - grid.tileSize });
   }
 
   const handleGridDragEnd = (e) => {
-    if(tilesLocked && stageRef.current && e.currentTarget.x() !== 0 || e.currentTarget.y() !== 0) {
+    if(tilesLocked && (e.currentTarget.x() !== 0 || e.currentTarget.y() !== 0)) {
       setStagePosition({...stagePosition, x: e.currentTarget.x(), y: e.currentTarget.y()});
       setGridCentered(false);
       updateGridProps(e.currentTarget.position());
@@ -523,6 +547,7 @@ export default function InfiniteCanvas(props) {
  
     } else {
       setContextMenuActive(false);
+
     }
 
     if(activePin !== null && e.evt.which === 1 && target.attrs.className !== "map-pin") {
@@ -532,8 +557,10 @@ export default function InfiniteCanvas(props) {
       const pin = {
         idx: idx,
         type: activePin,
-        x: e.evt.clientX - stagePosition.x - 5,
-        y: e.evt.clientY - stagePosition.y - grid.tileSize * 2,
+        x: e.evt.clientX - stagePosition.x,
+        y: e.evt.clientY - stagePosition.y - 30,
+        // x: e.evt.clientX - stagePosition.x - 5,
+        // y: e.evt.clientY - stagePosition.y - grid.tileSize * 2,
         fill: pinColors[activePin],
         data: null,
       }
@@ -549,7 +576,6 @@ export default function InfiniteCanvas(props) {
   };
 
   const recenterGrid = () => {
-
     if (stagePosition.x !== stagePosition.recenterX || stagePosition.y !== stagePosition.recenterY) {
       setStagePosition({ ...stagePosition, x: stagePosition.recenterX, y: stagePosition.recenterY });
       setGridCentered(true);
@@ -582,12 +608,15 @@ export default function InfiniteCanvas(props) {
   };
 
   const handleTileDragMove = (e) => {
-    const target = e.target;
+    checkTileIntersects({ x: e.target.x(), y: e.target.y() })
+  }
 
-    const xCoord = Math.round(target.x() / grid.tileSize) * grid.tileSize;
-    const yCoord = Math.round(target.y() / grid.tileSize) * grid.tileSize;
+  const checkTileIntersects = (pos) => {
+    const xCoord = Math.round(pos.x / grid.tileSize) * grid.tileSize;
+    const yCoord = Math.round(pos.y / grid.tileSize) * grid.tileSize;
 
-    const layerChildren = stageRef.current.children[1].children;
+    // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
+    const layerChildren = stageRef.current.children[2].children;
 
     if(layerChildren.length === 1) {
       setLastLegitSquare({x: xCoord, y: yCoord});
@@ -651,17 +680,18 @@ export default function InfiniteCanvas(props) {
 
     stageRef.current.setPointersPositions(e)
 
-    const srPos = stageRef.current.getPointerPosition();
+    // const srPos = stageRef.current.getPointerPosition();
 
-    const xCoord = Math.round((srPos.x - stagePosition.x) / grid.tileSize) * grid.tileSize;
-    const yCoord = Math.round((srPos.y - stagePosition.y) / grid.tileSize) * grid.tileSize;
+    // const xCoord = Math.round((srPos.x - stagePosition.x) / grid.tileSize) * grid.tileSize;
+    // const yCoord = Math.round((srPos.y - stagePosition.y) / grid.tileSize) * grid.tileSize;
+    console.log("mapcanvas.687:: lastLegitSquare", lastLegitSquare);
 
     const tile = {
       idx: idx,
       imgKey: `tm-${tileData.TileId}`,
       TileId: tileData.TileId,
-      x: xCoord / grid.tileSize,
-      y: yCoord / grid.tileSize,
+      x: lastLegitSquare.x / grid.tileSize,
+      y: lastLegitSquare.y / grid.tileSize,
       image_src: tileData.image_src,
       rotation: 0,
       scale: { x: 1, y: 1 },
@@ -671,6 +701,14 @@ export default function InfiniteCanvas(props) {
       ...mapLayout,
       tile
     ]);
+
+    setShadowTileParams({
+      ...shadowTileParams,
+      x: -500,
+      y: -500,
+      visible: false,
+      opacity: 0
+    });
   };
 
   /**
@@ -762,33 +800,43 @@ export default function InfiniteCanvas(props) {
 
   /**
    * PINS
-   */
-  const handlePinClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+   */  
+  const handlePinStatus = (e) => {
+    if(e !== null) {
+      e.preventDefault();
+      e.stopPropagation()
+    }
 
     let pinType = e.target.closest('button') !== null ? e.target.closest('button').dataset.pintype : null;
+    if(e.ctrlKey) {
+      pinType = `type${e.key}`;
+    }
 
-    handlePinStatus(pinType);
-  }
-  
-  const handlePinStatus = (pinType) => {
-    if(pinsVisible && (activePin !== pinType || activePin === null)) {
-      console.log("::cMapCanvas.782:: SHOW shadow pin")
+    // e.key === <DIGIT> (e.code === "Digit1"), e.ctrlKey === true; e.key === "Escape"
+    if( pinType === activePin || e.key === "Escape" ) {
+      setActivePin(null);
 
       setShadowPinParams({
         ...shadowPinParams,
-        display: 'inline-block'
+        display: 'none',
+        top: -500,
+        left: -500
       });
 
-    } else if(pinType === null) {
-      console.log("::cMapCanvas.790:: HIDE shadow pin")
-      setActivePin(null);
-      setShadowPinParams({
-        ...shadowPinParams,
-        display: 'none'
-      })
+    } else if( pinType !== null && pinType !== activePin ) {
+    
+      if(activePin === null) {
+        setShadowPinParams({
+          ...shadowPinParams,
+          display: 'inline-block',
+          backgroundColor: pinColors[activePin]
+        });
+
+      }
+
+      setActivePin(pinType);
     }
+    
   }
 
   const handlePinDragEnd = (e) => {
@@ -824,17 +872,20 @@ export default function InfiniteCanvas(props) {
   /**
    * RENDER / SAVE / ETC. HANDLING
    */
-  const renderImage = (renderWithPins) => {
+  const renderImage = () => {
+    // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
     let target = stageRef.current.children[2];
-    console.log("::cMC.798:: render target", target)
+    /**
+     * LEAVING IN CASE WE ADD MORE LAYERS THAT NEED TO BE RENDERED
+     * WITH MAP TILES + PINS LAYER
+     * took var indicating whether or not to include the extra layer
+     * this is now redundant, b/c pins are visible/hidden individually
+     */
     // if(renderWithPins && mapPins.length > 0) {
-
     //   let layer = stageRef.current.children[2];
-
     //   for(var i = 0; i < pinsLayer.children.length; i++) {
     //     layer.children.push(pinsLayer.children[i])
     //   }
-
     //   target = layer;
     // }
 
@@ -853,7 +904,7 @@ export default function InfiniteCanvas(props) {
   }
 
   return (
-    <div ref={mapCanvasContainerRef} style={{position: 'relative', margin: 0, padding: 0}}>
+    <div style={{position: 'relative', margin: 0, padding: 0}}>
       <MapControls
         controlsData={{ 
           toggleTileLock: { 
@@ -871,7 +922,7 @@ export default function InfiniteCanvas(props) {
             text: mapLayout.length > 0 ? 'Clear Map' : 'Map Empty'
           },
           pins: {
-            props: {onClick: handlePinClick},
+            props: {onClick: handlePinStatus},
             activePin: activePin
           },
           clearPins: {
@@ -898,12 +949,12 @@ export default function InfiniteCanvas(props) {
         id="map-builder-stage-container"
         className={classes.mapCanvasContainer}
         onDrop={(e) => handleNewTileDrop(e)}
-        onDragOver={(e) => e.preventDefault()}
+        onDragOver={(e) => handleGridDragOver(e)}
         onDragEnter={(e) => handleGridDragEnter(e)}
         style={{
-          width: grid.containerWidth, 
-          height: grid.containerHeight,
-          backgroundColor: savedMap !== null && savedMap.environment !== "" ? environmentColors[savedMap.environment] : 'grey'
+          maxWidth: window.innerWidth,
+          maxHeight: window.innerHeight - 2, // 1 extra pixel each from map controls & tile slider drawer (why??)
+          backgroundColor: savedMap !== null && savedMap.environment !== "" ? environmentColors[savedMap.environment] : 'ghostwhite'
         }}
       >
         <Stage
@@ -922,7 +973,7 @@ export default function InfiniteCanvas(props) {
           onMouseLeave={handleMouseLeave}
         >
           {/* grid coordinate/"checkerboard" squares layer */}
-          <Layer visible={!props.viewState}>
+          <Layer visible={!props.viewState} name="coordinateGrid">
             {coordinateSquares}
           </Layer>
 
@@ -1014,7 +1065,8 @@ export default function InfiniteCanvas(props) {
       {/* NOT Canvas elements */}
       <MapTileControls id="tile-controls" contextMenuActive={contextMenuActive} top={tileControlsPosition.top} left={tileControlsPosition.left} handleTileControlAction={handleTileControlAction} />
 
-      <div className={classes.shadowPin} style={{...shadowPinParams}}></div>
+      <div id="shadowPin" className={classes.shadowPin} style={{...shadowPinParams, backgroundColor: activePin !== null ? pinColors[activePin] : 'grey'}}></div>
+      {/* <div id="shadowDivTile" className={classes.shadowDivTile} style={{...shadowDivTileParams}}></div> */}
     </div>
   );
 }
