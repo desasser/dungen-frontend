@@ -154,9 +154,21 @@ export default function SliderDrawer({ handleMapData, handleDraggableItem }) {
 
   const handleChangeTileSet = (event) => {
     setTileSetState(event.target.value);
+    localStorage.setItem('dungen_tileset', event.target.value);
   };
 
   const { isDrawerOpened } = state;
+
+  useEffect(() => {
+    // FETCH ALL TileSets
+    API.getTileSets().then(tileSets => {
+      setTileSetListState(tileSets.data)
+    }).catch(err => console.error(err))
+
+    if(localStorage.getItem('dungen_tileset') !== undefined) {
+      setTileSetState(localStorage.getItem('dungen_tileset'));
+    }
+  }, []);
 
   useEffect(() => {
     // GET ALL TILES FROM ONE TileSets, RERUN WHEN TileSets IS CHANGED
@@ -178,13 +190,6 @@ export default function SliderDrawer({ handleMapData, handleDraggableItem }) {
       })
       .catch(err => console.error(err))
   }, [tileSetState]);
-
-  useEffect(() => {
-    // FETCH ALL TileSets
-    API.getTileSets().then(tileSets => {
-      setTileSetListState(tileSets.data)
-    }).catch(err => console.error(err))
-  }, []);
 
   const capitalizeMe = (name) => {
     return name.charAt(0).toUpperCase() + name.slice(1);
