@@ -278,6 +278,8 @@ export default function MapControls({ controlsData }) {
     isDrawerOpened: true
   })
 
+  // console.log("map controls controlsData", controlsData);
+
   const theme = useTheme();
 
   const handleDrawerOpen = () => {
@@ -315,12 +317,12 @@ export default function MapControls({ controlsData }) {
    */
 
   // pins
-  useHotkeys('ctrl+1, command+1', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type1' ? 'type1' : null));
-  useHotkeys('ctrl+2, command+2', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type2' ? 'type2' : null));
-  useHotkeys('ctrl+3, command+3', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type3' ? 'type3' : null));
-  useHotkeys('ctrl+4, command+4', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type4' ? 'type4' : null));
-  useHotkeys('ctrl+5, command+5', (e) => controlsData.pinKeyboardShortcuts(e, controlsData.pins.activePin !== 'type5' ? 'type5' : null));
-  useHotkeys('esc', (e) => controlsData.pinKeyboardShortcuts(e, null) );
+  useHotkeys('ctrl+1, command+1', (e) => controlsData.pinKeyboardShortcuts(e));
+  useHotkeys('ctrl+2, command+2', (e) => controlsData.pinKeyboardShortcuts(e));
+  useHotkeys('ctrl+3, command+3', (e) => controlsData.pinKeyboardShortcuts(e));
+  useHotkeys('ctrl+4, command+4', (e) => controlsData.pinKeyboardShortcuts(e));
+  useHotkeys('ctrl+5, command+5', (e) => controlsData.pinKeyboardShortcuts(e));
+  useHotkeys('esc', (e) => controlsData.pinKeyboardShortcuts(e) );
 
   return (
     <Box>

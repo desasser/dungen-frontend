@@ -146,7 +146,7 @@ export default function MapBuilder(props) {
   const [mapTitle, setMapTitle] = useState("Untitled Map");
 
   // map builder init data for new maps
-  const [newMapData, setNewMapData] = useState(null);
+  const [mapData, setMapData] = useState(null);
 
   // FOR SNACKBAR NOTIFICATION!
   const [saved, setSavedState] = useState(false);
@@ -168,6 +168,23 @@ export default function MapBuilder(props) {
   const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
 
   useEffect(() => {
+    if(savedMap === null) {
+      const starterMapData = {
+        name: "",
+        rows: 10,
+        columns: 10,
+        tileSize: 100,
+        infinite: true,
+        environment: 1,
+        layout: [], 
+        pins: [], 
+        pinsVisible: true, 
+        public: false,
+        userId: null
+      }
+      localStorage.setItem('dungen_map', JSON.stringify(starterMapData));
+    }
+
     if (id !== undefined) {
       API.getSingleMap(id)
         .then((res) => {
@@ -216,10 +233,9 @@ export default function MapBuilder(props) {
   };
 
   const handleStartMapFormSubmit = (mapData) => {
-    console.log("pMB347", mapData);
     if(mapData.name !== "") { setMapTitle(mapData.name); }
-    setNewMapData(mapData);
-    console.log(mapData);
+
+    setMapData(mapData);
   }
 
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -229,7 +245,7 @@ export default function MapBuilder(props) {
   return !isMobile ? (
     <Box>
       {/* MAP TITLE */}
-      <Container className={classes.titleWrapper}>
+      {/* <Container className={classes.titleWrapper}>
         <Typography variant="h2" className={classes.title}>
           {mapTitle}
         </Typography>
@@ -252,14 +268,14 @@ export default function MapBuilder(props) {
             />
           </form>
         )}
-      </Container>
+      </Container> */}
 
       {/* MAP BUILDER */}
       <MapCanvas
         loadThisMap={id}
         toggleSavedState={toggleSavedState}
         toggleAuthState={toggleAuthState}
-        init={newMapData}
+        init={mapData}
       />
 
       <SliderDrawer handleDraggableItem={handleDraggableItem} handleMapData={handleStartMapFormSubmit} />

@@ -139,15 +139,17 @@ function App() {
         <Router>
           <NavBar user={users} />
           <Switch>
+            {/* why twice? */}
             <Route exact path="/" component={Splash} />
+
+            <Route exact path="/">
+              <Splash />
+            </Route>
 
             <Route exact path="/login">
               <Login handleSubmit={handleSubmit} handleInputChange={handleInputChange}
                 // switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} 
                 isLoggedIn={users.isLoggedIn} />
-            </Route>
-            <Route exact path="/">
-              <Splash />
             </Route>
 
             <Route exact path="/dashboard">

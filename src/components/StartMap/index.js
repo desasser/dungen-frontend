@@ -36,16 +36,24 @@ function StartMap(props) {
         name: savedMap !== null ? savedMap.name : "",
         environment: savedMap !== null ? savedMap.environment : '1',
         infinite: savedMap !== null ? savedMap.infinite : true,
-        rows: savedMap !== null ? savedMap.rows : null,
-        columns: savedMap !== null ? savedMap.columns : null,
+        rows: savedMap !== null ? parseInt(savedMap.rows) : 1,
+        columns: savedMap !== null ? parseInt(savedMap.columns) : 1,
         public: savedMap !== null ? savedMap.public : true
     });
+
+    useEffect(() => {
+        if(savedMap === null) {
+            localStorage.setItem( 'dungen_map', JSON.stringify(newMap) )
+        } else {
+            localStorage.setItem( 'dungen_map', JSON.stringify({...savedMap, ...newMap}) )
+        }
+    }, [newMap]);
 
     const handleInputChange = event => {
         const { name, value } = event.target;
         setMapState({
             ...newMap,
-            [name]: value
+            [name]: name === 'rows' || name === 'columns' ? parseInt(value) : value
         })
     }
 
@@ -55,15 +63,11 @@ function StartMap(props) {
             console.log("trying to to save a map");
 
         }).catch(err => console.error(err))
-
-        localStorage.setItem('dungen_map', JSON.stringify({...savedMap, ...newMap}))
-
         props.handleMapData(newMap)
     }
 
     const handleCheck = event => {
-        setMapState({ ...newMap, [event.target.name]: event.target.checked, rows: !newMap.infinite ? null : newMap.rows, columns: !newMap.infinite ? null : newMap.columns });
-        // setMapState({...newMap, row: null, column: null})
+        setMapState({ ...newMap, [event.target.name]: event.target.checked, rows: !newMap.infinite ? 1 : parseInt(newMap.rows), columns: !newMap.infinite ? 1 : parseInt(newMap.columns) });
     };
 
     const [environmentState, setEnvironmentState] = useState(null)
