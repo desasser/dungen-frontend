@@ -31,7 +31,7 @@ const classes = useStyles();
     <>
       <form onSubmit={props.handleSubmit} onChange={props.handleInputChange} credentials={props.credentials} noValidate autoComplete="off">
         <div>
-          <Alert error = {props.error} validationErrorState={props.validationErrorState} resetVal={props.resetVal}></Alert>
+          <Alert error = {props.error} resetError={props.resetError} validationErrorState={props.validationErrorState} resetVal={props.resetVal}></Alert>
           <TextField id="standard-basic" type="text" label="username"  
           name="userName" required 
           value={props.credentials.userName} 
