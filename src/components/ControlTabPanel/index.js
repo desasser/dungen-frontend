@@ -16,27 +16,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function ControlTabPanel() {
+export default function ControlTabPanel(props) {
   const classes = useStyles();
-  const [viewState, setViewState] = useState('tiles')
-
-  const handleClick = (value) => {
-    setViewState(value)
-  }
 
   return (
     <div className={classes.panel}>
-      <div onClick={() => handleClick('settings')}>
+      <div onClick={() => props.handleClick('settings')}>
         <Tab>
           Settings
       </Tab>
       </div>
-      <div onClick={() => handleClick('encounters')}>
+      <div onClick={() => props.handleClick('encounters')}>
         <Tab>
           Encounters
       </Tab>
       </div>
-      <div onClick={() => handleClick('tiles')}>
+      <div onClick={() => props.handleClick('tiles')}>
         <Tab>
           Tiles
       </Tab>

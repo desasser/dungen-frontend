@@ -1,13 +1,11 @@
 import React from 'react';
-import ControlTabPanel from '../../components/ControlTabPanel';
-import TileReservoir from '../../components/TileReservoir';
+import SuperDrawer from '../../components/SuperDrawer';
 
 
 export default function TestPage() {
   return (
     <div >
-      <TileReservoir />
-      <ControlTabPanel />
+      <SuperDrawer />
     </div>
   )
 }

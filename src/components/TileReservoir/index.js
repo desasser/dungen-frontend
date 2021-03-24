@@ -10,15 +10,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const useStyles = makeStyles((theme) => ({
-  base: {
-    backgroundColor: 'tomato',
-    position: 'absolute',
-    right: 0,
-    top: 75,
-    width: 350,
-    height: 'calc(100vh - 75px)',
-    overflowY: 'auto'
-  },
   tileGrid: {
     paddingTop: 15,
     paddingBottom: 40,
@@ -103,7 +94,6 @@ export default function TileReservoir({ handleMapData, handleDraggableItem }) {
   }, []);
 
   return (
-    <div className={classes.base}>
       <Container className={classes.tileGrid}>
           <Typography variant='h5' className={classes.tileHeader}>
             Dungeon Tiles
@@ -137,6 +127,5 @@ export default function TileReservoir({ handleMapData, handleDraggableItem }) {
               )}
           </Container>
         </Container>
-    </div>
   )
 }

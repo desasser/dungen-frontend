@@ -326,27 +326,27 @@ export default function MapControls({ controlsData }) {
 
   return (
     <Box>
-      <Container maxWidth={false} className={classes.sideNav}>
+      {/* <Container maxWidth={false} className={classes.sideNav}>
         <IconButton onClick={handleDrawerOpen} className={classes.drawerOpenBtn}>
           {!isDrawerOpened ? <ChevronRightIcon fontSize="large" /> : null}
         </IconButton>
-      </Container>
+      </Container> */}
 
-      <Divider />
+      {/* <Divider /> */}
 
-      <TileDrawer
+      {/* <TileDrawer
         anchor='left'
         variant='persistent'
         open={isDrawerOpened}
         onClose={handleDrawerClose}
-      >
+      > */}
         {/* OPEN / CLOSE STUFF */}
-        <Container className={classes.drawerHeader}>
+        {/* <Container className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose} className={classes.drawerCloseBtn}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </Container>
-        
+         */}
         {/* CONTROLS DRAWER TITLE */}
         <Container className={classes.tileGrid}>
           <Typography variant='h5' className={classes.tileHeader}>
@@ -434,7 +434,7 @@ export default function MapControls({ controlsData }) {
             {controlsData.renderImage.text}
           </ActionBtn>
         </Container>
-      </TileDrawer>
+      {/* </TileDrawer> */}
     </Box>
   );
 }
