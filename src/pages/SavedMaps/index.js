@@ -76,7 +76,6 @@ export default function SavedMaps(props) {
 
   return (
     <Container >
-      <SuperDrawer></SuperDrawer>
       <Typography variant='h2' className={classes.savedTitle}>Your Map Case</Typography>
       <Divider variant="middle" />
       <Container className={classes.savedMapCard} maxWidth={false}>
