@@ -7,7 +7,9 @@ import RouterBtn from '../../components/RouterBtn'
 import { makeStyles } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
-import MapCanvas from '../../components/MapCanvas';
+import SuperDrawer from '../../components/SuperDrawer';
+import MapCanvas from '../../components/MapCanvas/MapCanvas.js';
+import CanvasContextProvider from '../../contexts/CanvasContext';
 import { Container, Box, Typography, TextField, Button } from '@material-ui/core';
 // import Typography from '@material-ui/core/Typography';
 // import TextField from '@material-ui/core/TextField';
@@ -230,12 +232,18 @@ export default function MapBuilder(props) {
 
   return !isMobile ? (
     <Box>
-      <MapCanvas
+      <div >
+        <CanvasContextProvider>
+          <SuperDrawer />
+          <MapCanvas />
+        </CanvasContextProvider>
+      </div>
+      {/* <MapCanvas
         loadThisMap={id}
         init={mapData}
       />
 
-      <SliderDrawer handleDraggableItem={handleDraggableItem} handleMapData={handleStartMapFormSubmit} />
+      <SliderDrawer handleDraggableItem={handleDraggableItem} handleMapData={handleStartMapFormSubmit} /> */}
 
       {/* SNACKBAR NOTIFICATIONS */}
       <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
