@@ -140,11 +140,6 @@ const useStyles = makeStyles({
 export default function MapBuilder(props) {
   const classes = useStyles();
 
-  // for tile "drawer"
-  const [titleState, setTitleState] = useState(false);
-  // for the map title
-  const [mapTitle, setMapTitle] = useState("Untitled Map");
-
   // map builder init data for new maps
   const [mapData, setMapData] = useState(null);
 
@@ -154,16 +149,14 @@ export default function MapBuilder(props) {
   const [auth, setAuthState] = useState(false);
 
   // for redirecting page after saving to builder/:id
-  // AND for redirecting to "render" page
   const history = useHistory();
+
   // for loading a specific map from saved maps
   const { id } = useParams();
 
   // check to see if user is logged in
   const logIn = props.users.isLoggedIn;
   // console.log(logIn);
-
-  const [open, setOpen] = useState(props.openModal);
 
   const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
 
@@ -190,16 +183,16 @@ export default function MapBuilder(props) {
         .then((res) => {
           // console.log(res)
           if (res.data !== "") {
-            setMapTitle(res.data.name);
+            // setMapTitle(res.data.name); // not using this anymore
             // setLoadedMapData(res.data);
           }
         })
         .catch(err => console.error(err));
     }
 
-    if(savedMap !== null && savedMap.name !== "") {
-      setMapTitle(savedMap.name);
-    }
+    // if(savedMap !== null && savedMap.name !== "") {
+    //   setMapTitle(savedMap.name);
+    // }
 
   }, []);
 
@@ -211,6 +204,10 @@ export default function MapBuilder(props) {
     setAuthState(false);
   };
 
+  /**
+   * MAP CANVAS + MAP CONTROLS FUNCTIONS
+   */
+  // TILES RESEVOIR
   const handleDraggableItem = (e) => {
     const tileData = {
       TileId: e.target.dataset.tileid,
@@ -220,20 +217,9 @@ export default function MapBuilder(props) {
     e.dataTransfer.setData('dropped_tile', JSON.stringify(tileData));
   };
 
-  const handleTitleSubmit = (event) => {
-    event.preventDefault();
-
-    if(savedMap !== null && mapTitle !== "Untitled Map") {
-      savedMap.name = mapTitle;
-      localStorage.setItem('dungen_map', JSON.stringify(savedMap));
-      console.log("pMB206 localstorage", localStorage.getItem('dungen_map'));
-    }
-
-    setTitleState(false);
-  };
-
+  // SETTINGS PANEL
   const handleStartMapFormSubmit = (mapData) => {
-    if(mapData.name !== "") { setMapTitle(mapData.name); }
+    // if(mapData.name !== "") { setMapTitle(mapData.name); }
 
     setMapData(mapData);
   }
@@ -244,37 +230,8 @@ export default function MapBuilder(props) {
 
   return !isMobile ? (
     <Box>
-      {/* MAP TITLE */}
-      {/* <Container className={classes.titleWrapper}>
-        <Typography variant="h2" className={classes.title}>
-          {mapTitle}
-        </Typography>
-        {!titleState ? (
-          <Button
-            onClick={() => setTitleState(true)}
-            className={classes.titleBtn}
-          >
-            Edit Title
-          </Button>
-        ) : (
-          <form onSubmit={handleTitleSubmit}>
-            <TextField
-              id="filled-basic"
-              label="Map Title"
-              variant="filled"
-              value={mapTitle}
-              onChange={(e) => setMapTitle(e.target.value)}
-              className={classes.titleInput}
-            />
-          </form>
-        )}
-      </Container> */}
-
-      {/* MAP BUILDER */}
       <MapCanvas
         loadThisMap={id}
-        toggleSavedState={toggleSavedState}
-        toggleAuthState={toggleAuthState}
         init={mapData}
       />
 
