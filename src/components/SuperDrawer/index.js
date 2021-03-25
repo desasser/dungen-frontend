@@ -3,7 +3,7 @@ import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import TileReservoir from "../../components/TileReservoir"
 import ControlTabPanel from "../../components/ControlTabPanel"
 import StartMap from "../../components/StartMap"
-import MapControls from '../MapControls';
+import MapControls2 from '../MapControls/MapControls2';
 
 const useStyles = makeStyles((theme) => ({
   base: {
@@ -13,11 +13,12 @@ const useStyles = makeStyles((theme) => ({
     top: 75,
     width: 350,
     height: 'calc(100vh - 75px)',
-    overflowY: 'auto'
+    overflowY: 'auto',
+    zIndex: 1000,
   },
 }));
 
-export default function SuperDrawer() {
+export default function SuperDrawer(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [viewState, setViewState] = useState('tiles')
@@ -37,11 +38,11 @@ export default function SuperDrawer() {
         {
           (() => {
             if (viewState === 'tiles') {
-              return <TileReservoir />
+              return <TileReservoir handleDraggableItem={props.handleDraggableItem} />
             } else if (viewState === 'settings') {
               return <StartMap />
             } else if (viewState === 'encounters') {
-              return <MapControls />
+              return <MapControls2 />
             }
           })()
         }

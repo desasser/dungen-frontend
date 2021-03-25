@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TileReservoir({ handleMapData, handleDraggableItem }) {
+export default function TileReservoir({ handleMapData }) {
   const classes = useStyles();
   const [tileSet, setTileSet] = useState([]);
   const [loadState, setLoadState] = useState(false);
@@ -116,7 +116,7 @@ export default function TileReservoir({ handleMapData, handleDraggableItem }) {
           <Container className={classes.tileWrapper}>
 
             {tileSet.length > 0 ?
-              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} handleDraggableItem={handleDraggableItem} />) : (
+              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} />) : (
                 (!loadState ? (
                   // <CircularProgress />
                   <LinearProgress />

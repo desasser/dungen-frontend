@@ -1,5 +1,6 @@
-import React from "react";
+import { useContext } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { CanvasContext } from "../../contexts/CanvasContext";
 
 const useStyles = makeStyles({
   tilesetTile: {
@@ -14,8 +15,10 @@ const useStyles = makeStyles({
 
 // key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} handleOnDragStart={handleDraggableItem}
 
-export default function DraggableTile({ tileId, tileSet, imageURL, handleDraggableItem }) {
+export default function DraggableTile({ tileId, tileSet, imageURL }) {
   const classes = useStyles();
+
+  const { handleDraggableItem } = useContext(CanvasContext)
 
   return (
     <img 
