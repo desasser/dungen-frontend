@@ -865,7 +865,7 @@ export default function MapCanvas(props) {
                 y = pin.y;
               }
               return (<Spring
-                key={`$pin-{pin.x}-${pin.y}`}
+                key={pin.idx}
                 // native
                 from={{ 
                   opacity: draggingPin ? 0 : 1,
