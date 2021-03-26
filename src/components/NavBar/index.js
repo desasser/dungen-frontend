@@ -18,8 +18,6 @@ import Hidden from '@material-ui/core/Hidden';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Box from '@material-ui/core/Box';
-// import { useTimer } from 'react-timer-hook'
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,8 +37,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
     height: '75px',
-    // position: 'absolute',
-
   },
   navLink: {
     textDecoration: 'none',
@@ -49,11 +45,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '10px',
     color: theme.palette.secondary.contrastText,
   },
-  // menuStyle: {
-  //   '& .MuiMenu-paper': {
-  //     backgroundColor: '#cad8e0'
-  //   }
-  // },
   menuItemStyle: {
     color: theme.palette.secondary.contrastText,
     textDecoration: 'none',
@@ -91,8 +82,12 @@ export default function MenuAppBar(props) {
     Msg: "Please Login",
   })
 
+  const [formSubText, setFormSubText] = useState({
+    subtext: "Don't have an account?"
+  })
+
   const [hapticBtn, setHapticBtn] = useState({
-    Btn: "Switch to: Sign Up",
+    Btn: "Sign Up",
   })
 
   const [loginState, setLoginState] = useState({
@@ -215,12 +210,14 @@ export default function MenuAppBar(props) {
     // console.log(click)
     if (formSwitch.login === true) {
       setFormSwitch({ login: false })
-      setFormMsg({ Msg: "Create an Account" })
-      setHapticBtn({ Btn: "Have an Account?" })
+      setFormMsg({ Msg: "Sign Up" })
+      setHapticBtn({ Btn: "Login" })
+      setFormSubText({ subtext: "Don't have an account?"})
     } else {
       setFormMsg({ Msg: "Please Login" })
-      setHapticBtn({ Btn: "New to the Site?" })
+      setHapticBtn({ Btn: "Sign Up" })
       setFormSwitch({ login: true })
+      setFormSubText({ subtext: "Have an account?"})
     }
   }
 
@@ -326,8 +323,6 @@ const resetValidationErrorState = () => {
           </Hidden>
           {/* XS NAVIGATION */}
 
-
-
           {/* NAVIGATION LINKS */}
           <Hidden xsDown>
             <Box style={{ display: 'flex' }}>
@@ -336,34 +331,40 @@ const resetValidationErrorState = () => {
                   Builder
                 </Typography>
               </Link>
-              {props.user.isLoggedIn ? <Link to="/dashboard" className={classes.navLink}>
+              {props.user.isLoggedIn ? 
+              <Link to="/dashboard" className={classes.navLink}>
                 <Typography variant='h5' >
                   Saved Maps
-                </Typography> </Link>
-                : null}
+                </Typography> 
+              </Link>
+                : 
+              null}
               {/* NAVIGATION LINKS */}
 
               {/* WELCOME USER */}
-              {/* {props.user.isLoggedIn ? <Typography variant="h5" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null} */}
               <FormGroup>
-                {!props.user.isLoggedIn ? <LoginModal edge="start" onClick={logInPopUp}
+                {!props.user.isLoggedIn ? 
+                <LoginModal edge="start" onClick={logInPopUp}
                   credentials={loginState} validationErrorState={validationErrorState} resetVal={resetValidationErrorState} resetError={resetError} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
-                /> : <MenuItem onClick={logout} className={classes.navLink}>
+                /> 
+                : 
+                <MenuItem onClick={logout} className={classes.navLink}>
                   <Typography variant='h5' style={{ marginTop: '-5px', marginLeft: '-10px' }}>
                     Logout?
-                </Typography>
-                  </MenuItem>}
+                  </Typography>
+                </MenuItem>}
               </FormGroup>
               {auth && (
                 <div>
-                  {props.user.isLoggedIn ? <AccountCircle style={{ fontSize: '50px', color: '#f8b24c' }} /> : null}
+                  {props.user.isLoggedIn ? 
+                  <AccountCircle style={{ fontSize: '50px', color: '#f8b24c' }} />
+                   : 
+                  null}
                 </div>
               )}
             </Box>
           </Hidden>
           {/* WELCOME USER */}
-
-
         </Toolbar>
       </AppBar>
     </div>

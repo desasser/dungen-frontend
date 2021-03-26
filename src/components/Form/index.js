@@ -10,9 +10,13 @@ const useStyles = makeStyles(() => ({
     },
     width: 100,
     height: 40,
-    fontSize: '18px',
+    fontSize: '14px',
     fontFamily: 'Immortal',
+    marginLeft: '47%'
   },
+  input: {
+    color: 'white'
+  }
 }))
 
 
@@ -36,6 +40,9 @@ export default function Form(props) {
             onChange={props.handleInputChange}
             credentials={props.credentials}
             color="secondary"
+            InputProps={{
+              className: classes.input
+            }}
           />
         </div>
         {!props.login ? <span>
@@ -45,6 +52,9 @@ export default function Form(props) {
               required value={props.credentials.email}
               onChange={props.handleInputChange}
               color="secondary" 
+              InputProps={{
+                className: classes.input
+              }}
               />
           </div>
         </span> : null}
@@ -54,6 +64,9 @@ export default function Form(props) {
               value={props.credentials.name}
               onChange={props.handleInputChange}
               color="secondary"
+              InputProps={{
+                className: classes.input
+              }}
             />
           </div>
         </span> : null}
@@ -64,6 +77,9 @@ export default function Form(props) {
             onSubmit={props.handleSubmit}
             onChange={props.handleInputChange}
             color="secondary"
+            InputProps={{
+              className: classes.input
+            }}
           />
         </div>
         <Button type="submit" color="primary" variant="contained"

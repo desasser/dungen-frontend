@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   paper: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#2e3743da',
     borderRadius: '0.5em',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
@@ -38,21 +38,20 @@ const useStyles = makeStyles((theme) => ({
     margin: 0
   },
   loginMsg: {
-    fontSize: '20px',
     margin: '10px',
-    color: 'white'
+    color: theme.palette.secondary.main
   },
   switchBtn: {
     '&:hover' : {
-      color: '#36434b',
-      backgroundColor: 'white'
+      color:'white',
+      backgroundColor: theme.palette.primary.main,
     },
+    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.primary.main,
     marginBottom: '10px',
     height: 40,
-    backgroundColor: '#36434b',
-    color: 'white',
-    fontSize: '16px',
-    fontFamily: 'Immortal'
+    fontFamily: 'Immortal',
+    marginLeft: '38%'
   }
 }));
 
@@ -105,10 +104,12 @@ export default function LoginModal(props) {
         <Fade in={open}>
           <div className={classes.paper}>
 
-            <ActionBtn action={props.switch} name={props.formBtn} classes={classes.switchBtn}/>
             <Typography variant="h4" className={classes.loginMsg}>{props.formMsg}</Typography>
-            <Form credentials={props.credentials} resetError={props.resetError} validationErrorState={props.validationErrorState} resetVal={props.resetVal} login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
-
+            <Form credentials={props.credentials} resetError={props.resetError} validationErrorState={props.validationErrorState} resetVal={props.resetVal} login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange}  />
+            <Typography variant='body2' style={{marginTop: 10, color:"white", textAlign: 'right', marginRight: '10%'}}>
+              {props.login.login ? "Don't have an account?" : "Have an account?"}
+            </Typography>
+            <ActionBtn action={props.switch} name={props.formBtn} classes={classes.switchBtn} style={{marginTop: 5, height: '40px', width: '120px'}}/>
           </div>
         </Fade>
       </Modal>
