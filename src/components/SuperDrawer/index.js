@@ -7,7 +7,7 @@ import MapControls2 from '../MapControls/MapControls2';
 
 const useStyles = makeStyles((theme) => ({
   base: {
-    backgroundColor: 'tomato',
+    backgroundColor: '#2c3945',
     position: 'absolute',
     right: 0,
     top: 75,

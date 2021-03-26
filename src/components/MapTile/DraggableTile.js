@@ -6,10 +6,11 @@ const useStyles = makeStyles({
   tilesetTile: {
     width: 100,
     height: 100,
-    borderTop: '8px solid palegoldenrod',
-    borderLeft: '8px solid goldenrod',
-    borderRight: '8px solid midnightblue',
-    borderBottom: '8px solid midnightblue',
+    borderTop: '8px solid #f8b24c',
+    borderLeft: '8px solid #f8b24c',
+    borderRight: '8px solid #5e431d',
+    borderBottom: '8px solid #5e431d',
+    backgroundColor: 'rgba(255, 255, 255, 0.8);'
   }
 });
 
