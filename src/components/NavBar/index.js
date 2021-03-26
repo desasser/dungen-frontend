@@ -120,6 +120,12 @@ export default function MenuAppBar(props) {
     error: false
   });
 
+  const resetError = () => {
+    setErrorState({
+      error:false
+    })
+  }
+
   const handleSubmit = event => {
     event.preventDefault()
     console.log(event.target)
@@ -219,7 +225,6 @@ export default function MenuAppBar(props) {
   }
 
 const resetValidationErrorState = () => {
-  console.log("changing errorStates")
   setValidationErrorState({
     userName: false,
     email: false,
@@ -305,7 +310,7 @@ const resetValidationErrorState = () => {
                   <Link to='' className={classes.menuItemStyle}>
                     <LoginModal edge="start" onClick={logInPopUp}
                       handleSubmit={handleSubmit} credentials={loginState} validationErrorState={validationErrorState}
-                      resetVal={resetValidationErrorState} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={props.user} login={formSwitch} error={errorState}
+                      resetVal={resetValidationErrorState} resetError={resetError} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={props.user} login={formSwitch} error={errorState}
                     />
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
@@ -342,7 +347,7 @@ const resetValidationErrorState = () => {
               {/* {props.user.isLoggedIn ? <Typography variant="h5" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null} */}
               <FormGroup>
                 {!props.user.isLoggedIn ? <LoginModal edge="start" onClick={logInPopUp}
-                  credentials={loginState} validationErrorState={validationErrorState} resetVal={resetValidationErrorState} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+                  credentials={loginState} validationErrorState={validationErrorState} resetVal={resetValidationErrorState} resetError={resetError} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
                 /> : <MenuItem onClick={logout} className={classes.navLink}>
                   <Typography variant='h5' style={{ marginTop: '-5px', marginLeft: '-10px' }}>
                     Logout?
