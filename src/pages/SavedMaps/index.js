@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import RouterBtn from '../../components/RouterBtn';
 import Divider from '@material-ui/core/Divider';
 import SuperDrawer from '../../components/SuperDrawer';
+import { SettingsRemoteRounded } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +52,7 @@ export default function SavedMaps(props) {
   const classes = useStyles();
 
   useEffect(() => {
+    
     if (props) {
       loadUserMaps()
     }

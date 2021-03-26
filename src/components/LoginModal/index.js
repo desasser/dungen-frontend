@@ -108,7 +108,7 @@ export default function LoginModal(props) {
 
             <ActionBtn action={props.switch} name={props.formBtn} classes={classes.switchBtn}/>
             <Typography variant="h3" className={classes.loginMsg}>{props.formMsg}</Typography>
-            <Form credentials={props.credentials} validationErrorState={props.validationErrorState} resetVal={props.resetVal} login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
+            <Form credentials={props.credentials} resetError={props.resetError} validationErrorState={props.validationErrorState} resetVal={props.resetVal} login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
 
           </div>
         </Fade>

@@ -43,6 +43,10 @@ function App() {
     password: "",
   })
 
+const [snailState, setSnailState] = useState({
+  snail: false
+})
+
   const token = localStorage.getItem("token")
 
   useEffect(() => {
@@ -65,6 +69,9 @@ function App() {
       setLoginState({
         userName: "",
         password: ""
+      })
+      setSnailState({
+        snail: true
       })
     })
   }
@@ -155,8 +162,8 @@ function App() {
             <Route exact path="/dashboard">
               {users.isLoggedIn ? <SavedMaps users={users} /> : <Nope />}
             </Route>
-            <Route exact path="/503">
-              <Nope />
+            <Route exact path="/503" >
+              {snailState ? <Nope /> : null}
             </Route>
 
             <Route exact path="/builder">
