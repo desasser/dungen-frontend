@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import SliderDrawer from '../../components/SliderDrawer'
 import IconBtn from '../../components/IconBtn'
 import ActionBtn from '../../components/ActionBtn'
 import RouterBtn from '../../components/RouterBtn'
@@ -163,7 +162,7 @@ export default function MapBuilder(props) {
   const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
 
   useEffect(() => {
-    if(savedMap === null) {
+    if (savedMap === null) {
       const starterMapData = {
         name: "",
         rows: 10,
@@ -171,9 +170,9 @@ export default function MapBuilder(props) {
         tileSize: 100,
         infinite: true,
         environment: 1,
-        layout: [], 
-        pins: [], 
-        pinsVisible: true, 
+        layout: [],
+        pins: [],
+        pinsVisible: true,
         public: false,
         userId: null
       }
@@ -232,19 +231,12 @@ export default function MapBuilder(props) {
 
   return !isMobile ? (
     <Box>
-      <div >
+      <div>
         <CanvasContextProvider>
           <SuperDrawer />
           <MapCanvas />
         </CanvasContextProvider>
-      </div>
-      {/* <MapCanvas
-        loadThisMap={id}
-        init={mapData}
-      />
-
-      <SliderDrawer handleDraggableItem={handleDraggableItem} handleMapData={handleStartMapFormSubmit} /> */}
-
+      </div >
       {/* SNACKBAR NOTIFICATIONS */}
       <SaveBar saved={saved} toggleSavedState={toggleSavedState} />
       <AuthBar auth={auth} toggleAuthState={toggleAuthState} />

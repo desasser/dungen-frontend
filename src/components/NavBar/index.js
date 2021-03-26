@@ -177,28 +177,28 @@ export default function MenuAppBar(props) {
         history.go(0)
       }).catch(error => {
         console.log(error.response.data.errors);
-        if(error.response.data.errors[0].path === "userName") {
+        if (error.response.data.errors[0].path === "userName") {
           setValidationErrorState({
             ...validationErrorState,
             userName: true
           })
           console.log(validationErrorState.userName)
         }
-        else if(error.response.data.errors[0].path === "email") {
+        else if (error.response.data.errors[0].path === "email") {
           setValidationErrorState({
             ...validationErrorState,
-          email: true
+            email: true
           })
           console.log(validationErrorState.email)
         }
-        else if(error.response.data.errors[0].path === "password") {
+        else if (error.response.data.errors[0].path === "password") {
           setValidationErrorState({
             ...validationErrorState,
             password: true
           })
           console.log(validationErrorState.password)
         }
-        
+
         localStorage.removeItem("token");
         console.log("token has been removed. Error Login.line: 83")
       })
@@ -218,14 +218,14 @@ export default function MenuAppBar(props) {
     }
   }
 
-const resetValidationErrorState = () => {
-  console.log("changing errorStates")
-  setValidationErrorState({
-    userName: false,
-    email: false,
-    password: false
-  })
-}
+  const resetValidationErrorState = () => {
+    console.log("changing errorStates")
+    setValidationErrorState({
+      userName: false,
+      email: false,
+      password: false
+    })
+  }
 
   //======================================================================
   // END OF Login/Sign Functions
@@ -268,7 +268,7 @@ const resetValidationErrorState = () => {
             DunGen
           </Typography>
           {/* LOGO HEADER */}
-          
+
           {/* XS NAVIGATION */}
           <Hidden smUp>
             <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleXSClick}>
@@ -329,25 +329,33 @@ const resetValidationErrorState = () => {
               <Link to="/builder" className={classes.navLink}>
                 <Typography variant='h5'>
                   Builder
-              </Typography>
+                </Typography>
               </Link>
               {props.user.isLoggedIn ? <Link to="/dashboard" className={classes.navLink}>
                 <Typography variant='h5' >
                   Saved Maps
-              </Typography> </Link>
+                </Typography> </Link>
                 : null}
               {/* NAVIGATION LINKS */}
 
               {/* WELCOME USER */}
               {/* {props.user.isLoggedIn ? <Typography variant="h5" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null} */}
               <FormGroup>
-                {!props.user.isLoggedIn ? <LoginModal edge="start" onClick={logInPopUp}
-                  credentials={loginState} validationErrorState={validationErrorState} resetVal={resetValidationErrorState} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
-                /> : <MenuItem onClick={logout} className={classes.navLink}>
-                  <Typography variant='h5' style={{ marginTop: '-5px', marginLeft: '-10px' }}>
-                    Logout?
+                {!props.user.isLoggedIn ?
+                  // <Link to="/builder" className={classes.navLink}>
+                  //   <Typography variant='h5'>
+                  //     Login
+                  //   </Typography>
+                  // </Link>
+                  <LoginModal edge="start" onClick={logInPopUp}
+                    credentials={loginState} validationErrorState={validationErrorState} resetVal={resetValidationErrorState} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+                  /> 
+                  :
+                  <MenuItem onClick={logout} className={classes.navLink}>
+                    <Typography variant='h5' style={{ marginTop: '-5px', marginLeft: '-10px' }}>
+                      Logout?
                 </Typography>
-                </MenuItem>}
+                  </MenuItem>}
               </FormGroup>
               {auth && (
                 <div>

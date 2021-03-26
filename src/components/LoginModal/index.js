@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
   },
   navLink: {
     textDecoration: 'none',
+    marginLeft: '30px',
+    marginRight: '30px',
+    marginTop: '10px',
     color: theme.palette.secondary.contrastText,
   },
   menuItem: {
