@@ -104,16 +104,19 @@ export default function RenderedMap(props) {
   const classes = useStyles();
   const history = useHistory();
 
+  const mapTitleRef = React.useRef(null);
+
   const [mapData, setMapData] = React.useState({ img_url: "", mapTitle: "", mapId: null })
 
   const [rendered, setRendered] = useState(false);
 
+  const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+
   let { id } = useParams();
 
-  // TODO: Maybe can't be done front side?
   React.useEffect(() => {
-    console.log("RENDER THIS ID:", id)
     if (id !== undefined) {
+
       API.renderMap(id)
       .then(mapData => {
         console.log("mapdata", mapData.data);
@@ -127,6 +130,19 @@ export default function RenderedMap(props) {
         .catch(err => console.error(err));
       })
       .catch(err => console.error(err));
+    } else {
+      const savedURI = localStorage.getItem('dungen_map_image');
+
+      if(savedURI !== null) {
+        if(savedMap !== null && savedMap.name !== "" && mapTitleRef.current) {
+          setMapData({ ...mapData, mapTitle: savedMap.name });
+          mapTitleRef.current = savedMap.name
+        }
+        
+        setMapData({ ...mapData, image_url: savedURI});
+        
+        setRendered(true);
+      }
     }
   }, [])
 
@@ -136,12 +152,12 @@ export default function RenderedMap(props) {
 
   return (
     <Container>
-      <Typography variant='h2' className={classes.title}>
-        {mapData.mapTitle}
+      <Typography variant='h2' className={classes.title} ref={mapTitleRef}>
+        {mapTitleRef.current}
       </Typography>
       <Container className={classes.largeMap} >
         {/* TODO: Add ternary operator to check if the image has finished rendering or not */}
-        {!rendered ? <FancyLinearProgress /> : <img src={mapData.img_url} alt={mapData.mapTitle} />}
+        {!rendered ? <FancyLinearProgress /> : <img src={mapData.image_url} alt={mapData.mapTitle} />}
       </Container>
       {/* <ActionBtn name='SAVE' classes={classes.actionBtn} /> */}
       <ActionBtn name='EDIT' classes={classes.actionBtn} action={editButtonAction} />

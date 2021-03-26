@@ -26,10 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
   navLink: {
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy',
-    fontSize: '20px',
-    marginLeft: '20px',
-    color: '#36434b'
+    color: theme.palette.secondary.contrastText,
   },
   menuItem: {
     color: 'black',
@@ -58,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LoginModal(props) {
-  console.log(props)
+  // console.log(props)
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -73,7 +70,7 @@ export default function LoginModal(props) {
 
   const history = useHistory(props);
   useEffect(() => {
-    console.log(props)
+    // console.log(props)
     if (props.isLoggedIn) {
       handleClose()
     }
@@ -83,14 +80,14 @@ export default function LoginModal(props) {
     navigator.userAgent
   );
 
-  console.log('check me out!', navigator.userAgent);
-  console.log('mobile?', isMobile);
+  // console.log('check me out!', navigator.userAgent);
+  // console.log('mobile?', isMobile);
 
   return (
     <>
-      <p type="button" className={!isMobile ? classes.navLink : classes.menuItem} onClick={handleOpen} style={{cursor: 'pointer'}}>
-        LOGIN
-      </p>
+      <Typography variant='h5' type="button" className={!isMobile ? classes.navLink : classes.menuItem} onClick={handleOpen} style={{cursor: 'pointer'}}>
+        Login
+      </Typography>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -101,15 +98,14 @@ export default function LoginModal(props) {
         BackdropComponent={Backdrop}
         BackdropProps={{
           timeout: 500,
-        }}
-        
+        }} 
       >
         <Fade in={open}>
           <div className={classes.paper}>
 
             <ActionBtn action={props.switch} name={props.formBtn} classes={classes.switchBtn}/>
             <Typography variant="h3" className={classes.loginMsg}>{props.formMsg}</Typography>
-            <Form login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
+            <Form credentials={props.credentials} resetError={props.resetError} validationErrorState={props.validationErrorState} resetVal={props.resetVal} login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
 
           </div>
         </Fade>

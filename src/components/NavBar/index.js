@@ -17,47 +17,50 @@ import { useHistory } from 'react-router-dom';
 import Hidden from '@material-ui/core/Hidden';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
+import Box from '@material-ui/core/Box';
+// import { useTimer } from 'react-timer-hook'
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-    position: 'sticky',
+    display: 'flex',
+    justifyContent: 'space-between',
+    position: 'relative',
     top: 0,
-    zIndex: 10,
+    zIndex: 9999,
+    width: '90%',
+    margin: '0 auto',
+    alignItems: 'center',
   },
   title: {
-    flexGrow: 1,
-    fontFamily: 'ESKARGOT',
     cursor: 'pointer',
-    fontWeight: '700',
   },
   navBar: {
-    backgroundColor: '#8eb1c7',
-    color: 'black',
-    width: '100vw'
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    height: '75px',
+    // position: 'absolute',
+
   },
   navLink: {
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy',
-    fontSize: '20px',
-    marginLeft: '20px',
-    color: '#36434b',
+    marginLeft: '30px',
+    marginRight: '30px',
+    marginTop: '10px',
+    color: theme.palette.secondary.contrastText,
   },
-  menuStyle: {
-    '& .MuiMenu-paper': {
-      backgroundColor: '#cad8e0'
-    }
-  },
+  // menuStyle: {
+  //   '& .MuiMenu-paper': {
+  //     backgroundColor: '#cad8e0'
+  //   }
+  // },
   menuItemStyle: {
-    color: 'black',
+    color: theme.palette.secondary.contrastText,
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy'
   },
   menuItemStyleLogin: {
-    color: 'black',
+    color: theme.palette.secondary.contrastText,
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy',
   },
 }));
 
@@ -95,7 +98,14 @@ export default function MenuAppBar(props) {
   const [loginState, setLoginState] = useState({
     userName: "",
     password: "",
+    email: "",
+    name: ""
+  })
 
+  const [validationErrorState, setValidationErrorState] = useState({
+    userName: false,
+    email: false,
+    password: false
   })
 
   const handleInputChange = event => {
@@ -109,6 +119,12 @@ export default function MenuAppBar(props) {
   const [errorState, setErrorState] = useState({
     error: false
   });
+
+  const resetError = () => {
+    setErrorState({
+      error:false
+    })
+  }
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -130,24 +146,20 @@ export default function MenuAppBar(props) {
         })
         history.go(0)
       }).catch(error => {
-
-        console.log(error);
+        console.log(loginState);
         setErrorState({
           error: true
         })
-        if (errorState) {
-          setLoginState({
-            userName: "",
-            password: ""
-          })
-          setErrorState({
-            errorState: false
-          })
-        }
-
-
+        setLoginState({
+          userName: "",
+          password: ""
+        })
+        console.log(loginState)
+        // setErrorState({
+        //   error: false
+        // })
         localStorage.removeItem("token");
-        console.log("token has been removed. Error Login. NavBar line: 123")
+        console.log("token has been removed. Error Login. NavBar line: 148")
         return error
       })
     } else {
@@ -163,11 +175,36 @@ export default function MenuAppBar(props) {
         })
         setLoginState({
           userName: "",
-          password: ""
+          password: "",
+          email: "",
+          name: ""
         })
+
         history.go(0)
       }).catch(error => {
-        console.log(error);
+        console.log(error.response.data.errors);
+        if(error.response.data.errors[0].path === "userName") {
+          setValidationErrorState({
+            ...validationErrorState,
+            userName: true
+          })
+          console.log(validationErrorState.userName)
+        }
+        else if(error.response.data.errors[0].path === "email") {
+          setValidationErrorState({
+            ...validationErrorState,
+          email: true
+          })
+          console.log(validationErrorState.email)
+        }
+        else if(error.response.data.errors[0].path === "password") {
+          setValidationErrorState({
+            ...validationErrorState,
+            password: true
+          })
+          console.log(validationErrorState.password)
+        }
+        
         localStorage.removeItem("token");
         console.log("token has been removed. Error Login.line: 83")
       })
@@ -175,7 +212,7 @@ export default function MenuAppBar(props) {
   };
 
   const signUpBtn = click => {
-    console.log(click)
+    // console.log(click)
     if (formSwitch.login === true) {
       setFormSwitch({ login: false })
       setFormMsg({ Msg: "Create an Account" })
@@ -187,7 +224,13 @@ export default function MenuAppBar(props) {
     }
   }
 
-
+const resetValidationErrorState = () => {
+  setValidationErrorState({
+    userName: false,
+    email: false,
+    password: false
+  })
+}
 
   //======================================================================
   // END OF Login/Sign Functions
@@ -221,13 +264,20 @@ export default function MenuAppBar(props) {
   }
 
   return (
-    <div className={classes.root}>
+    <div>
       <AppBar position="static" className={classes.navBar} > {/*color='secondary'*/}
-        <Toolbar>
+        <Toolbar className={classes.root}>
+
+          {/* LOGO HEADER */}
+          <Typography variant='h2' className={classes.title} onClick={titleClick}>
+            DunGen
+          </Typography>
+          {/* LOGO HEADER */}
+          
           {/* XS NAVIGATION */}
           <Hidden smUp>
             <IconButton aria-controls="simple-menu" aria-haspopup="true" onClick={handleXSClick}>
-              <MenuIcon />
+              <MenuIcon color='secondary' fontSize='large' />
             </IconButton>
             {/* MOBILE MENU */}
             <Menu
@@ -238,58 +288,78 @@ export default function MenuAppBar(props) {
               onClose={handleXSClose}
               className={classes.menuStyle}
             >
-              <MenuItem onClick={handleXSClose}><Link to='/builder' className={classes.menuItemStyle}>MAP BUILDER</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}>
+                <Link to='/builder' className={classes.menuItemStyle}>
+                  <Typography variant='h6'>
+                    Builder
+                  </Typography>
+                </Link>
+              </MenuItem>
               <Divider />
-              <MenuItem onClick={handleXSClose}><Link to='/dashboard' className={classes.menuItemStyle}>SAVED MAPS</Link></MenuItem>
+              <MenuItem onClick={handleXSClose}>
+                <Link to='/dashboard' className={classes.menuItemStyle}>
+                  <Typography variant='h6'>
+                    Saved Maps
+                  </Typography>
+                </Link>
+              </MenuItem>
               <Divider />
-              
+
               <FormGroup>
                 {!props.user.isLoggedIn ? <MenuItem>
-                  <Link className={classes.menuItemStyle}>
+                  <Link to='' className={classes.menuItemStyle}>
                     <LoginModal edge="start" onClick={logInPopUp}
-                      handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+                      handleSubmit={handleSubmit} credentials={loginState} validationErrorState={validationErrorState}
+                      resetVal={resetValidationErrorState} resetError={resetError} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={props.user} login={formSwitch} error={errorState}
                     />
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
                   <Link className={classes.menuItemStyle}>
-                      LOGOUT?
-                </Link>
-                  </MenuItem>}
+                    <Typography variant='h6'>
+                      Logout
+                  </Typography>
+                  </Link>
+                </MenuItem>}
               </FormGroup>
             </Menu>
             {/* MOBILE MENU */}
           </Hidden>
           {/* XS NAVIGATION */}
 
+
+
           {/* NAVIGATION LINKS */}
           <Hidden xsDown>
-            <Link to="/builder" color="white" variant="body2" className={classes.navLink}>Map Builder </Link>
-            {props.user.isLoggedIn ? <span><Link to="/dashboard" className={classes.navLink}> Saved Maps </Link>
-            </span> : null}
-          </Hidden>
-          {/* NAVIGATION LINKS */}
+            <Box style={{ display: 'flex' }}>
+              <Link to="/builder" className={classes.navLink}>
+                <Typography variant='h5'>
+                  Builder
+              </Typography>
+              </Link>
+              {props.user.isLoggedIn ? <Link to="/dashboard" className={classes.navLink}>
+                <Typography variant='h5' >
+                  Saved Maps
+              </Typography> </Link>
+                : null}
+              {/* NAVIGATION LINKS */}
 
-          {/* LOGO HEADER */}
-          <Typography variant='h3' className={classes.title} onClick={titleClick}>
-            DunGen
-          </Typography>
-          {/* LOGO HEADER */}
-
-          {/* WELCOME USER */}
-          <Hidden xsDown>
-            {props.user.isLoggedIn ? <Typography variant="h6" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null}
-            <FormGroup>
-              {!props.user.isLoggedIn ? <span> <LoginModal edge="start" onClick={logInPopUp}
-                handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
-              /> </span> : <span> <MenuItem onClick={logout} className={classes.navLink}>
-                Logout?
-              </MenuItem></span>}
-            </FormGroup>
-            {auth && (
-              <div>
-                {props.user.isLoggedIn ? <span> <AccountCircle style={{ fontSize: '50px', color: '#eb4511ff' }} /> </span> : null}
-              </div>
-            )}
+              {/* WELCOME USER */}
+              {/* {props.user.isLoggedIn ? <Typography variant="h5" className={classes.navLink} >{`Welcome ${props.user.userName}`}</Typography> : null} */}
+              <FormGroup>
+                {!props.user.isLoggedIn ? <LoginModal edge="start" onClick={logInPopUp}
+                  credentials={loginState} validationErrorState={validationErrorState} resetVal={resetValidationErrorState} resetError={resetError} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+                /> : <MenuItem onClick={logout} className={classes.navLink}>
+                  <Typography variant='h5' style={{ marginTop: '-5px', marginLeft: '-10px' }}>
+                    Logout?
+                </Typography>
+                </MenuItem>}
+              </FormGroup>
+              {auth && (
+                <div>
+                  {props.user.isLoggedIn ? <AccountCircle style={{ fontSize: '50px', color: '#f8b24c' }} /> : null}
+                </div>
+              )}
+            </Box>
           </Hidden>
           {/* WELCOME USER */}
 

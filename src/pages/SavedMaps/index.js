@@ -7,9 +7,11 @@ import API from '../../utils/API';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import RouterBtn from '../../components/RouterBtn';
 import Divider from '@material-ui/core/Divider';
+import SuperDrawer from '../../components/SuperDrawer';
+import { SettingsRemoteRounded } from '@material-ui/icons';
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   savedMapCard: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -17,30 +19,31 @@ const useStyles = makeStyles({
     width: '100%'
   },
   savedTitle: {
-    fontFamily: 'SpaceAndAstronomy',
-    // fontWeight: 'bold',
-    fontSize: '60px',
+    color: theme.palette.primary.main,
+    textAlign: 'center',
     marginTop: 20,
     marginBottom: 20,
   },
   savedError: {
-    fontFamily: 'SpaceAndAstronomy',
     fontSize: '40px',
-    marginTop: 20,
+    marginTop: 40,
     marginBottom: 20,
-    width: '40%',
-    margin: '0 auto'
   },
   buildButton: {
-    backgroundColor: '#eb4511',
-    height: '5em',
-    padding: '1em',
-    fontSize: '1.5em',
-    margin: '20px',
-    fontFamily: 'SpaceAndAstronomy',
-    fontWeight: 'bold'
-  }
-})
+    '&:hover': {
+      backgroundColor: 'white',
+      color: theme.palette.primary.main,
+    },
+    backgroundColor: theme.palette.primary.main,
+    padding: '0.5em 1.5em',
+    marginBottom: '50px',
+    marginTop: '30px',
+    fontFamily: 'Immortal',
+    fontSize: '2em',
+    fontWeight: 'bold',
+    color: theme.palette.primary.contrastText
+  },
+}))
 
 //NOTE FROM CALVIN added pass-down of "users" state to the function.
 export default function SavedMaps(props) {
@@ -49,6 +52,7 @@ export default function SavedMaps(props) {
   const classes = useStyles();
 
   useEffect(() => {
+    
     if (props) {
       loadUserMaps()
     }
@@ -67,31 +71,31 @@ export default function SavedMaps(props) {
   }
 
   const deleteMap = (id) => {
-    API.deleteMap(id)
+    API.deleteMap(id, props.users.token)
       .then(res => loadUserMaps())
       .catch(err => console.log(err));
   }
 
   return (
     <Container >
-      <Typography variant='h1' className={classes.savedTitle}>Your Map Case</Typography>
+      <Typography variant='h2' className={classes.savedTitle}>Your Map Case</Typography>
       <Divider variant="middle" />
       <Container className={classes.savedMapCard} maxWidth={false}>
         {userMaps.length > 0 ?
           userMaps.map(map => (
-            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} deleteMap={deleteMap} />
+            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} deleteMap={deleteMap} isOwner={true}/>
           )) : (
             (!loadState ? (
-              <CircularProgress />
+              <CircularProgress size='5em' color='primary' style={{ marginTop: '50px' }} />
             ) : (
-                <Container>
-                  <Divider variant="middle" />
-                  <Typography variant='h3' className={classes.savedError}>
-                    You haven't stored any maps in your map case.
+              <Container style={{textAlign: 'center'}}>
+                <Divider variant="middle" />
+                <Typography variant='h4' className={classes.savedError}>
+                  You haven't stored any maps in your map case.
                 </Typography>
-                  <RouterBtn to="/builder" name="Build Maps Now!" classes={classes.buildButton} disableRippe={true} variant="contained" />
-                </Container>
-              ))
+                <RouterBtn to="/builder" name="Build a map" classes={classes.buildButton} variant="contained" />
+              </Container>
+            ))
           )}
       </Container>
     </Container>
