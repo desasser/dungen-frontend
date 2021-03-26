@@ -18,11 +18,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   paper: {
-    backgroundColor: '#8eb1c7',
+    backgroundColor: theme.palette.background.paper,
     borderRadius: '0.5em',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-    outline: 'none'
+    outline: 'none',
   },
   navLink: {
     textDecoration: 'none',
@@ -34,14 +34,13 @@ const useStyles = makeStyles((theme) => ({
   menuItem: {
     color: 'black',
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy',
     fontSize: '16px',
     margin: 0
   },
   loginMsg: {
-    fontFamily: 'SpaceAndAstronomy',
     fontSize: '20px',
-    margin: '10px'
+    margin: '10px',
+    color: 'white'
   },
   switchBtn: {
     '&:hover' : {
@@ -53,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#36434b',
     color: 'white',
     fontSize: '16px',
-    fontFamily: 'SpaceAndAstronomy'
+    fontFamily: 'Immortal'
   }
 }));
 
@@ -107,7 +106,7 @@ export default function LoginModal(props) {
           <div className={classes.paper}>
 
             <ActionBtn action={props.switch} name={props.formBtn} classes={classes.switchBtn}/>
-            <Typography variant="h3" className={classes.loginMsg}>{props.formMsg}</Typography>
+            <Typography variant="h4" className={classes.loginMsg}>{props.formMsg}</Typography>
             <Form credentials={props.credentials} resetError={props.resetError} validationErrorState={props.validationErrorState} resetVal={props.resetVal} login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
 
           </div>
