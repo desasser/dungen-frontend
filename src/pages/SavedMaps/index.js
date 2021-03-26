@@ -52,7 +52,7 @@ export default function SavedMaps(props) {
   const classes = useStyles();
 
   useEffect(() => {
-    setInterval(2200)
+    
     if (props) {
       loadUserMaps()
     }
