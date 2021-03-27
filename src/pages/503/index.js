@@ -8,7 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles({
   errorMessage: {
-    fontFamily: 'SpaceAndAstronomy',
+    fontFamily: 'Immortal',
     marginTop: 40
   },
   imageStyle: {

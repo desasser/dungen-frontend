@@ -80,7 +80,7 @@ const useStyles = makeStyles({
     fontSize: '18px',
   },
   title: {
-    fontFamily: 'SpaceAndAstronomy',
+    fontFamily: 'Immortal',
     fontSize: '50px',
     marginTop: 20,
   },
