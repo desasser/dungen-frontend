@@ -51,7 +51,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
     height: 40,
     fontFamily: 'Immortal',
-    marginLeft: '38%'
+    marginLeft: '38%',
+    boxShadow: theme.shadows[5],
   }
 }));
 

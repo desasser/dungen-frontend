@@ -85,12 +85,12 @@ const useStyles = makeStyles({
     width: "600px",
     "& .MuiFilledInput-input": {
       fontSize: "24px",
-      fontFamily: "SpaceAndAstronomy",
+      fontFamily: "Immortal",
       backgroundColor: "white",
     },
   },
   title: {
-    fontFamily: "SpaceAndAstronomy",
+    fontFamily: "Immortal",
     fontSize: "30px",
     marginTop: 20,
     // marginLeft: 80,
@@ -123,13 +123,13 @@ const useStyles = makeStyles({
     height: "auto",
   },
   mobileMapBuilder: {
-    fontFamily: "SpaceAndAstronomy",
+    fontFamily: "Immortal",
     fontSize: "40px",
     marginTop: 20,
   },
   mobileMapBuilderSub: {
     fontSize: "14px",
-    fontFamily: "SpaceAndAstronomy",
+    fontFamily: "Immortal",
   },
   subTextWrapper: {
     width: "60%",

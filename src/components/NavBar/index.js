@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     position: 'relative',
     top: 0,
-    zIndex: 9999,
+    zIndex: 1300,
     width: '90%',
     margin: '0 auto',
     alignItems: 'center',
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   menuItemStyleLogin: {
     color: theme.palette.secondary.contrastText,
     textDecoration: 'none',
-  },
+  }
 }));
 
 export default function MenuAppBar(props) {
@@ -117,7 +117,7 @@ export default function MenuAppBar(props) {
 
   const resetError = () => {
     setErrorState({
-      error:false
+      error: false
     })
   }
 
@@ -212,22 +212,22 @@ export default function MenuAppBar(props) {
       setFormSwitch({ login: false })
       setFormMsg({ Msg: "Sign Up" })
       setHapticBtn({ Btn: "Login" })
-      setFormSubText({ subtext: "Don't have an account?"})
+      setFormSubText({ subtext: "Don't have an account?" })
     } else {
       setFormMsg({ Msg: "Please Login" })
       setHapticBtn({ Btn: "Sign Up" })
       setFormSwitch({ login: true })
-      setFormSubText({ subtext: "Have an account?"})
+      setFormSubText({ subtext: "Have an account?" })
     }
   }
 
-const resetValidationErrorState = () => {
-  setValidationErrorState({
-    userName: false,
-    email: false,
-    password: false
-  })
-}
+  const resetValidationErrorState = () => {
+    setValidationErrorState({
+      userName: false,
+      email: false,
+      password: false
+    })
+  }
 
   //======================================================================
   // END OF Login/Sign Functions
@@ -283,7 +283,6 @@ const resetValidationErrorState = () => {
               keepMounted
               open={Boolean(anchorXSEl)}
               onClose={handleXSClose}
-              className={classes.menuStyle}
             >
               <MenuItem onClick={handleXSClose}>
                 <Link to='/builder' className={classes.menuItemStyle}>
@@ -301,7 +300,22 @@ const resetValidationErrorState = () => {
                 </Link>
               </MenuItem>
               <Divider />
-
+              <Link to="/browsemaps" className={classes.menuItemStyle}>
+                <MenuItem onClick={handleXSClose}>
+                  <Typography variant='h6'>
+                    Maps
+                </Typography>
+                </MenuItem>
+              </Link>
+              <Divider />
+              <Link to="/browseusers" className={classes.menuItemStyle}>
+                <MenuItem onClick={handleXSClose}>
+                  <Typography variant='h6'>
+                    Users
+                </Typography>
+                </MenuItem>
+              </Link>
+              <Divider />
               <FormGroup>
                 {!props.user.isLoggedIn ? <MenuItem>
                   <Link to='' className={classes.menuItemStyle}>
@@ -327,39 +341,49 @@ const resetValidationErrorState = () => {
           <Hidden xsDown>
             <Box style={{ display: 'flex' }}>
               <Link to="/builder" className={classes.navLink}>
-                <Typography variant='h5'>
+                <Typography variant='h6'>
                   Builder
                 </Typography>
               </Link>
-              {props.user.isLoggedIn ? 
-              <Link to="/dashboard" className={classes.navLink}>
-                <Typography variant='h5' >
-                  Saved Maps
-                </Typography> 
+              <Link to="/browsemaps" className={classes.navLink}>
+                <Typography variant='h6'>
+                  Maps
+                </Typography>
               </Link>
-                : 
-              null}
+              <Link to="/browseusers" className={classes.navLink}>
+                <Typography variant='h6'>
+                  Users
+                </Typography>
+              </Link>
+              {props.user.isLoggedIn ?
+                <Link to="/dashboard" className={classes.navLink}>
+                  <Typography variant='h6' >
+                    Saved Maps
+                </Typography>
+                </Link>
+                :
+                null}
               {/* NAVIGATION LINKS */}
 
               {/* WELCOME USER */}
               <FormGroup>
-                {!props.user.isLoggedIn ? 
-                <LoginModal edge="start" onClick={logInPopUp}
-                  credentials={loginState} validationErrorState={validationErrorState} resetVal={resetValidationErrorState} resetError={resetError} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
-                /> 
-                : 
-                <MenuItem onClick={logout} className={classes.navLink}>
-                  <Typography variant='h5' style={{ marginTop: '-5px', marginLeft: '-10px' }}>
-                    Logout?
+                {!props.user.isLoggedIn ?
+                  <LoginModal edge="start" onClick={logInPopUp}
+                    credentials={loginState} validationErrorState={validationErrorState} resetVal={resetValidationErrorState} resetError={resetError} handleSubmit={handleSubmit} handleInputChange={handleInputChange} switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} isLoggedIn={users.isLoggedIn} user={users} login={formSwitch} error={errorState}
+                  />
+                  :
+                  <MenuItem onClick={logout} className={classes.navLink}>
+                    <Typography variant='h6' style={{ marginTop: '-5px', marginLeft: '-10px' }}>
+                      Logout?
                   </Typography>
-                </MenuItem>}
+                  </MenuItem>}
               </FormGroup>
               {auth && (
                 <div>
-                  {props.user.isLoggedIn ? 
-                  <AccountCircle style={{ fontSize: '50px', color: '#f8b24c' }} />
-                   : 
-                  null}
+                  {props.user.isLoggedIn ?
+                    <AccountCircle style={{ fontSize: '50px', color: '#f8b24c' }} />
+                    :
+                    null}
                 </div>
               )}
             </Box>

@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   tileHeader: {
     margin: '0 auto',
     padding: '40px 0',
-    fontFamily: 'SpaceAndAstronomy',
+    fontFamily: 'Immortal',
     fontWeight: 'bold',
     color: 'white',
     position: 'relative',
@@ -58,14 +58,14 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   tileError: {
-    fontFamily: 'SpaceAndAstronomy',
+    fontFamily: 'Immortal',
     color: 'white',
     marginTop: 100
   },
   menuItemStyle: {
     color: 'black',
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy'
+    fontFamily: 'Immortal'
   },
   drawerOpenBtn: {
     backgroundColor: 'rgba(255,255,255, 0.5)',

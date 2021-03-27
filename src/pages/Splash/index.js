@@ -28,7 +28,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '30px',
     fontFamily: 'Immortal',
     fontSize: '2.5em',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    boxShadow: theme.shadows[5],
   },
   synopsis: {
     color: theme.palette.secondary.contrastText,

@@ -6,7 +6,7 @@ import Slide from '@material-ui/core/Slide';
 
 const useStyles = makeStyles({
   errorMessage: {
-    fontFamily: 'SpaceAndAstronomy',
+    fontFamily: 'Immortal',
     marginTop: 40
   },
   imageStyle: {

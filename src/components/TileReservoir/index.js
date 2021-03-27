@@ -21,9 +21,9 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   tileHeader: {
-    // margin: '10 auto',
     textAlign: 'center',
-    color: 'white'
+    color: theme.palette.secondary.contrastText,
+    marginBottom: 10
   },
   tileWrapper: {
     display: 'flex',
@@ -35,23 +35,27 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 20,
     '& .MuiSelect-select': {
       fontFamily: 'Immortal',
-      color: 'white',
-      textAlign: 'center'
+      color: theme.palette.secondary.contrastText,
+      textAlign: 'center',
+
     },
     '& .MuiSelect-icon': {
-      color: 'white'
+      color: theme.palette.secondary.contrastText
     },
   },
   tileError: {
-    fontFamily: 'SpaceAndAstronomy',
-    color: 'white',
+    fontFamily: 'Immortal',
+    color: theme.palette.secondary.contrastText,
     marginTop: 100
   },
   menuItemStyle: {
-    color: 'black',
+    color: theme.palette.secondary.contrastText,
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy'
+    fontFamily: 'Immortal'
   },
+  dropdownStyle: {
+    backgroundColor: '#3e4a59'
+  }
 }));
 
 export default function TileReservoir({ handleMapData }) {
@@ -94,38 +98,41 @@ export default function TileReservoir({ handleMapData }) {
   }, []);
 
   return (
-      <Container className={classes.tileGrid}>
-          <Typography variant='h5' className={classes.tileHeader}>
-            Dungeon Tiles
-          </Typography>
+    <Container className={classes.tileGrid}>
+      <Typography variant='h5' className={classes.tileHeader}>
+        Dungeon Tiles
+      </Typography>
 
-          {/* Drop down menu for tileSet change */}
-          <InputLabel id="demo-simple-select-label" shrink style={{color: 'white'}}>Tile Sets</InputLabel>
-          <Select
-            labelId="select-tileSet"
-            id="select-tileSet"
-            value={tileSetState}
-            onChange={handleChangeTileSet}
-            className={classes.selectMenu}
-          >
-            {/* MAP OVER ALL TILESETS AND CREATE MENU ITEMS */}
-            {tileSetListState.map(tileSet => <MenuItem key={tileSet.id} value={tileSet.id} className={classes.menuItemStyle}>{tileSet.name.charAt(0).toUpperCase() + tileSet.name.slice(1)}</MenuItem>)}
-          </Select>
+      {/* Drop down menu for tileSet change */}
+      <Select
+        labelId="select-tileSet"
+        id="select-tileSet"
+        value={tileSetState}
+        onChange={handleChangeTileSet}
+        className={classes.selectMenu}
+        MenuProps={{
+          classes: { paper: classes.dropdownStyle },
+          variant: 'menu'
+        }}
+      >
+        {/* MAP OVER ALL TILESETS AND CREATE MENU ITEMS */}
+        {tileSetListState.map(tileSet => <MenuItem key={tileSet.id} value={tileSet.id} className={classes.menuItemStyle}>{tileSet.name.charAt(0).toUpperCase() + tileSet.name.slice(1)}</MenuItem>)}
+      </Select>
 
-          {/* Tile display */}
-          <Container className={classes.tileWrapper}>
+      {/* Tile display */}
+      <Container className={classes.tileWrapper}>
 
-            {tileSet.length > 0 ?
-              tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} />) : (
-                (!loadState ? (
-                  // <CircularProgress />
-                  <LinearProgress />
-                ) : (
-                    <Typography variant='h3' className={classes.tileError}>
-                      No tiles!
-                    </Typography>))
-              )}
-          </Container>
-        </Container>
+        {tileSet.length > 0 ?
+          tileSet.map(tile => <DraggableTile key={tile.key} tileId={tile.tileId} tileSet={tile.tileSet} imageURL={tile.imageURL} />) : (
+            (!loadState ? (
+              // <CircularProgress />
+              <LinearProgress />
+            ) : (
+              <Typography variant='h3' className={classes.tileError}>
+                No tiles!
+              </Typography>))
+          )}
+      </Container>
+    </Container>
   )
 }
