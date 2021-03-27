@@ -1,4 +1,4 @@
-import { createContext, useState, useRef, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 import API from "../utils/API";
 
@@ -13,11 +13,13 @@ const CanvasContextProvider = (props) => {
 
   const [mapSettings, setMapSettings] = useState({
     name: savedMap !== null ? savedMap.name : "",
-    environment: savedMap !== null ? savedMap.environment : 1,
-    infinite: savedMap !== null ? savedMap.infinite : true,
-    rows: savedMap !== null ? savedMap.rows : 1,
-    columns: savedMap !== null ? savedMap.columns : 1,
-    public: savedMap !== null ? savedMap.public : false
+    EnvironmentId: savedMap !== null ? savedMap.EnvironmentId : 1,
+    infinite: savedMap !== null ? savedMap.infinite : false,
+    rows: savedMap !== null ? savedMap.rows : 30, // 30 tiles tall
+    columns: savedMap !== null ? savedMap.columns : 50, // 50 tiles wide
+    public: savedMap !== null ? savedMap.public : false,
+    id: savedMap !== null ? savedMap.id : null,
+    UserId: props.user.id
   });
 
   let { tileSize, columns, rows, infinite } = savedMap !== null ? savedMap : {tileSize: 100, columns: 10, rows: 10, infinite: true};
@@ -43,8 +45,8 @@ const CanvasContextProvider = (props) => {
   });
 
   const [stagePosition, setStagePosition] = useState({ 
-    x: (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2, 
-    recenterX: (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2, 
+    x: 0, 
+    recenterX: 0, 
     y: 0,
     recenterY: 0
   });
@@ -53,13 +55,21 @@ const CanvasContextProvider = (props) => {
   const [gridCentered, setGridCentered] = useState(true);
   const [mapLayout, setMapLayout] = useState([]);
 
-  const pinColors = {
-    type1: 'forestgreen',
-    type2: 'firebrick',
-    type3: 'orchid',
-    type4: 'dodgerblue',
-    type5: 'salmon'
-  }
+  // const pinColors = {
+  //   Environmental: 'forestgreen',
+  //   Combat: 'firebrick',
+  //   Trap: 'orchid',
+  //   Social: 'dodgerblue',
+  //   Other: 'salmon'
+  // }
+  const pinColors = [
+    'black', // placeholder, 0
+    'forestgreen', // environmental, 1
+    'firebrick', // combat, 2
+    'orchid', // trap, 3
+    'dodgerblue', // social, 4
+    'salmon', // other, 5
+  ]
 
   const [mapPins, setMapPins] = useState([]);
   const [pinsVisible, setPinsVisible] = useState(true);
@@ -67,9 +77,43 @@ const CanvasContextProvider = (props) => {
   const [shadowPinParams, setShadowPinParams] = useState({
     left: activePin === null && -500,
     top: activePin === null && -500,
-    backgroundColor: pinColors['type1']
+    backgroundColor: pinColors[0]
     
   });
+
+  useEffect(() => {
+    const gridWidth = grid.tileSize * grid.columns;
+    const gridHeight = grid.tileSize * grid.rows;
+
+    const xOffset = ((window.innerWidth - 380) - (grid.tileSize * grid.columns)) / 2;
+    const yOffset = ((window.innerHeight - 75) - (grid.tileSize * grid.rows)) / 2;
+
+    if(window.innerWidth - 380 > gridWidth) {
+      setStagePosition({...stagePosition, x: xOffset, recenterX: xOffset})
+    }
+
+    if(window.innerHeight - 75 > gridHeight) {
+      setStagePosition({...stagePosition, y: yOffset, recenterY: yOffset})
+    }
+
+    if(props.user.id !== "" && savedMap.UserId === "") {
+      savedMap.UserId = props.user.id;
+      localStorage.setItem('dungen_map', JSON.stringify(savedMap));
+      setSavedMap( JSON.parse(localStorage.getItem('dungen_map')) )
+    }
+  }, [])
+
+  useEffect(() => {
+    if(savedMap === null) {
+      localStorage.setItem( 'dungen_map', JSON.stringify(mapSettings) )
+    } else {
+      localStorage.setItem( 'dungen_map', JSON.stringify({...savedMap, ...mapSettings}) )
+    }
+
+    if( localStorage.getItem('dungen_stageposition') ) {
+      setStagePosition( JSON.parse(localStorage.getItem('dungen_stageposition')) )
+    }
+  }, [mapSettings]);
 
   const recenterGrid = () => {
     if (stagePosition.x !== stagePosition.recenterX || stagePosition.y !== stagePosition.recenterY) {
@@ -155,32 +199,14 @@ const CanvasContextProvider = (props) => {
     localStorage.setItem('dungen_map_image', uri);
   }
 
-  const handleMapSubmit = event => {
-    console.log("form submitted", event)
-    API.saveMap(mapSettings).then(res => {
-        console.log("trying to to save a map");
-        setMapSettings(mapSettings);
-
-    }).catch(err => console.error(err))
-  }
-
-  useEffect(() => {
-    if(savedMap === null) {
-      localStorage.setItem( 'dungen_map', JSON.stringify(mapSettings) )
-    } else {
-      localStorage.setItem( 'dungen_map', JSON.stringify({...savedMap, ...mapSettings}) )
-    }
-  }, [mapSettings]);
-
   const canvasData = {
     stageRef, setStageRef,
     stageParentRef, setStageParentRef,
-    savedMap, setSavedMap,
+    mapSettings, savedMap, setSavedMap,
     tileSize, columns, rows, infinite,
     grid, setGrid,
     stagePosition, setStagePosition,
-    tilesLocked, setTilesLocked,
-    gridCentered, setGridCentered,
+    tilesLocked, setGridCentered,
     mapLayout, setMapLayout,
     mapPins, setMapPins,
     pinsVisible, setPinsVisible,
@@ -224,9 +250,7 @@ const CanvasContextProvider = (props) => {
     activePin, setActivePin, handlePinStatus, grid, stageRef, stagePosition
   }
 
-  const settingsData = {
-    mapSettings, setMapSettings, handleMapSubmit
-  }
+  const settingsData = { mapSettings, setMapSettings }
 
   return (
     <CanvasContext.Provider value={{ canvasData, controlsData, settingsData, handleDraggableItem }}>

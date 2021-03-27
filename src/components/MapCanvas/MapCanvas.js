@@ -1,16 +1,15 @@
 import { useState, useRef, useEffect, useContext } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { Stage, Layer, Group, Rect, Text, Path } from "react-konva";
-import { Spring, config, animated } from 'react-spring/renderprops-konva'
-
-import MapControls from '../MapControls';
+import { Spring, animated } from 'react-spring/renderprops-konva'
 
 import CanvasTile from "../MapTile";
 import MapTileControls from "../MapTileControls";
 import { CanvasContext } from "../../contexts/CanvasContext";
-// import { IsoOutlined } from "@material-ui/icons";
 
-// exporting image from canvas
+import GeneralFunctions from '../../utils/GeneralFunctions'
+
+// for exporting image from canvas
 const { v4: uuidv4 } = require('uuid');
 
 const useStyles = makeStyles({
@@ -64,13 +63,13 @@ export default function MapCanvas(props) {
   const { canvasData } = useContext(CanvasContext);
 
   const {
+    mapSettings,
     savedMap, setSavedMap,
     setStageRef, setStageParentRef,
     tileSize, columns, rows, infinite,
     grid, setGrid,
     stagePosition, setStagePosition,
-    tilesLocked, setTilesLocked,
-    gridCentered, setGridCentered,
+    tilesLocked, setGridCentered,
     mapLayout, setMapLayout,
     mapPins, setMapPins,
     pinsVisible, setPinsVisible,
@@ -83,18 +82,20 @@ export default function MapCanvas(props) {
   stageRef = useRef(null);
   stageParentRef = useRef(null);
 
+  const mapId = props.mapId;
+
   const [mapData, setMapData] = useState(savedMap !== null ? {...savedMap} : {
     name: "",
     rows: rows,
     columns: columns,
     tileSize: tileSize,
     infinite: infinite,
-    environment: 1,
-    layout: [], 
-    pins: [], 
+    EnvironmentId: 1,
+    MapTiles: [], 
+    MapEncounters: [], 
     pinsVisible: true, 
     public: false,
-    userId: null
+    UserId: null
   });
 
   const [viewState, setViewState] = useState(false);
@@ -125,42 +126,49 @@ export default function MapCanvas(props) {
 
   // donjon has 19
   const environmentColors = [
-    "black",
-    "#cde6f5",
-    "#f7bfb4",
-    "#cec075",
-    "#295135",
-    "#9fcc2e", // 90a959
-    "#7daf9c",
-    "#3f7d20",
-    "#454955",
-    "#5a6650",
-    "#0d0a0b",
-    "#0081af",
-    "#59656f",
-    "#745296",
-    "#1d1e2c", // 151515
-    "#a63d40",
-    "#6494aa",
-    "#554640",
-    "#dc602e",
-    "#05a8aa",
+    "white", // default (0 index)
+    "#cde6f5", // arctic
+    "#f7bfb4", // coastal
+    "#cec075", // desert
+    "#295135", // forest
+    "#9fcc2e", // grassland 90a959
+    "#7daf9c", // hill
+    "#3f7d20", // jungle
+    "#454955", // mountain
+    "#5a6650", // swamp
+    "#0d0a0b", // underdark
+    "#0081af", // underwater
+    "#59656f", // urban
+    "#745296", // celestial plane
+    "#1d1e2c", // abyssal plane 151515
+    "#a63d40", // infernal plane
+    "#6494aa", // elemental air
+    "#554640", // elemental earth
+    "#dc602e", // elemental fire
+    "#05a8aa", // elemental water
   ]
 
+  /**
+   * loading map from localStorage (savedMap)
+   */
   useEffect(() => {
-    if(savedMap !== null && savedMap !== mapData) {
+    if (mapId !== undefined) {
+      console.log("canvas.156:: loading saved map data for map ID:", mapId);
+      
+
+    } else if(savedMap !== null && savedMap !== mapData) {
       setMapData(savedMap);
 
-      if(mapLayout.length === 0 && savedMap !== null && savedMap.layout !== undefined && savedMap.layout.length > 0) {
-        setMapLayout([...savedMap.layout]);
+      if(mapLayout.length === 0 && savedMap !== null && savedMap.MapTiles !== undefined && savedMap.MapTiles.length > 0) {
+        setMapLayout([...savedMap.MapTiles]);
       }
 
-      if(mapPins.length === 0 && savedMap !== null && savedMap.pins !== undefined && savedMap.pins.length > 0) {
-        setMapPins([...savedMap.pins]);
+      if(mapPins.length === 0 && savedMap !== null && savedMap.MapEncounters !== undefined && savedMap.MapEncounters.length > 0) {
+        setMapPins([...savedMap.MapEncounters]);
       }
 
       if(savedMap !== null) {
-        setPinsVisible(savedMap.pinsVisible);
+        setPinsVisible(savedMap.MapEncountersVisible);
       }
 
       setGrid({
@@ -190,6 +198,7 @@ export default function MapCanvas(props) {
 
     } else {
       localStorage.setItem('dungen_map', JSON.stringify(mapData));
+      setSavedMap( JSON.parse(localStorage.getItem('dungen_map')) )
     }
     
     updateStagePosition();
@@ -214,32 +223,35 @@ export default function MapCanvas(props) {
 
       if(savedMap !== null) {
         setStageRef(stageRef);
-        stageParentRef.current.style.backgroundColor = environmentColors[savedMap.environment]
+        stageParentRef.current.style.backgroundColor = environmentColors[savedMap.EnvironmentId]
       }
     }
   
   }, [stageParentRef, stageRef]);
 
+  /**
+   * checking props.init & mapSettings for changes
+   * e.g. to environment or # of rows/columns
+   */
   useEffect(() => {
-    if(props.init) {
-      const newSavedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
-      console.log('mapcanvas.270:: newSavedMap (props.init):', newSavedMap);
-      if(newSavedMap !== null) {
+    console.log("map settings changed", mapSettings);
+    setMapData({
+      ...mapData,
+      ...mapSettings
+    });
+    setGrid({
+      ...grid,
+      rows: mapSettings.rows !== null ? mapSettings.rows : 30,
+      columns: mapSettings.columns !== null ? mapSettings.columns : 50,
+      infinite: mapSettings.infinite
+    })
 
-        setSavedMap(newSavedMap);
-        setMapData(newSavedMap);
-        setGrid({
-          ...grid,
-          rows: newSavedMap.rows,
-          columns: newSavedMap.columns,
-          infinite: newSavedMap.infinite
-        })
-      }
+    updateStagePosition();
 
-      updateStagePosition();
-    }
+    localStorage.setItem('dungen_map', JSON.stringify({ ...mapData, ...mapSettings }));
+    setSavedMap( JSON.parse(localStorage.getItem('dungen_map')) );
 
-  }, [props.init])
+  }, [mapSettings])
 
   /**
    * REBUILD GRID & SAVE DATA TO LOCALSTORAGE
@@ -260,8 +272,8 @@ export default function MapCanvas(props) {
 
     const newData = {
       ...mapData,
-      layout: mapLayout,
-      pins: mapPins,
+      MapTiles: mapLayout,
+      MapEncounters: mapPins,
       pinsVisible: pinsVisible
     };
     setMapData(newData);
@@ -293,17 +305,25 @@ export default function MapCanvas(props) {
     }
     
     if(!mapData.infinite) {
-      const gridWidth = (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2;
-      let gridHeight = (window.innerHeight - (grid.tileSize * grid.rows) - grid.tileSize) / 1.5;
+      // const gridWidth = (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2;
+      // let gridHeight = (window.innerHeight - (grid.tileSize * grid.rows) - grid.tileSize) / 1.5;
+      // 380 = width of superdrawer + tabs
+      let gridWidth = ((window.innerWidth - 380) - (grid.tileSize * grid.columns)) / 2;
+      // 75 = height of navbar
+      let gridHeight = ((window.innerHeight - 75) - (grid.tileSize * grid.rows)) / 2;
 
-      if(window.innerWidth > gridWidth) {
+      if(gridWidth < 0) { gridWidth = gridWidth * -1 }
+      if(gridHeight < 0) { gridHeight = gridHeight * -1 }
+
+      if(window.innerWidth - 380 > gridWidth) {
+        
         setStagePosition({ ...stagePosition, x: gridWidth, recenterX: gridWidth })
       } else {
         setStagePosition({...stagePosition, x: 0, recenterX: 0})
       }
       
-      // the navbar is exactly 75px tall (specified height, not "responsive")
       if(window.innerHeight - 75 > gridHeight) {
+        
         setStagePosition({ ...stagePosition, y: gridHeight, recenterY: gridHeight })
       } else {
         setStagePosition({...stagePosition, y: 0, recenterY: 0})
@@ -317,9 +337,18 @@ export default function MapCanvas(props) {
     const gridInit = mapData.infinite ? updateGridProps(stagePosition) : { ...grid, startX: 0, startY: 0, endX: grid.tileSize * mapData.columns, endY: grid.tileSize * mapData.rows };
     
     var i = 0;
+
+    const environmentColor = environmentColors[mapData.EnvironmentId];
+    const textColor = GeneralFunctions.contrastColor(environmentColor);
+    let cSquareColor = "#00000033";
+    // if text is light, bg is dark, let's make cSquares less transparent (so they're darker)
+    if(textColor === "#eeeeee") {
+      cSquareColor = "#00000077";
+    }
+
     const gridColors = [
-      ["rgba(0,0,0,0.15)", "transparent"],
-      ["transparent", "rgba(0,0,0,0.15)"],
+      [cSquareColor, "transparent"],
+      ["transparent", cSquareColor],
     ];
 
     const cSquares = [];
@@ -332,6 +361,10 @@ export default function MapCanvas(props) {
 
         const ix = Math.abs(x / gridInit.tileSize) % gridColors.length;
         const iy = Math.abs(y / gridInit.tileSize) % gridColors[0].length;
+
+        //let textColor = "#373737";
+        //const darkEnvironments = [4,7,8,9,10,11,12,13,14,15,16,19,17,18] // 9 (swamp), 11 (underwater), 16 (elemental air), 19 (elemental water)
+        
 
         cSquares.push(
           <Group key={`${x}-${y}`} name={`${x}-${y}`}>
@@ -351,7 +384,7 @@ export default function MapCanvas(props) {
               text={`${x / 100}, ${y / 100}`}
               x={x + 10}
               y={y + 10}
-              fill="#373737"
+              fill={textColor}
               // strokeWidth={0}
             />
           </Group>
@@ -421,9 +454,6 @@ export default function MapCanvas(props) {
         ...shadowPinParams,
         left: mousePos.x - 20,
         top: mousePos.y - 48
-        // left: mousePos.x - stagePosition.x - 15,
-        // top: mousePos.y - stagePosition.y - (grid.tileSize / 2.25),
-        // visible: true,
       })
     }
   }
@@ -490,10 +520,10 @@ export default function MapCanvas(props) {
 
       const pin = {
         idx: idx,
-        type: activePin,
+        EncounterType: (activePin).substr(4,1),
         x: e.evt.clientX - stagePosition.x,
         y: e.evt.clientY - stagePosition.y - grid.tileSize,
-        fill: pinColors[activePin],
+        fill: pinColors[(activePin).substr(4,1)],
         data: null,
       }
       setMapPins([...mapPins, pin]);
@@ -611,6 +641,7 @@ export default function MapCanvas(props) {
       idx: idx,
       imgKey: `tm-${tileData.TileId}`,
       TileId: tileData.TileId,
+      MapTileId: null,
       x: lastLegitSquare.x / grid.tileSize,
       y: lastLegitSquare.y / grid.tileSize,
       image_src: tileData.image_src,
@@ -757,43 +788,6 @@ export default function MapCanvas(props) {
 
   return (
     <div style={{position: 'relative', margin: 0, padding: 0}}>
-      {/* <MapControls
-        controlsData={{ 
-          toggleTileLock: { 
-            props: {checked: tilesLocked, onChange: handleTileLock, name: "toggleTileLock"}, 
-            args: { visible: props.infiniteGrid }
-          },
-          centerGrid: { 
-            props: {onClick: recenterGrid}, 
-            args: {gridCentered: gridCentered}, 
-            text: gridCentered ? "Grid is centered" : "Center Grid" 
-          }, 
-          clearMap: {
-            props: {onClick: clearMap},
-            args: { mapLayoutLength: mapLayout.length },
-            text: mapLayout.length > 0 ? 'Clear Map' : 'Map Empty'
-          },
-          pins: {
-            props: {onClick: handlePinStatus},
-            activePin: activePin
-          },
-          clearPins: {
-            props: {onClick: clearPins},
-            args: { mapPinsLength: mapPins.length },
-            text: mapPins.length > 0 ? 'Clear Pins' : 'No Pins'
-          },
-          togglePins: {
-            props: {onClick: togglePins},
-            pinsVisible: pinsVisible
-          },
-          pinKeyboardShortcuts: handlePinStatus,
-          renderImage: {
-            onClick: renderImage,
-            args: {mapLayoutLength: mapLayout.length},
-            text: mapLayout.length > 0 ? 'render Image' : 'Nothing to render'
-          }
-        }} 
-      /> */}
 
       {/* MAP CANVAS CONTAINER */}
       <div
@@ -805,8 +799,8 @@ export default function MapCanvas(props) {
         onDragEnter={(e) => handleGridDragEnter(e)}
         style={{
           maxWidth: window.innerWidth,
-          maxHeight: window.innerHeight - 77, // 1 extra pixel each from map controls & tile slider drawer (why??)
-          backgroundColor: savedMap !== null && savedMap.environment !== "" ? environmentColors[savedMap.environment] : 'ghostwhite'
+          maxHeight: window.innerHeight - 77,
+          backgroundColor: savedMap !== null && savedMap.EnvironmentId !== "" ? environmentColors[savedMap.EnvironmentId] : environmentColors[0]
         }}
       >
         <Stage
@@ -860,33 +854,17 @@ export default function MapCanvas(props) {
             )}
             {/* PINS */}
             {mapPins.map(pin => {
-              let x = pin.x; let y = pin.y;
-              if(draggingPin.x === 0 && draggingPin.y === 0) {
-                x = pin.x;
-                y = pin.y - (grid.tileSize / 5);
-              } else {
-                x = pin.x;
-                y = pin.y;
-              }
-              return (<Spring
-                key={pin.idx}
-                // native
-                from={{ 
-                  opacity: draggingPin ? 0 : 1,
-                  x: x,
-                  y: y,
-                }}
-                to={{ y: pin.y, opacity: 1, x: pin.x }}
-                config={{velocity: 5, friction: 10, mass: 2}}
-                // config={{mass: 2, tension: 270, friction: 40, clamp: false, velocity: 2}}
-                draggable={!tilesLocked}
-              >
-                {props => (
-                  <animated.Path
+              // let x = pin.x; let y = pin.y;
+              // if(draggingPin.x === 0 && draggingPin.y === 0) {
+              //   x = pin.x;
+              //   y = pin.y - (grid.tileSize / 5);
+              // }
+              return (
+                <Path
                   className="map-pin"
                   id={pin.idx}
-                  x={props.x} 
-                  y={props.y} 
+                  x={pin.x} 
+                  y={pin.y} 
                   fill={pin.fill}
                   draggable={!tilesLocked}
                   strokeWidth={0}
@@ -898,8 +876,39 @@ export default function MapCanvas(props) {
                   onMouseEnter={(e) => handleMouseEnter(e, 'pin', 'pointer')}
                   onMouseLeave={handleMouseLeave}
                 />
-                )}
-              </Spring>)
+              // <Spring
+              //   key={pin.idx}
+              //   // native
+              //   from={{ 
+              //     opacity: draggingPin ? 0 : 1,
+              //     x: pin.x,
+              //     y: pin.y,
+              //   }}
+              //   to={{ y: pin.y, opacity: 1, x: pin.x }}
+              //   config={{velocity: 1, friction: 21, mass: 2, delay: 100}}
+              //   // config={{mass: 2, tension: 270, friction: 40, clamp: false, velocity: 2}}
+              //   draggable={!tilesLocked}
+              // >
+              //   {props => (
+              //     <animated.Path
+              //     className="map-pin"
+              //     id={pin.idx}
+              //     x={props.x} 
+              //     y={props.y} 
+              //     fill={pin.fill}
+              //     draggable={!tilesLocked}
+              //     strokeWidth={0}
+              //     data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
+              //     visible={pinsVisible}
+              //     onClick={(e) => handlePinOnClick(e)}
+              //     onDragStart={(e) => handlePinDragStart(e)}
+              //     onDragEnd={(e) => handlePinDragEnd(e)}
+              //     onMouseEnter={(e) => handleMouseEnter(e, 'pin', 'pointer')}
+              //     onMouseLeave={handleMouseLeave}
+              //   />
+              //   )}
+              // </Spring>
+              )
             })}
           </Layer>
           

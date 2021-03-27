@@ -36,7 +36,7 @@ export default function SuperDrawer(props) {
             if (viewState === 'tiles') {
               return <TileReservoir handleDraggableItem={props.handleDraggableItem} />
             } else if (viewState === 'settings') {
-              return <StartMap />
+              return <StartMap mapId={props.mapId} />
             } else if (viewState === 'encounters') {
               return <MapControls2 />
             }

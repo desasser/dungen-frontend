@@ -9,6 +9,7 @@ import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import SuperDrawer from '../../components/SuperDrawer';
 import MapCanvas from '../../components/MapCanvas/MapCanvas.js';
 import CanvasContextProvider from '../../contexts/CanvasContext';
+import DatabaseContextProvider from '../../contexts/DatabaseContext';
 import { Container, Box, Typography, TextField, Button } from '@material-ui/core';
 // import Typography from '@material-ui/core/Typography';
 // import TextField from '@material-ui/core/TextField';
@@ -159,41 +160,62 @@ export default function MapBuilder(props) {
   const logIn = props.users.isLoggedIn;
   // console.log(logIn);
 
-  const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+  const [savedMap, setSavedMap] = useState(localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null);
 
   useEffect(() => {
-    if (savedMap === null) {
-      const starterMapData = {
-        name: "",
-        rows: 10,
-        columns: 10,
-        tileSize: 100,
-        infinite: true,
-        environment: 1,
-        layout: [],
-        pins: [],
-        pinsVisible: true,
-        public: false,
-        userId: null
-      }
-      localStorage.setItem('dungen_map', JSON.stringify(starterMapData));
+    // if(id === undefined && savedMap !== null && savedMap.id !== null) {
+    //   history.push(`/builder/${savedMap.id}`)
+    // }
+
+    let starterMapData = {
+      name: "",
+      rows: 30,
+      columns: 50,
+      tileSize: 100,
+      infinite: false,
+      EnvironmentId: 1,
+      MapTiles: [],
+      MapEncounters: [],
+      pinsVisible: true,
+      public: false,
+      UserId: props.users.id,
+      id: null
     }
 
-    if (id !== undefined) {
+    if (id !== "undefined" && id !== undefined && id !== null) {
       API.getSingleMap(id)
         .then((res) => {
-          // console.log(res)
           if (res.data !== "") {
-            // setMapTitle(res.data.name); // not using this anymore
-            // setLoadedMapData(res.data);
+            starterMapData = {
+              ...starterMapData,
+              name: res.data.name,
+              rows: res.data.rows,
+              columns: res.data.columns,
+              infinite: res.data.rows === null || res.data.columns === null ? true : false,
+              EnvironmentId: res.data.EnvironmentId,
+              MapTiles: res.data.MapTiles,
+              MapEncounters: res.data.MapEncounters,
+              public: res.data.public,
+              id: res.data.id
+            }
+          }
+
+          if((savedMap !== null && savedMap.id !== id) || savedMap === null) {
+            localStorage.setItem('dungen_map', JSON.stringify(starterMapData))
+            setSavedMap(starterMapData);
           }
         })
         .catch(err => console.error(err));
+        
+    } else if((savedMap !== null && savedMap.id !== id) || savedMap === null) {
+      localStorage.setItem('dungen_map', JSON.stringify(starterMapData))
+      setSavedMap(starterMapData);
     }
 
-    // if(savedMap !== null && savedMap.name !== "") {
-    //   setMapTitle(savedMap.name);
-    // }
+    if(savedMap.UserId === "" && props.users.id !== "") {
+      setSavedMap({...savedMap, UserId: props.users.id})
+      localStorage.setItem('dungen_map', JSON.stringify({...savedMap, UserId: props.users.id}));
+    }
 
   }, []);
 
@@ -218,13 +240,6 @@ export default function MapBuilder(props) {
     e.dataTransfer.setData('dropped_tile', JSON.stringify(tileData));
   };
 
-  // SETTINGS PANEL
-  const handleStartMapFormSubmit = (mapData) => {
-    // if(mapData.name !== "") { setMapTitle(mapData.name); }
-
-    setMapData(mapData);
-  }
-
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   );
@@ -232,9 +247,11 @@ export default function MapBuilder(props) {
   return !isMobile ? (
     <Box>
       <div>
-        <CanvasContextProvider>
-          <SuperDrawer />
-          <MapCanvas />
+        <CanvasContextProvider user={props.users}>
+          <DatabaseContextProvider user={props.users}>
+            <SuperDrawer mapId={id} />
+          </DatabaseContextProvider>
+          <MapCanvas mapId={id} />
         </CanvasContextProvider>
       </div >
       {/* SNACKBAR NOTIFICATIONS */}
