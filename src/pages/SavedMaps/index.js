@@ -30,10 +30,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 20,
   },
   buildButton: {
-    '&:hover': {
-      backgroundColor: 'white',
-      color: theme.palette.primary.main,
-    },
     backgroundColor: theme.palette.primary.main,
     padding: '0.5em 1.5em',
     marginBottom: '50px',
@@ -41,7 +37,12 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'Immortal',
     fontSize: '2em',
     fontWeight: 'bold',
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
+    boxShadow: theme.shadows[5],
+    '&:hover' : {
+      color:'white',
+      backgroundColor: theme.palette.primary.main,
+    },
   },
 }))
 

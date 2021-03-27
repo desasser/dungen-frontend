@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Box, Container, Switch, Grid } from '@material-ui/core'
 import ActionBtn from '../ActionBtn'
-// import SliderDrawer from '../SliderDrawer'
+
 
 const useStyles = makeStyles({
   mapBuilderUIBox: {
