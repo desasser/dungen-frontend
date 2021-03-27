@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     transform: 'rotate(270deg)',
     transformOrigin: '0 0',
-    backgroundColor: 'tomato',
+    backgroundColor: '#2c3945',
     position: 'absolute',
     top: 300,
     right: 155,

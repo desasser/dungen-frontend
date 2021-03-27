@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import MapBuilder from './pages/MapBuilder';
 import SavedMaps from './pages/SavedMaps';
 import BrowseMaps from './pages/BrowseMaps';
@@ -43,6 +43,10 @@ function App() {
     password: "",
   })
 
+  const [snailState, setSnailState] = useState({
+    snail: false
+  })
+
   const token = localStorage.getItem("token")
 
   useEffect(() => {
@@ -65,6 +69,9 @@ function App() {
       setLoginState({
         userName: "",
         password: ""
+      })
+      setSnailState({
+        snail: true
       })
     })
   }
@@ -151,13 +158,15 @@ function App() {
                 // switch={signUpBtn} formMsg={formMsg.Msg} formBtn={hapticBtn.Btn} 
                 isLoggedIn={users.isLoggedIn} />
             </Route>
-
-            <Route exact path="/dashboard">
-              {users.isLoggedIn ? <SavedMaps users={users} /> : <Nope />}
-            </Route>
-            <Route exact path="/503">
-              <Nope />
-            </Route>
+            {users.isLoggedIn ? (
+              <Route exact path="/dashboard">
+                {users.isLoggedIn ? <SavedMaps users={users} /> : null}
+              </Route>
+            ) : (
+              <Redirect exact path="/503" >
+                {snailState ? <Nope /> : null}
+              </Redirect>
+            )}
 
             <Route exact path="/builder">
               <MapBuilder users={users} />

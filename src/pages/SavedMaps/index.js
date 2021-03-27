@@ -8,6 +8,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import RouterBtn from '../../components/RouterBtn';
 import Divider from '@material-ui/core/Divider';
 import SuperDrawer from '../../components/SuperDrawer';
+import { SettingsRemoteRounded } from '@material-ui/icons';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -29,10 +30,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 20,
   },
   buildButton: {
-    '&:hover': {
-      backgroundColor: 'white',
-      color: theme.palette.primary.main,
-    },
     backgroundColor: theme.palette.primary.main,
     padding: '0.5em 1.5em',
     marginBottom: '50px',
@@ -40,7 +37,12 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: 'Immortal',
     fontSize: '2em',
     fontWeight: 'bold',
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
+    boxShadow: theme.shadows[5],
+    '&:hover' : {
+      color:'white',
+      backgroundColor: theme.palette.primary.main,
+    },
   },
 }))
 
@@ -51,6 +53,7 @@ export default function SavedMaps(props) {
   const classes = useStyles();
 
   useEffect(() => {
+    
     if (props) {
       loadUserMaps()
     }

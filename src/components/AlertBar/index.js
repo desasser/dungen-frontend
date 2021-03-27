@@ -52,6 +52,7 @@ export default function CustomizedSnackbars(props) {
       return;
     }
     props.resetVal()
+    props.resetError()
     setOpen(false);
   };
 

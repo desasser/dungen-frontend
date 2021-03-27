@@ -18,39 +18,41 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   paper: {
-    backgroundColor: '#8eb1c7',
+    backgroundColor: '#2e3743da',
     borderRadius: '0.5em',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
-    outline: 'none'
+    outline: 'none',
   },
   navLink: {
     textDecoration: 'none',
+    marginLeft: '30px',
+    marginRight: '30px',
+    marginTop: '10px',
     color: theme.palette.secondary.contrastText,
   },
   menuItem: {
     color: 'black',
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy',
     fontSize: '16px',
     margin: 0
   },
   loginMsg: {
-    fontFamily: 'SpaceAndAstronomy',
-    fontSize: '20px',
-    margin: '10px'
+    margin: '10px',
+    color: theme.palette.secondary.main
   },
   switchBtn: {
     '&:hover' : {
-      color: '#36434b',
-      backgroundColor: 'white'
+      color:'white',
+      backgroundColor: theme.palette.primary.main,
     },
+    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.primary.main,
     marginBottom: '10px',
     height: 40,
-    backgroundColor: '#36434b',
-    color: 'white',
-    fontSize: '16px',
-    fontFamily: 'SpaceAndAstronomy'
+    fontFamily: 'Immortal',
+    marginLeft: '38%',
+    boxShadow: theme.shadows[5],
   }
 }));
 
@@ -103,10 +105,12 @@ export default function LoginModal(props) {
         <Fade in={open}>
           <div className={classes.paper}>
 
-            <ActionBtn action={props.switch} name={props.formBtn} classes={classes.switchBtn}/>
-            <Typography variant="h3" className={classes.loginMsg}>{props.formMsg}</Typography>
-            <Form credentials={props.credentials} validationErrorState={props.validationErrorState} resetVal={props.resetVal} login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange} />
-
+            <Typography variant="h4" className={classes.loginMsg}>{props.formMsg}</Typography>
+            <Form credentials={props.credentials} resetError={props.resetError} validationErrorState={props.validationErrorState} resetVal={props.resetVal} login={props.login.login} user={props.user} error={props.error} handleSubmit={props.handleSubmit} handleInputChange={props.handleInputChange}  />
+            <Typography variant='body2' style={{marginTop: 10, color:"white", textAlign: 'right', marginRight: '10%'}}>
+              {props.login.login ? "Don't have an account?" : "Have an account?"}
+            </Typography>
+            <ActionBtn action={props.switch} name={props.formBtn} classes={classes.switchBtn} style={{marginTop: 5, height: '40px', width: '120px'}}/>
           </div>
         </Fade>
       </Modal>

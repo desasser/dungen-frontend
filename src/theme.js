@@ -2,6 +2,16 @@ import { Button } from '@material-ui/core';
 import { createMuiTheme }  from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
+  overrides: {
+    MuiInput: {
+        color: 'white',
+      },
+    MuiInputLabel: {
+      root: {
+        color: 'white',
+      }
+    },
+  },
   palette: {
     primary: {
       main:'#03131e',
