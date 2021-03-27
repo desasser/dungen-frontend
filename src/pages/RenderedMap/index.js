@@ -153,7 +153,7 @@ export default function RenderedMap(props) {
   return (
     <Container>
       <Typography variant='h2' className={classes.title} ref={mapTitleRef}>
-        {mapTitleRef.current}
+        {mapData.mapTitle}
       </Typography>
       <Container className={classes.largeMap} >
         {/* TODO: Add ternary operator to check if the image has finished rendering or not */}

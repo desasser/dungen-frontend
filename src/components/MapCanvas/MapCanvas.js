@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useContext } from "react";
-import { useParams, useHistory } from 'react-router-dom';
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { Stage, Layer, Group, Rect, Text, Path } from "react-konva";
 import { Spring, config, animated } from 'react-spring/renderprops-konva'
@@ -60,12 +59,13 @@ const useStyles = makeStyles({
 // infinite grid demo: https://codesandbox.io/s/kkndq?file=/src/index.js:200-206
 // snapping & shadow tile demo: https://codepen.io/pierrebleroux/pen/gGpvxJ?editors=0010
 export default function MapCanvas(props) {
+  const classes = useStyles();
+
   const { canvasData } = useContext(CanvasContext);
 
   const {
-    stageRef, setStageRef,
-    stageParentRef, setStageParentRef,
     savedMap, setSavedMap,
+    setStageRef, setStageParentRef,
     tileSize, columns, rows, infinite,
     grid, setGrid,
     stagePosition, setStagePosition,
@@ -79,7 +79,9 @@ export default function MapCanvas(props) {
     pinColors
   } = canvasData
 
-  const classes = useStyles();
+  let { stageRef, stageParentRef } = canvasData;
+  stageRef = useRef(null);
+  stageParentRef = useRef(null);
 
   const [mapData, setMapData] = useState(savedMap !== null ? {...savedMap} : {
     name: "",
@@ -203,6 +205,7 @@ export default function MapCanvas(props) {
    */
    useEffect(() => {
     if(stageParentRef.current) {
+      setStageParentRef(stageParentRef);
       setGrid({
         ...grid,
         containerWidth: window.innerWidth,
@@ -210,6 +213,7 @@ export default function MapCanvas(props) {
       });
 
       if(savedMap !== null) {
+        setStageRef(stageRef);
         stageParentRef.current.style.backgroundColor = environmentColors[savedMap.environment]
       }
     }

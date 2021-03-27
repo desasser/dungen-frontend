@@ -27,10 +27,6 @@ export default function SuperDrawer(props) {
     setViewState(value)
   }
 
-  const getCurrentControls = (viewState) => {
-
-  }
-
   return (
     <>
       <ControlTabPanel handleClick={handleClick} />

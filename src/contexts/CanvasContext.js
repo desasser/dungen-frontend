@@ -1,5 +1,4 @@
 import { createContext, useState, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom'
 
 import API from "../utils/API";
 
@@ -7,10 +6,8 @@ export const CanvasContext = createContext();
 
 const CanvasContextProvider = (props) => {
 
-  const history = useHistory();
-
-  const [stageRef, setStageRef] = useState(useRef(null));
-  const [stageParentRef, setStageParentRef] = useState(useRef(null));
+  const [stageRef, setStageRef] = useState(null);
+  const [stageParentRef, setStageParentRef] = useState(null);
   
   const [savedMap, setSavedMap] = useState(localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null);
 
@@ -68,8 +65,8 @@ const CanvasContextProvider = (props) => {
   const [pinsVisible, setPinsVisible] = useState(true);
   const [activePin, setActivePin] = useState(null);
   const [shadowPinParams, setShadowPinParams] = useState({
-    left: 0,
-    top: 0,
+    left: activePin === null && -500,
+    top: activePin === null && -500,
     backgroundColor: pinColors['type1']
     
   });
@@ -99,41 +96,25 @@ const CanvasContextProvider = (props) => {
   };
 
   const handlePinStatus = (e) => {
-    if(e !== null) {
-      e.preventDefault();
-      e.stopPropagation()
-    }
+    e.preventDefault();
+    // e.stopPropagation();
+
+    console.log("handlePinStatus", e);
 
     let pinType = e.target.closest('button') !== null ? e.target.closest('button').dataset.pintype : null;
-
-    if(e.ctrlKey) { pinType = `type${e.key}`; }
-
-    // e.key === <DIGIT> (e.code === "Digit1"), e.ctrlKey === true; e.key === "Escape"
-    if( pinType === activePin || e.key === "Escape" ) {
-      setActivePin(null);
-
-      setShadowPinParams({
-        ...shadowPinParams,
-        display: 'none',
-        top: -500,
-        left: -500
-      });
-
-    } else if( pinType !== null && pinType !== activePin ) {
-    
-      if(activePin === null) {
-        setShadowPinParams({
-          ...shadowPinParams,
-          display: 'inline-block',
-          backgroundColor: pinColors[activePin]
-        });
-
-      }
-
-      setActivePin(pinType);
+    if(pinType === null && e.key !== undefined) {
+      pinType = `type${e.key}`;
     }
     
+    console.log("pinType", pinType, "activePin", activePin);
+    if(pinType === activePin) {
+      setActivePin(null);
+    } else {
+      setActivePin(pinType);
+    }
+
   }
+    
 
   const togglePins = e => {
     setPinsVisible(e.target.checked);
@@ -172,8 +153,6 @@ const CanvasContextProvider = (props) => {
 
     const uri = target.toDataURL({x: stagePosition.x + x, y: stagePosition.y + y, width: mapWidth, height: mapHeight}); // requires CORS!
     localStorage.setItem('dungen_map_image', uri);
-
-    history.push(`/preview`);
   }
 
   const handleMapSubmit = event => {
@@ -227,7 +206,6 @@ const CanvasContextProvider = (props) => {
     },
     pins: {
       props: {onClick: handlePinStatus},
-      activePin: activePin
     },
     clearPins: {
       props: {onClick: clearPins},
@@ -238,12 +216,12 @@ const CanvasContextProvider = (props) => {
       props: {onClick: togglePins},
       pinsVisible: pinsVisible
     },
-    pinKeyboardShortcuts: handlePinStatus,
     renderImage: {
       onClick: renderImage,
       args: {mapLayoutLength: mapLayout.length},
       text: mapLayout.length > 0 ? 'render Image' : 'Nothing to render'
-    }
+    },
+    activePin, setActivePin, handlePinStatus, grid, stageRef, stagePosition
   }
 
   const settingsData = {
