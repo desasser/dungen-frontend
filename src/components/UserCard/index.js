@@ -8,6 +8,7 @@ import snail from '../../images/DisapproverSnail.png';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import API from '../../utils/API';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,7 +30,10 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '100%',
   },
   textColor: {
-    color: theme.palette.secondary.contrastText
+    color: theme.palette.secondary.contrastText,
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    },
   },
   textColorTitle: {
     color: theme.palette.primary.contrastText
@@ -98,7 +102,18 @@ export default function UserCard(props) {
               </Grid>
             </Grid>
             <Grid item>
-              {!followed ? <FavoriteBorderIcon className={classes.textColor}/> : <FavoriteIcon className={classes.textColor}/>}
+              {!followed ? (
+                <IconButton aria-label="favorite" onClick={followUser} className={classes.textColor}>
+                  <FavoriteBorderIcon/> 
+                </IconButton>
+              )
+              : 
+              (
+                <IconButton aria-label="favorite" onClick={unFollowUser} className={classes.textColor}>
+                  <FavoriteIcon />
+                </IconButton>
+              )
+              }
             </Grid>
           </Grid>
         </Grid>
