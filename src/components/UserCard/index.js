@@ -28,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '100%',
     maxHeight: '100%',
   },
+  textColor: {
+    color: theme.palette.secondary.contrastText
+  },
+  textColorTitle: {
+    color: theme.palette.primary.contrastText
+  }
 }));
 
 export default function UserCard(props) {
@@ -70,21 +76,21 @@ export default function UserCard(props) {
           <Grid item xs={12} sm container>
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
-                <Typography gutterBottom variant="h6">
+                <Typography gutterBottom variant="h6" className={classes.textColorTitle}>
                   {props.userName}
                 </Typography>
-                <Typography variant="body1" gutterBottom>
+                <Typography variant="body1" gutterBottom className={classes.textColor}>
                   Stats
                 </Typography>
               </Grid>
               <Grid item>
               {!followed ? 
                 (
-                <Typography variant="body2" style={{ cursor: 'pointer' }} onClick={followUser} >
+                <Typography variant="body2" style={{ cursor: 'pointer' }} onClick={followUser} className={classes.textColor} >
                   Follow
                 </Typography>
                 ) : (
-                <Typography variant="body2" style={{ cursor: 'pointer' }} onClick={unFollowUser} >
+                <Typography variant="body2" style={{ cursor: 'pointer' }} onClick={unFollowUser} className={classes.textColor} >
                   Unfollow
                 </Typography>
                 )
@@ -92,7 +98,7 @@ export default function UserCard(props) {
               </Grid>
             </Grid>
             <Grid item>
-              {!followed ? <FavoriteBorderIcon /> : <FavoriteIcon />}
+              {!followed ? <FavoriteBorderIcon className={classes.textColor}/> : <FavoriteIcon className={classes.textColor}/>}
             </Grid>
           </Grid>
         </Grid>
