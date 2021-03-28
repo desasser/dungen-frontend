@@ -45,8 +45,6 @@ const useStyles = makeStyles((theme) => ({
   tileHeader: {
     margin: '0 auto',
     padding: '40px 0',
-    fontFamily: 'SpaceAndAstronomy',
-    fontWeight: 'bold',
     color: 'white',
     position: 'relative',
   },
@@ -60,14 +58,14 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   tileError: {
-    fontFamily: 'SpaceAndAstronomy',
+    fontFamily: 'Immortal',
     color: 'white',
     marginTop: 100
   },
   menuItemStyle: {
     color: 'black',
     textDecoration: 'none',
-    fontFamily: 'SpaceAndAstronomy'
+    fontFamily: 'Immortal'
   },
   drawerOpenBtn: {
     backgroundColor: 'rgba(255,255,255, 0.5)',
@@ -349,7 +347,7 @@ export default function MapControls({ controlsData }) {
          */}
         {/* CONTROLS DRAWER TITLE */}
         <Container className={classes.tileGrid}>
-          <Typography variant='h5' className={classes.tileHeader}>
+          <Typography variant='h4' className={classes.tileHeader}>
             Map Controls
           </Typography>
         </Container>

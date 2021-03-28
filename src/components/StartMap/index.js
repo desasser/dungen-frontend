@@ -22,6 +22,30 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  mapSizeText: {
+    color: theme.palette.secondary.contrastText
+  },
+  dropdownStyle: {
+    backgroundColor: '#3e4a59'
+  },
+  selectMenu: {
+    color: theme.palette.secondary.contrastText
+  },
+  menuItemStyle: {
+    color: theme.palette.secondary.contrastText
+  },
+  input: {
+    color: theme.palette.secondary.contrastText
+  },
+  saveMapBtn: {
+    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.primary.main,
+    boxShadow: theme.shadows[5],
+    '&:hover' : {
+      color:'white',
+      backgroundColor: theme.palette.primary.main,
+    },
+  }
 }));
 
 // props comes FROM the mapbuilder page,
@@ -75,6 +99,7 @@ function StartMap(props) {
               name="name"
               onChange={handleInputChange}
               value={mapSettings.name}
+              required
             />
           </FormControl>
         </div>
@@ -99,6 +124,10 @@ function StartMap(props) {
               value={mapSettings.environment}
               onChange={handleInputChange}
               className={classes.selectMenu}
+              MenuProps={{
+                classes: { paper: classes.dropdownStyle },
+                variant: 'menu'
+              }}
             >
               {environmentSelectList.map((environment) => (
                 <MenuItem
@@ -123,11 +152,12 @@ function StartMap(props) {
                 />
               }
               label="Build on an infinite Map?"
+              className={classes.selectMenu}
             />
           </FormControl>
           {!mapSettings.infinite ? (
             <>
-              <Typography variant="h6">So what size is your map?</Typography>
+              <Typography variant="h6" className={classes.mapSizeText}>So what size is your map?</Typography>
               <FormControl className={classes.formControl}>
                 <TextField
                   id="standard-basic"
@@ -136,6 +166,9 @@ function StartMap(props) {
                   name="rows"
                   onChange={handleInputChange}
                   value={mapSettings.rows}
+                  InputProps={{
+                    className: classes.input
+                  }}
                 />
               </FormControl>
               <FormControl className={classes.formControl}>
@@ -146,6 +179,9 @@ function StartMap(props) {
                   name="columns"
                   onChange={handleInputChange}
                   value={mapSettings.columns}
+                  InputProps={{
+                    className: classes.input
+                  }}
                 />
               </FormControl>{" "}
             </>
@@ -164,15 +200,18 @@ function StartMap(props) {
             />
           }
           label="Share Map With Community"
+          className={classes.selectMenu}
         />
       </div>
 
       <Button
-        // onClick={props.onClose}
         onClick={(e) => handleMapSubmit(e)}
+        className={classes.saveMapBtn}
+        style={{marginTop: 10}}
       >
-        {" "}
-        Save Map Info
+        <Typography variant="h6" style={{fontSize: '16px'}}>
+          Save Map Info
+        </Typography>
       </Button>
     </FormControl>
   );
