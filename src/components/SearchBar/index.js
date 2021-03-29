@@ -33,32 +33,27 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function SearchBar() {
-  const [searchState, setSearchState] = useState({
-    query: ''
-  });
+export default function SearchBar({keyword, setKeyword}) {
   const classes = useStyles();
 
-  const handleChange = (event) => {
-    setSearchState({
-      query: event.target.value
-    })
-  }
-
-  const handleSubmit = (event) => {
-    console.log('you searched for ', searchState.query);
-    setSearchState({
-      query: ''
-    })
-    event.preventDefault();
-  }
-
   return (
-    <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit} >
-      <TextField id="filled-basic" label="Search" variant="filled" onChange={handleChange} value={searchState.query} className={classes.input} />
+    <form 
+      className={classes.root} 
+      noValidate 
+      autoComplete="off" 
+      onSubmit={(event) => setKeyword(event.target.value)} 
+    >
+      <TextField 
+        id="filled-basic" 
+        label="Search" 
+        variant="filled" 
+        onChange={(event) => setKeyword(event.target.value)} 
+        value={keyword} 
+        className={classes.input} 
+      />
       <div>
         <Button
-          onClick={(e) => handleSubmit(e)}
+          onClick={(event) => setKeyword(event.target.value)}
           variant="contained"
           color="primary"
           className={classes.button}
