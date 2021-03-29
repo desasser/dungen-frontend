@@ -1,7 +1,7 @@
 const GeneralFunctions = {
   // https://codepen.io/davidhalford/pen/ywEva?editors=0010
   contrastColor: (hex) => {
-    if(hex === undefined) return;
+    if (hex === undefined) return;
 
     hex = hex.replace("#", "");
     /*
