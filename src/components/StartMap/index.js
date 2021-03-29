@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useHistory } from 'react-router-dom'
 import { makeStyles, TextField } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Radio from "@material-ui/core/Radio";
@@ -13,6 +14,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import { MapOutlined } from "@material-ui/icons";
 import API from "../../utils/API";
 import { CanvasContext } from "../../contexts/CanvasContext";
+import { DatabaseContext } from "../../contexts/DatabaseContext";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -52,11 +54,37 @@ const useStyles = makeStyles((theme) => ({
 // but may be a function that's defined on the mapbuilder page
 // data is always handled where the function is defined
 function StartMap(props) {
-  const { settingsData } = useContext(CanvasContext);
-  const { mapSettings, setMapSettings, handleMapSubmit } = settingsData;
-  console.log("map settings", mapSettings);
-
   const classes = useStyles();
+
+  const history = useHistory();
+
+  const { settingsData } = useContext(CanvasContext);
+  const { mapSettings, setMapSettings } = settingsData;
+  
+  const dbContext = useContext(DatabaseContext);
+  const { saveMapToDB, updateMapInDB, mapSaved } = dbContext;
+
+  const [environmentSelectList, setEnvironmentSelectList] = useState([]);
+  
+  useEffect(() => {
+    API.getEnvironments(environmentSelectList)
+      .then((environments) => {
+        setEnvironmentSelectList(environments.data);
+      })
+      .catch((err) => console.error(err));
+
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('dungen_map_settings', JSON.stringify(mapSettings));
+  }, [mapSettings])
+
+  useEffect(() => {
+    if(mapSaved !== null) {
+      setMapSettings({...mapSettings, id: mapSaved})
+      history.push(`/builder/${mapSaved}`);
+    }
+  }, [mapSaved]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -71,21 +99,21 @@ function StartMap(props) {
     setMapSettings({
       ...mapSettings,
       [event.target.name]: event.target.checked,
-      rows: !mapSettings.infinite ? 1 : parseInt(mapSettings.rows),
-      columns: !mapSettings.infinite ? 1 : parseInt(mapSettings.columns),
+      rows: mapSettings.infinite ? null : parseInt(mapSettings.rows),
+      columns: mapSettings.infinite ? null : parseInt(mapSettings.columns),
     });
   };
 
-  const [environmentSelectList, setEnvironmentSelectList] = useState([]);
+  const handleSettingsSubmit = (e) => {
+    e.preventDefault();
 
-  useEffect(() => {
-    API.getEnvironments(environmentSelectList)
-      .then((environments) => {
-        setEnvironmentSelectList(environments.data);
-      })
-      .catch((err) => console.error(err));
+    if(mapSettings.id !== null && mapSettings.UserId !== null) {
+      updateMapInDB();
 
-  }, []);
+    } else if(mapSettings.UserId !== null) {
+      saveMapToDB();
+    }
+  }
 
   return (
     <FormControl className={classes.formControl}>
@@ -120,8 +148,8 @@ function StartMap(props) {
             <Select
               labelId="select-environment"
               id="select-environment"
-              name="environment"
-              value={mapSettings.environment}
+              name="EnvironmentId"
+              value={mapSettings.EnvironmentId}
               onChange={handleInputChange}
               className={classes.selectMenu}
               MenuProps={{
@@ -152,7 +180,7 @@ function StartMap(props) {
                 />
               }
               label="Build on an infinite Map?"
-              className={classes.selectMenu}
+              className={classes.input}
             />
           </FormControl>
           {!mapSettings.infinite ? (
@@ -200,19 +228,21 @@ function StartMap(props) {
             />
           }
           label="Share Map With Community"
-          className={classes.selectMenu}
+          className={classes.input}
         />
       </div>
 
       <Button
-        onClick={(e) => handleMapSubmit(e)}
+        onClick={(e) => handleSettingsSubmit(e)}
         className={classes.saveMapBtn}
         style={{marginTop: 10}}
       >
         <Typography variant="h6" style={{fontSize: '16px'}}>
-          Save Map Info
+          Save Map
         </Typography>
       </Button>
+      <input type="hidden" name="id" value={mapSettings.id} />
+      <input type="hidden" name="UserId" value={mapSettings.UserId} />
     </FormControl>
   );
 }

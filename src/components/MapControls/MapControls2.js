@@ -1,4 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { Box, Container, Typography, Drawer, Divider, IconButton, Switch, Grid } from '@material-ui/core';
 import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import { purple, red, pink, blue, lightGreen, lime, deepOrange } from '@material-ui/core/colors';
@@ -12,8 +14,6 @@ import {
   Help,
   GpsFixed
 } from '@material-ui/icons';
-
-import { useHotkeys } from 'react-hotkeys-hook';
 
 import ActionBtn from '../ActionBtn'
 import { CanvasContext } from '../../contexts/CanvasContext';
@@ -273,18 +273,58 @@ const TileDrawer = withStyles({
 
 export default function MapControls2() {
   const { controlsData } = useContext(CanvasContext);
+  const { handlePinStatus, activePin, setActivePin, grid, stageRef, stagePosition } = controlsData
 
+  const theme = useTheme();
   const classes = useStyles();
+
   const [state, setState] = useState({
     isDrawerOpened: true
   })
 
-  // console.log("map controls controlsData", controlsData);
-
-  const theme = useTheme();
+  const history = useHistory();
 
   const [renderWithPins, setRenderWithPins] = useState(false);
   const [pinsVisible, setPinsVisible] = useState(controlsData.togglePins.pinsVisible);
+  const [currentPin, setCurrentPin] = useState(activePin);
+
+  const renderImage = () => {
+    console.log("map controls, render image")
+    // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
+    let target = stageRef.current.children[2];
+    console.log(target);
+    /**
+     * LEAVING IN CASE WE ADD MORE LAYERS THAT NEED TO BE RENDERED
+     * WITH MAP TILES + PINS LAYER
+     * took var indicating whether or not to include the extra layer
+     * this is now redundant, b/c pins are visible/hidden individually
+     */
+    // if(renderWithPins && mapPins.length > 0) {
+    //   let layer = stageRef.current.children[2];
+    //   for(var i = 0; i < pinsLayer.children.length; i++) {
+    //     layer.children.push(pinsLayer.children[i])
+    //   }
+    //   target = layer;
+    // }
+
+    if(!renderWithPins) {
+      target.children.each((shape, n) => { shape.attrs.className === "map-pin" && shape.visible(false) })
+    }
+    console.log(typeof target.children, target.children)
+
+    let sortedByXCoords = [...target.children].sort((a,b) => a.attrs.x < b.attrs.x ? 1 : -1);
+    let sortedByYCoords = [...target.children].sort((a,b) => a.attrs.y < b.attrs.y ? 1 : -1);
+
+    let x = sortedByXCoords[sortedByXCoords.length - 1].attrs.x;
+    let y = sortedByYCoords[sortedByYCoords.length - 1].attrs.y;
+    let mapWidth = (sortedByXCoords[0].attrs.x + grid.tileSize) - sortedByXCoords[sortedByXCoords.length - 1].attrs.x;
+    let mapHeight = (sortedByYCoords[0].attrs.y + grid.tileSize) - sortedByYCoords[sortedByYCoords.length - 1].attrs.y;
+
+    const uri = target.toDataURL({x: stagePosition.x + x, y: stagePosition.y + y, width: mapWidth, height: mapHeight}); // requires CORS!
+    localStorage.setItem('dungen_map_image', uri);
+
+    history.push('/preview')
+  }
 
   useEffect(() => {
     const savedMap = localStorage.getItem('dungen_map') !== null ? JSON.parse(localStorage.getItem('dungen_map')) : null;
@@ -299,17 +339,40 @@ export default function MapControls2() {
     controlsData.togglePins.props.onClick(e);
   }
 
+  const updatePinStatus = (e) => {
+    handlePinStatus(e)
+    // e.preventDefault();
+    // // e.stopPropagation();
+
+    // const pinType = `type${e.key}`;
+
+    // if(currentPin === pinType) {
+    //   console.log(currentPin, "===", pinType)
+    //   setCurrentPin(null);
+    
+    // } else {
+    //   console.log(currentPin, "!==", pinType)
+    //   setCurrentPin(pinType);
+    // }
+    // console.log("mapcontrols", pinType, currentPin)
+  }
+
+  /**
+   *  HOTKEYS
+   */
+  // pins
+  useHotkeys('ctrl+1, command+1', (e) => updatePinStatus(e));
+  useHotkeys('ctrl+2, command+2', (e) => updatePinStatus(e));
+  useHotkeys('ctrl+3, command+3', (e) => updatePinStatus(e));
+  useHotkeys('ctrl+4, command+4', (e) => updatePinStatus(e));
+  useHotkeys('ctrl+5, command+5', (e) => updatePinStatus(e));
+  useHotkeys('esc', (e) => updatePinStatus(e));
+
+
   /**
    * HOTKEYS
    */
-
   // pins
-  useHotkeys('ctrl+1, command+1', (e) => controlsData.pinKeyboardShortcuts(e));
-  useHotkeys('ctrl+2, command+2', (e) => controlsData.pinKeyboardShortcuts(e));
-  useHotkeys('ctrl+3, command+3', (e) => controlsData.pinKeyboardShortcuts(e));
-  useHotkeys('ctrl+4, command+4', (e) => controlsData.pinKeyboardShortcuts(e));
-  useHotkeys('ctrl+5, command+5', (e) => controlsData.pinKeyboardShortcuts(e));
-  useHotkeys('esc', (e) => controlsData.pinKeyboardShortcuts(e) );
 
   return (
     <Box>
@@ -357,28 +420,28 @@ export default function MapControls2() {
       <Divider />
 
       {/* PINS */}
-      <Container>
-        <div className={controlsData.pins.activePin === 'type1' ? `${classes.pin} pin-type1 ${classes.activePin}` : `${classes.pin} pin-type1`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
-          <IconButton {...controlsData.pins.props} data-pintype="type1" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+      <Container id="controls-pins">
+        <div className={activePin === 'type1' ? `${classes.pin} pin-type1 ${classes.activePin}` : `${classes.pin} pin-type1`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+          <IconButton onClick={handlePinStatus} data-pintype="type1" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
             <GpsFixed />
           </IconButton>
         </div>
-        <div className={controlsData.pins.activePin === 'type2' ? `${classes.pin} pin-type2 ${classes.activePin}` : `${classes.pin} pin-type2`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+        <div className={activePin === 'type2' ? `${classes.pin} pin-type2 ${classes.activePin}` : `${classes.pin} pin-type2`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
           <IconButton {...controlsData.pins.props} data-pintype="type2" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
             <Flare />
           </IconButton>
         </div>
-        <div className={controlsData.pins.activePin === 'type3' ? `${classes.pin} pin-type3 ${classes.activePin}` : `${classes.pin} pin-type3`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+        <div className={activePin === 'type3' ? `${classes.pin} pin-type3 ${classes.activePin}` : `${classes.pin} pin-type3`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
           <IconButton {...controlsData.pins.props} data-pintype="type3" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
             <Star />
           </IconButton>
         </div>
-        <div className={controlsData.pins.activePin === 'type4' ? `${classes.pin} pin-type4 ${classes.activePin}` : `${classes.pin} pin-type4`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+        <div className={activePin === 'type4' ? `${classes.pin} pin-type4 ${classes.activePin}` : `${classes.pin} pin-type4`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
           <IconButton {...controlsData.pins.props} data-pintype="type4" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
             <AccountCircle />
           </IconButton>
         </div>
-        <div className={controlsData.pins.activePin === 'type5' ? `${classes.pin} pin-type5 ${classes.activePin}` : `${classes.pin} pin-type5`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
+        <div className={activePin === 'type5' ? `${classes.pin} pin-type5 ${classes.activePin}` : `${classes.pin} pin-type5`} style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
           <IconButton {...controlsData.pins.props} data-pintype="type5" style={{ cursor: pinsVisible ? 'pointer' : 'not-allowed'}}>
             <Help />
           </IconButton>
@@ -396,7 +459,7 @@ export default function MapControls2() {
           </Grid>
           <Grid item style={{color: "white", fontFamily: "sans-serif"}}>Include Pins</Grid>
         </Grid>
-        <ActionBtn classes={classes.renderImage} onClick={() => {controlsData.renderImage.onClick(renderWithPins)}} disabled={controlsData.renderImage.args.mapLayoutLength === 0}>
+        <ActionBtn classes={classes.renderImage} onClick={renderImage} disabled={controlsData.renderImage.args.mapLayoutLength === 0}>
           {controlsData.renderImage.text}
         </ActionBtn>
       </Container>

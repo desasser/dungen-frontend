@@ -1,17 +1,16 @@
 import { useState, useRef, useEffect, useContext } from "react";
-import { useParams, useHistory } from 'react-router-dom';
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import { useParams } from 'react-router-dom';
+import { makeStyles } from "@material-ui/core/styles";
 import { Stage, Layer, Group, Rect, Text, Path } from "react-konva";
-import { Spring, config, animated } from 'react-spring/renderprops-konva'
-
-import MapControls from '../MapControls';
+import { Spring, animated } from 'react-spring/renderprops-konva'
 
 import CanvasTile from "../MapTile";
 import MapTileControls from "../MapTileControls";
 import { CanvasContext } from "../../contexts/CanvasContext";
-// import { IsoOutlined } from "@material-ui/icons";
 
-// exporting image from canvas
+import GeneralFunctions from '../../utils/GeneralFunctions'
+
+// for exporting image from canvas
 const { v4: uuidv4 } = require('uuid');
 
 const useStyles = makeStyles({
@@ -60,44 +59,32 @@ const useStyles = makeStyles({
 // infinite grid demo: https://codesandbox.io/s/kkndq?file=/src/index.js:200-206
 // snapping & shadow tile demo: https://codepen.io/pierrebleroux/pen/gGpvxJ?editors=0010
 export default function MapCanvas(props) {
+  const classes = useStyles();
+
+  // for loading a specific map from saved maps
+  const { id } = useParams();
+
   const { canvasData } = useContext(CanvasContext);
 
   const {
-    stageRef, setStageRef,
-    stageParentRef, setStageParentRef,
-    savedMap, setSavedMap,
-    tileSize, columns, rows, infinite,
+    mapSettings, mapData,
+    setStageRef, setStageParentRef,
     grid, setGrid,
     stagePosition, setStagePosition,
-    tilesLocked, setTilesLocked,
-    gridCentered, setGridCentered,
+    tilesLocked, setGridCentered,
     mapLayout, setMapLayout,
     mapPins, setMapPins,
-    pinsVisible, setPinsVisible,
+    pinsVisible,
     activePin, setActivePin,
     shadowPinParams, setShadowPinParams,
-    pinColors
+    pinColors, viewState
   } = canvasData
 
-  const classes = useStyles();
+  let { stageRef, stageParentRef } = canvasData;
+  stageRef = useRef(null);
+  stageParentRef = useRef(null);
 
-  const [mapData, setMapData] = useState(savedMap !== null ? {...savedMap} : {
-    name: "",
-    rows: rows,
-    columns: columns,
-    tileSize: tileSize,
-    infinite: infinite,
-    environment: 1,
-    layout: [], 
-    pins: [], 
-    pinsVisible: true, 
-    public: false,
-    userId: null
-  });
-
-  const [viewState, setViewState] = useState(false);
-
-  const [draggingPin, setDraggingPin] = useState({x: 0, y: 0});
+  // const [draggingPin, setDraggingPin] = useState({x: 0, y: 0});
 
   const [contextMenuActive, setContextMenuActive] = useState(false);
   const [tileControlsPosition, setTileControlsPosition] = useState({top: 0, left: 0});
@@ -123,78 +110,46 @@ export default function MapCanvas(props) {
 
   // donjon has 19
   const environmentColors = [
-    "black",
-    "#cde6f5",
-    "#f7bfb4",
-    "#cec075",
-    "#295135",
-    "#9fcc2e", // 90a959
-    "#7daf9c",
-    "#3f7d20",
-    "#454955",
-    "#5a6650",
-    "#0d0a0b",
-    "#0081af",
-    "#59656f",
-    "#745296",
-    "#1d1e2c", // 151515
-    "#a63d40",
-    "#6494aa",
-    "#554640",
-    "#dc602e",
-    "#05a8aa",
+    "white", // default (0 index)
+    "#cde6f5", // arctic
+    "#f7bfb4", // coastal
+    "#cec075", // desert
+    "#295135", // forest
+    "#9fcc2e", // grassland 90a959
+    "#7daf9c", // hill
+    "#3f7d20", // jungle
+    "#454955", // mountain
+    "#5a6650", // swamp
+    "#0d0a0b", // underdark
+    "#0081af", // underwater
+    "#59656f", // urban
+    "#745296", // celestial plane
+    "#1d1e2c", // abyssal plane 151515
+    "#a63d40", // infernal plane
+    "#6494aa", // elemental air
+    "#554640", // elemental earth
+    "#dc602e", // elemental fire
+    "#05a8aa", // elemental water
   ]
 
   useEffect(() => {
-    if(savedMap !== null && savedMap !== mapData) {
-      setMapData(savedMap);
-
-      if(mapLayout.length === 0 && savedMap !== null && savedMap.layout !== undefined && savedMap.layout.length > 0) {
-        setMapLayout([...savedMap.layout]);
-      }
-
-      if(mapPins.length === 0 && savedMap !== null && savedMap.pins !== undefined && savedMap.pins.length > 0) {
-        setMapPins([...savedMap.pins]);
-      }
-
-      if(savedMap !== null) {
-        setPinsVisible(savedMap.pinsVisible);
-      }
-
-      setGrid({
-        ...grid,
-        rows: savedMap.rows,
-        columns: savedMap.columns,
-        infinite: savedMap.infinite
-      });
-
-      if(!savedMap.infinite) {
-        setGrid({
-          startX: 0,
-          startY: 0,
-          endX: tileSize * savedMap.columns,
-          endY: tileSize * savedMap.rows
-        });
-
-      } else {
-        setStagePosition({
-          x: 0,
-          recenterX: 0,
-          y: 0,
-          recenterY: 0
-        })
-      }
-
-
-    } else {
-      localStorage.setItem('dungen_map', JSON.stringify(mapData));
+    const savedLayout = localStorage.getItem('dungen_map_tiles') !== undefined ? JSON.parse(localStorage.getItem('dungen_map_tiles')) : null;
+    if(mapSettings.UserId === props.userId) {
+      setMapLayout(savedLayout);
     }
-    
-    updateStagePosition();
+        
+    // const canvasLayout = savedLayout.map(tile => {tile.idx = uuidv4(); tile.image_src = tile.Tile.image_url;});
+    // const canvasTiles = stageRef.current.children[2].children;
+    // if(canvasTiles.length > 0 && (savedLayout === null || savedLayout.length === 0)) {
 
-    createGrid();
-
+    // }
   }, []);
+
+  useEffect(() => {
+    if(mapSettings.UserId === props.userId) {
+      localStorage.setItem('dungen_map_tiles', JSON.stringify(mapLayout));
+    }
+  }, [mapLayout]);
 
   /**
    * SETTING HEIGHT & WIDTH OF STAGE
@@ -203,39 +158,37 @@ export default function MapCanvas(props) {
    */
    useEffect(() => {
     if(stageParentRef.current) {
+      setStageParentRef(stageParentRef);
       setGrid({
         ...grid,
         containerWidth: window.innerWidth,
         containerHeight: window.innerHeight
       });
 
-      if(savedMap !== null) {
-        stageParentRef.current.style.backgroundColor = environmentColors[savedMap.environment]
+      if(mapSettings !== null) {
+        setStageRef(stageRef);
+        stageParentRef.current.style.backgroundColor = environmentColors[mapSettings.EnvironmentId]
       }
     }
   
   }, [stageParentRef, stageRef]);
 
+  /**
+   * checking props.init & mapSettings for changes
+   * e.g. to environment or # of rows/columns
+   */
   useEffect(() => {
-    if(props.init) {
-      const newSavedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
-      console.log('mapcanvas.270:: newSavedMap (props.init):', newSavedMap);
-      if(newSavedMap !== null) {
+    setGrid({
+      ...grid,
+      rows: mapSettings.rows !== null ? mapSettings.rows : 30,
+      columns: mapSettings.columns !== null ? mapSettings.columns : 50,
+      infinite: mapSettings.infinite
+    })
 
-        setSavedMap(newSavedMap);
-        setMapData(newSavedMap);
-        setGrid({
-          ...grid,
-          rows: newSavedMap.rows,
-          columns: newSavedMap.columns,
-          infinite: newSavedMap.infinite
-        })
-      }
+    createGrid();
+    updateStagePosition();
 
-      updateStagePosition();
-    }
-
-  }, [props.init])
+  }, [mapSettings]);
 
   /**
    * REBUILD GRID & SAVE DATA TO LOCALSTORAGE
@@ -252,19 +205,8 @@ export default function MapCanvas(props) {
    * this happens when the map layout changes
    */
   useEffect(() => {
-    // console.log("::cMC.309:: mapData", mapData);
-
-    const newData = {
-      ...mapData,
-      layout: mapLayout,
-      pins: mapPins,
-      pinsVisible: pinsVisible
-    };
-    setMapData(newData);
-
+    
     createGrid();
-
-    localStorage.setItem('dungen_map', JSON.stringify(newData));
 
     // eslint-disable-next-line
   }, [mapLayout, mapPins, pinsVisible]);
@@ -277,45 +219,59 @@ export default function MapCanvas(props) {
   // }, [mapLayout]);
 
   const updateStagePosition = () => {
-    const savedStagePosition = localStorage.getItem('dungen_stageposition') !== undefined ? JSON.parse(localStorage.getItem('dungen_stageposition')) : null;
+    // const savedStagePosition = localStorage.getItem('dungen_stageposition') !== undefined ? JSON.parse(localStorage.getItem('dungen_stageposition')) : null;
 
-    if(savedStagePosition !== null) {
-      setStagePosition(savedStagePosition);
+    // if(savedStagePosition !== null) {
+    //   setStagePosition(savedStagePosition);
       
-      if(savedStagePosition.x !== savedStagePosition.recenterX || savedStagePosition.y !== savedStagePosition.recenterY) {
-        setGridCentered(false);
-      }
+    //   if(savedStagePosition.x !== savedStagePosition.recenterX || savedStagePosition.y !== savedStagePosition.recenterY) {
+    //     setGridCentered(false);
+    //   }
 
-    }
+    // }
     
     if(!mapData.infinite) {
-      const gridWidth = (window.innerWidth - (grid.tileSize * grid.columns) - grid.tileSize) / 2;
-      let gridHeight = (window.innerHeight - (grid.tileSize * grid.rows) - grid.tileSize) / 1.5;
+      const gridWidth = grid.tileSize * grid.columns;
+      const gridHeight = grid.tileSize * grid.rows;
 
-      if(window.innerWidth > gridWidth) {
-        setStagePosition({ ...stagePosition, x: gridWidth, recenterX: gridWidth })
+      const xOffset = ((window.innerWidth - 380) - (grid.tileSize * grid.columns)) / 2;
+      const yOffset = ((window.innerHeight - 75) - (grid.tileSize * grid.rows)) / 2;
+
+      let newStagePosition = {...stagePosition}
+
+      if(window.innerWidth - 380 > gridWidth) {
+        newStagePosition = {...newStagePosition, x: xOffset, recenterX: xOffset}
       } else {
-        setStagePosition({...stagePosition, x: 0, recenterX: 0})
+        newStagePosition = { ...newStagePosition, x: 0, recenterX: 0 }
       }
-      
-      // the navbar is exactly 75px tall (specified height, not "responsive")
+
       if(window.innerHeight - 75 > gridHeight) {
-        setStagePosition({ ...stagePosition, y: gridHeight, recenterY: gridHeight })
+        newStagePosition = {...newStagePosition, y: yOffset, recenterY: yOffset}
       } else {
-        setStagePosition({...stagePosition, y: 0, recenterY: 0})
+        newStagePosition = { ...newStagePosition, y: 0, recenterY: 0 }
       }
-
+      setStagePosition(newStagePosition);
+      localStorage.setItem('dungen_stageposition', JSON.stringify(newStagePosition));
     }
     createGrid();
   }
 
   const createGrid = () => {
-    const gridInit = mapData.infinite ? updateGridProps(stagePosition) : { ...grid, startX: 0, startY: 0, endX: grid.tileSize * mapData.columns, endY: grid.tileSize * mapData.rows };
+    const gridInit = grid.infinite ? updateGridProps(stagePosition) : { ...grid, startX: 0, startY: 0, endX: grid.tileSize * grid.columns, endY: grid.tileSize * grid.rows };
     
     var i = 0;
+
+    const environmentColor = environmentColors[mapSettings.EnvironmentId];
+    const textColor = GeneralFunctions.contrastColor(environmentColor);
+    let cSquareColor = "#00000033";
+    // if text is light, bg is dark, let's make cSquares less transparent (so they're darker)
+    if(textColor === "#eeeeee") {
+      cSquareColor = "#00000077";
+    }
+
     const gridColors = [
-      ["rgba(0,0,0,0.15)", "transparent"],
-      ["transparent", "rgba(0,0,0,0.15)"],
+      [cSquareColor, "transparent"],
+      ["transparent", cSquareColor],
     ];
 
     const cSquares = [];
@@ -328,6 +284,10 @@ export default function MapCanvas(props) {
 
         const ix = Math.abs(x / gridInit.tileSize) % gridColors.length;
         const iy = Math.abs(y / gridInit.tileSize) % gridColors[0].length;
+
+        //let textColor = "#373737";
+        //const darkEnvironments = [4,7,8,9,10,11,12,13,14,15,16,19,17,18] // 9 (swamp), 11 (underwater), 16 (elemental air), 19 (elemental water)
+        
 
         cSquares.push(
           <Group key={`${x}-${y}`} name={`${x}-${y}`}>
@@ -347,7 +307,7 @@ export default function MapCanvas(props) {
               text={`${x / 100}, ${y / 100}`}
               x={x + 10}
               y={y + 10}
-              fill="#373737"
+              fill={textColor}
               // strokeWidth={0}
             />
           </Group>
@@ -363,9 +323,9 @@ export default function MapCanvas(props) {
   const updateGridProps = (position = null) => {
     if(position === null) { position = stagePosition; }
     let { containerWidth, containerHeight } = grid;
-    if(grid.infinite) {
-      containerWidth = window.innerWidth;
-      containerHeight = window.innerHeight;
+    if(mapData.infinite) {
+      containerWidth = window.innerWidth - 380;
+      containerHeight = window.innerHeight - 75;
     }
 
     const startX = Math.floor((-position.x - containerWidth) / grid.tileSize) * grid.tileSize;
@@ -417,9 +377,6 @@ export default function MapCanvas(props) {
         ...shadowPinParams,
         left: mousePos.x - 20,
         top: mousePos.y - 48
-        // left: mousePos.x - stagePosition.x - 15,
-        // top: mousePos.y - stagePosition.y - (grid.tileSize / 2.25),
-        // visible: true,
       })
     }
   }
@@ -481,15 +438,15 @@ export default function MapCanvas(props) {
     }
 
     if(activePin !== null && e.evt.which === 1 && target.attrs.className !== "map-pin") {
-      setDraggingPin({x: 0, y: 0});
+      // setDraggingPin({x: 0, y: 0});
       const idx = uuidv4();
 
       const pin = {
         idx: idx,
-        type: activePin,
+        EncounterType: (activePin).substr(4,1),
         x: e.evt.clientX - stagePosition.x,
         y: e.evt.clientY - stagePosition.y - grid.tileSize,
-        fill: pinColors[activePin],
+        fill: pinColors[(activePin).substr(4,1)],
         data: null,
       }
       setMapPins([...mapPins, pin]);
@@ -514,18 +471,18 @@ export default function MapCanvas(props) {
   const handleTileDragStart = (e) => {
     // anything that should be done when the user STARTS dragging a tile
     // this is essentially also a SINGLE CLICK response, so be careful!
-    const currentPosition = { x: e.target.x() - stagePosition.x, y: e.target.y() - stagePosition.y }
-    const { x, y } = tilePos(currentPosition);
+    // console.log("mapcanvas.598:: e.target.attrs", e.target.attrs.x, e.target.attrs.y);
+    const currentPosition = { x: e.target.attrs.x, y: e.target.attrs.y }
+    const { x, y } = currentPosition;
 
-    console.log("mapcanvas.598:: e.target.attrs", e.target.attrs);
     setLastLegitSquare({x: x, y: y});
     setContextMenuActive(false);
     setActivePin(null);
 
     setShadowTileParams({
       ...shadowTileParams,
-      x: x + stagePosition.x,
-      y: y + stagePosition.y,
+      x: x,
+      y: y,
       visible: true,
       opacity: 0.6
     });
@@ -581,10 +538,11 @@ export default function MapCanvas(props) {
   };
 
   const updateTileCoordinates = (id, x, y) => {
-    const layout = [...mapLayout];
+    const layout = [...mapLayout]
+
     for(var i = 0; i < layout.length; i++) {
       let tile = layout[i];
-      if(tile.idx === id) {
+      if(tile.idx === id || tile.id === id) {
         tile.x = x / grid.tileSize;
         tile.y = y / grid.tileSize;
       }
@@ -596,7 +554,7 @@ export default function MapCanvas(props) {
   const handleNewTileDrop = (e) => {
     e.preventDefault();
 
-    console.log("::cMC.643:: new tile drop", e);
+    // console.log("::cMC.643:: new tile drop", e);
 
     const tileData = JSON.parse(e.dataTransfer.getData("dropped_tile"));
     const idx = uuidv4();
@@ -607,6 +565,7 @@ export default function MapCanvas(props) {
       idx: idx,
       imgKey: `tm-${tileData.TileId}`,
       TileId: tileData.TileId,
+      MapTileId: null,
       x: lastLegitSquare.x / grid.tileSize,
       y: lastLegitSquare.y / grid.tileSize,
       image_src: tileData.image_src,
@@ -662,7 +621,7 @@ export default function MapCanvas(props) {
     let action = e.target.closest("button") !== null ? e.target.closest("button").dataset.action : null;
 
     if(action !== null) {
-      let tile = activeTile.children[0];
+      let tile = activeTile.attrs.className === "tile-image" ? activeTile.getParent() : activeTile;
       let rotation = tile.attrs.rotation !== undefined ? tile.attrs.rotation : 0;
       let scale = tile.attrs.scaleX !== undefined ? {x: tile.attrs.scaleX, y: tile.attrs.scaleY} : {x: 1, y: 1};
 
@@ -707,7 +666,7 @@ export default function MapCanvas(props) {
           }
         }
       } else {
-        newLayout = mapLayout.filter(tile => tile.idx !== activeTile.attrs.id);
+        newLayout = mapLayout.filter(tile => tile.idx !== undefined ? tile.idx !== activeTile.attrs.id : tile.id !== activeTile.attrs.id);
         setContextMenuActive(false);
       }
 
@@ -728,7 +687,7 @@ export default function MapCanvas(props) {
       left: -500,
       opacity: 0
     })
-    setDraggingPin({x: e.target.x(), y: e.target.y()});
+    // setDraggingPin({x: e.target.x(), y: e.target.y()});
   }
 
   const handlePinDragEnd = (e) => {
@@ -744,7 +703,7 @@ export default function MapCanvas(props) {
     }
     
     setMapPins(pins);
-    setDraggingPin({x: 0, y: 0});
+    // setDraggingPin({x: 0, y: 0});
   }
 
   const handlePinOnClick = (e) => {
@@ -753,43 +712,6 @@ export default function MapCanvas(props) {
 
   return (
     <div style={{position: 'relative', margin: 0, padding: 0}}>
-      {/* <MapControls
-        controlsData={{ 
-          toggleTileLock: { 
-            props: {checked: tilesLocked, onChange: handleTileLock, name: "toggleTileLock"}, 
-            args: { visible: props.infiniteGrid }
-          },
-          centerGrid: { 
-            props: {onClick: recenterGrid}, 
-            args: {gridCentered: gridCentered}, 
-            text: gridCentered ? "Grid is centered" : "Center Grid" 
-          }, 
-          clearMap: {
-            props: {onClick: clearMap},
-            args: { mapLayoutLength: mapLayout.length },
-            text: mapLayout.length > 0 ? 'Clear Map' : 'Map Empty'
-          },
-          pins: {
-            props: {onClick: handlePinStatus},
-            activePin: activePin
-          },
-          clearPins: {
-            props: {onClick: clearPins},
-            args: { mapPinsLength: mapPins.length },
-            text: mapPins.length > 0 ? 'Clear Pins' : 'No Pins'
-          },
-          togglePins: {
-            props: {onClick: togglePins},
-            pinsVisible: pinsVisible
-          },
-          pinKeyboardShortcuts: handlePinStatus,
-          renderImage: {
-            onClick: renderImage,
-            args: {mapLayoutLength: mapLayout.length},
-            text: mapLayout.length > 0 ? 'render Image' : 'Nothing to render'
-          }
-        }} 
-      /> */}
 
       {/* MAP CANVAS CONTAINER */}
       <div
@@ -801,15 +723,15 @@ export default function MapCanvas(props) {
         onDragEnter={(e) => handleGridDragEnter(e)}
         style={{
           maxWidth: window.innerWidth,
-          maxHeight: window.innerHeight - 77, // 1 extra pixel each from map controls & tile slider drawer (why??)
-          backgroundColor: savedMap !== null && savedMap.environment !== "" ? environmentColors[savedMap.environment] : 'ghostwhite'
+          maxHeight: window.innerHeight - 77,
+          backgroundColor: mapSettings !== null && mapSettings.EnvironmentId !== "" ? environmentColors[mapSettings.EnvironmentId] : environmentColors[0]
         }}
       >
         <Stage
           container="#map-builder-stage-container"
           ref={stageRef}
-          width={window.innerWidth + grid.tileSize}
-          height={window.innerHeight + grid.tileSize}
+          width={window.innerWidth}
+          height={window.innerHeight}
           draggable={tilesLocked}
           x={stagePosition.x}
           y={stagePosition.y}
@@ -821,7 +743,7 @@ export default function MapCanvas(props) {
           onMouseLeave={handleMouseLeave}
         >
           {/* grid coordinate/"checkerboard" squares layer */}
-          <Layer visible={!props.viewState} name="coordinateGrid">
+          <Layer visible={!viewState} name="coordinateGrid">
             {coordinateSquares}
           </Layer>
 
@@ -836,15 +758,15 @@ export default function MapCanvas(props) {
             {/* TILES */}
             {mapLayout.map((tile) => 
               <CanvasTile
-                key={tile.idx}
-                id={tile.idx}
+                key={tile.id !== undefined ? tile.id : tile.idx}
+                id={tile.id !== undefined ? tile.id : tile.idx}
                 draggable={!tilesLocked}
-                imgKey={tile.imgKey}
-                image_src={tile.image_src}
+                imgKey={`img_${tile.id !== undefined ? tile.id : tile.idx}`}
+                image_src={tile.Tile !== undefined ? tile.Tile.image_url : tile.image_src}
                 width={grid.tileSize}
                 height={grid.tileSize}
                 rotation={tile.rotation}
-                scale={tile.scale}
+                scale={tile.mirror !== undefined ? JSON.parse(tile.mirror) : tile.scale}
                 x={tile.x * grid.tileSize}
                 y={tile.y * grid.tileSize}
                 onDragStart={handleTileDragStart}
@@ -856,33 +778,17 @@ export default function MapCanvas(props) {
             )}
             {/* PINS */}
             {mapPins.map(pin => {
-              let x = pin.x; let y = pin.y;
-              if(draggingPin.x === 0 && draggingPin.y === 0) {
-                x = pin.x;
-                y = pin.y - (grid.tileSize / 5);
-              } else {
-                x = pin.x;
-                y = pin.y;
-              }
-              return (<Spring
-                key={pin.idx}
-                // native
-                from={{ 
-                  opacity: draggingPin ? 0 : 1,
-                  x: x,
-                  y: y,
-                }}
-                to={{ y: pin.y, opacity: 1, x: pin.x }}
-                config={{velocity: 5, friction: 10, mass: 2}}
-                // config={{mass: 2, tension: 270, friction: 40, clamp: false, velocity: 2}}
-                draggable={!tilesLocked}
-              >
-                {props => (
-                  <animated.Path
+              // let x = pin.x; let y = pin.y;
+              // if(draggingPin.x === 0 && draggingPin.y === 0) {
+              //   x = pin.x;
+              //   y = pin.y - (grid.tileSize / 5);
+              // }
+              return (
+                <Path
                   className="map-pin"
-                  id={pin.idx}
-                  x={props.x} 
-                  y={props.y} 
+                  id={pin.id !== undefined ? pin.id : pin.idx}
+                  x={pin.x} 
+                  y={pin.y} 
                   fill={pin.fill}
                   draggable={!tilesLocked}
                   strokeWidth={0}
@@ -894,8 +800,39 @@ export default function MapCanvas(props) {
                   onMouseEnter={(e) => handleMouseEnter(e, 'pin', 'pointer')}
                   onMouseLeave={handleMouseLeave}
                 />
-                )}
-              </Spring>)
+              // <Spring
+              //   key={pin.idx}
+              //   // native
+              //   from={{ 
+              //     opacity: draggingPin ? 0 : 1,
+              //     x: pin.x,
+              //     y: pin.y,
+              //   }}
+              //   to={{ y: pin.y, opacity: 1, x: pin.x }}
+              //   config={{velocity: 1, friction: 21, mass: 2, delay: 100}}
+              //   // config={{mass: 2, tension: 270, friction: 40, clamp: false, velocity: 2}}
+              //   draggable={!tilesLocked}
+              // >
+              //   {props => (
+              //     <animated.Path
+              //     className="map-pin"
+              //     id={pin.idx}
+              //     x={props.x} 
+              //     y={props.y} 
+              //     fill={pin.fill}
+              //     draggable={!tilesLocked}
+              //     strokeWidth={0}
+              //     data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
+              //     visible={pinsVisible}
+              //     onClick={(e) => handlePinOnClick(e)}
+              //     onDragStart={(e) => handlePinDragStart(e)}
+              //     onDragEnd={(e) => handlePinDragEnd(e)}
+              //     onMouseEnter={(e) => handleMouseEnter(e, 'pin', 'pointer')}
+              //     onMouseLeave={handleMouseLeave}
+              //   />
+              //   )}
+              // </Spring>
+              )
             })}
           </Layer>
           
