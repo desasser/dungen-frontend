@@ -8,6 +8,11 @@ const theme = createMuiTheme({
         color: 'white'
       }
     },
+    MuiFilledInput: {
+      underline: {
+        color: 'white'
+      }
+    },
     MuiInputLabel: {
       root: {
         color: 'white',
