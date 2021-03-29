@@ -248,19 +248,6 @@ export default function MapBuilder(props) {
     setAuthState(false);
   };
 
-  /**
-   * MAP CANVAS + MAP CONTROLS FUNCTIONS
-   */
-  // TILES RESEVOIR
-  // const handleDraggableItem = (e) => {
-  //   const tileData = {
-  //     TileId: e.target.dataset.tileid,
-  //     image_src: e.target.src
-  //     // image_src: e.target.style.backgroundImage.substring(5, e.target.style.backgroundImage.length - 2)
-  //   }
-  //   e.dataTransfer.setData('dropped_tile', JSON.stringify(tileData));
-  // };
-
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   );
