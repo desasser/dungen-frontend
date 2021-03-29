@@ -5,6 +5,7 @@ import API from "../utils/API";
 export const CanvasContext = createContext();
 
 const CanvasContextProvider = (props) => {
+  // props: receives mapId & user from page MapBuilder
   const userId = props.user.id;
 
   const [stageRef, setStageRef] = useState(null);
@@ -12,44 +13,51 @@ const CanvasContextProvider = (props) => {
 
   const tileSize = 100;
 
-  const [mapSettings, setMapSettings] = useState( JSON.parse(localStorage.getItem('dungen_map_settings')) || {} );
+  const settingsDefaults = {
+    name: "",
+    rows: 20,
+    columns: 40,
+    infinite: false,
+    EnvironmentId: 1,
+    public: false,
+    id: null,
+    UserId: props.user.id
+  }
 
-  const [grid, setGrid] = useState({
+  const stagePositionDefault = { x: 0, y: 0, recenterX: 0, recenterY: 0 }
+
+  const gridDefaults = {
     tileSize: tileSize,
-    infinite: mapSettings.infinite,
-    rows: mapSettings.rows, // 30 tiles tall
-    columns: mapSettings.columns, // 50 tiles wide
-    containerWidth: tileSize * mapSettings.columns,
-    containerHeight: tileSize * mapSettings.rows,
-    startX: tileSize * mapSettings.columns * -tileSize,
-    startY: tileSize * mapSettings.rows * -tileSize,
-    endX: tileSize * mapSettings.columns * tileSize,
-    endY: tileSize * mapSettings.rows * tileSize,
-    // maxX: 999,
-    // maxY: 999,
-    // minX: -999,
-    // minY: -999
-  });
+    infinite: settingsDefaults.infinite,
+    rows: settingsDefaults.rows, // 30 tiles tall
+    columns: settingsDefaults.columns, // 50 tiles wide
+    containerWidth: tileSize * settingsDefaults.columns,
+    containerHeight: tileSize * settingsDefaults.rows,
+    startX: (tileSize * settingsDefaults.columns * -tileSize) - tileSize - stagePositionDefault.x,
+    startY: (tileSize * settingsDefaults.rows * -tileSize) - tileSize  - stagePositionDefault.y,
+    endX: (tileSize * settingsDefaults.columns * tileSize) - tileSize  - stagePositionDefault.x,
+    endY: (tileSize * settingsDefaults.rows * tileSize) - tileSize  - stagePositionDefault.y
+  }
 
-  const [stagePosition, setStagePosition] = useState(JSON.parse(localStorage.getItem('dungen_stageposition')) || { 
-    x: 0, y: 0,
-    recenterX: 0, recenterY: 0
-  });
+  // const [mapSettings, setMapSettings] = useState( JSON.parse(localStorage.getItem('dungen_map_settings')) || settingsDefaults );
+  const [mapSettings, setMapSettings] = useState( settingsDefaults );
+
+  const [grid, setGrid] = useState(gridDefaults);
+
+  // const [stagePosition, setStagePosition] = useState(JSON.parse(localStorage.getItem('dungen_stageposition')) || stagePositionDefault);
+  const [stagePosition, setStagePosition] = useState( stagePositionDefault );
+
+  // const [mapLayout, setMapLayout] = useState(JSON.parse(localStorage.getItem('dungen_map_tiles')) || []);
+  const [mapLayout, setMapLayout] = useState( [] );
+
+  const [mapPins, setMapPins] = useState([]);
   
   // "view" the map without coordinate tiles ("build" would be with the grid)
   const [viewState, setViewState] = useState(false);
 
   const [tilesLocked, setTilesLocked] = useState(false);
   const [gridCentered, setGridCentered] = useState(true);
-  const [mapLayout, setMapLayout] = useState(JSON.parse(localStorage.getItem('dungen_map_tiles')) || []);
-
-  // const pinColors = {
-  //   Environmental: 'forestgreen',
-  //   Combat: 'firebrick',
-  //   Trap: 'orchid',
-  //   Social: 'dodgerblue',
-  //   Other: 'salmon'
-  // }
+  
   const pinColors = [
     'black', // placeholder, 0
     'forestgreen', // environmental, 1
@@ -59,7 +67,6 @@ const CanvasContextProvider = (props) => {
     'salmon', // other, 5
   ]
 
-  const [mapPins, setMapPins] = useState([]);
   const [pinsVisible, setPinsVisible] = useState(true);
   const [activePin, setActivePin] = useState(null);
   const [shadowPinParams, setShadowPinParams] = useState({
@@ -78,59 +85,34 @@ const CanvasContextProvider = (props) => {
   })
 
   useEffect(() => {
+    console.log("canvascontext loaded with props:", props)
+    
+    loadFromLocalStorage();
+
+  }, [props]);
+
+  const loadFromLocalStorage = () => {
     const savedSettings = JSON.parse(localStorage.getItem('dungen_map_settings')) || null;
     const savedLayout = JSON.parse(localStorage.getItem('dungen_map_tiles')) || null;
     const savedEncounters = JSON.parse(localStorage.getItem('dungen_map_encounters')) || null;
     const savedGrid = JSON.parse(localStorage.getItem('dungen_map_grid')) || null;
     const savedStagePosition = JSON.parse(localStorage.getItem('dungen_stageposition')) || null;
-    
-    if(savedSettings !== null) {
-      if((userId !== "" && savedSettings.UserId === "") || parseInt(userId) === savedSettings.UserId) {
-        savedSettings.UserId = userId;
-        localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
 
-        if(savedLayout !== null) { setMapLayout(savedLayout); }
-        if(savedEncounters !== null) { setMapPins(savedEncounters); }
-        if(savedGrid !== null) { setGrid(savedGrid); }
-        if(savedStagePosition !== null) { setStagePosition(savedStagePosition); }
+    savedSettings.UserId = userId;
+    localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
 
-        setMapSettings(savedSettings);
-      } else {
-        setMapSettings({
-          name: "",
-          rows: 30,
-          columns: 50,
-          infinite: false,
-          EnvironmentId: 1,
-          public: false,
-          id: null,
-          UserId: userId,
-        });
-        setMapLayout([]);
-        setMapPins([]);
-        setGrid({
-          ...grid,
-          rows: 30,
-          columns: 50,
-          infinite: false
-        })
-      }
-    }
+    if(savedLayout !== null) { setMapLayout(savedLayout); }
+    if(savedEncounters !== null) { setMapPins(savedEncounters); }
+    if(savedGrid !== null) { setGrid(savedGrid); }
+    if(savedStagePosition !== null) { setStagePosition(savedStagePosition); }
 
-    // if(props.mapId !== undefined && props.mapId !== null && savedSettings !== null && savedSettings.id === parseInt(props.mapId)) {
-    //   setMapSettings({
-    //     ...mapSettings,
-    //     ...savedSettings
-    //   });
-    //   console.log("mapSettings should be:", {...mapSettings, ...savedSettings})
-    // }
-
-  }, []);
+    setMapSettings(savedSettings);
+  }
 
   useEffect(() => {
     updateLocalStorage();
 
-  }, [mapSettings, grid, mapLayout, mapPins, pinsVisible])
+  }, [mapSettings, grid, mapLayout, mapPins, pinsVisible, stagePosition])
 
   const updateLocalStorage = () => {
     setMapData({...mapSettings, ...grid, MapTiles: mapLayout, MapEncounters: mapPins, pinsVisible});
@@ -259,7 +241,7 @@ const CanvasContextProvider = (props) => {
     stageRef, setStageRef,
     stageParentRef, setStageParentRef,
     mapSettings, mapData,
-    grid, setGrid,
+    gridDefaults, grid, setGrid,
     stagePosition, setStagePosition,
     tilesLocked, setGridCentered,
     mapLayout, setMapLayout,
@@ -305,7 +287,7 @@ const CanvasContextProvider = (props) => {
     activePin, setActivePin, handlePinStatus, grid, stageRef, stagePosition, viewState, toggleViewState
   }
 
-  const settingsData = { mapSettings, setMapSettings, renderImage }
+  const settingsData = { settingsDefaults, mapSettings, setMapSettings, renderImage, setMapLayout }
 
   return (
     <CanvasContext.Provider value={{ canvasData, controlsData, settingsData, handleDraggableItem }}>
