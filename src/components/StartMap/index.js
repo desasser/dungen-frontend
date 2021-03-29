@@ -76,10 +76,6 @@ function StartMap(props) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('dungen_map_settings', JSON.stringify(mapSettings));
-  }, [mapSettings])
-
-  useEffect(() => {
     if(mapSaved !== null) {
       setMapSettings({...mapSettings, id: mapSaved})
       history.push(`/builder/${mapSaved}`);

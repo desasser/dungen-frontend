@@ -69,8 +69,8 @@ export default function MapCanvas(props) {
   const {
     mapSettings, mapData,
     setStageRef, setStageParentRef,
-    grid, setGrid,
-    stagePosition, setStagePosition,
+    gridDefaults, grid, setGrid,
+    stagePositionDefault, stagePosition, setStagePosition,
     tilesLocked, setGridCentered,
     mapLayout, setMapLayout,
     mapPins, setMapPins,
@@ -132,24 +132,25 @@ export default function MapCanvas(props) {
     "#05a8aa", // elemental water
   ]
 
+  // for now, just resets everything to "blank" if the stuff in localStorage is for a saved map
+  // and we're opening the builder page "raw" (not loading a saved map)
   useEffect(() => {
-    const savedLayout = localStorage.getItem('dungen_map_tiles') !== undefined ? JSON.parse(localStorage.getItem('dungen_map_tiles')) : null;
-    if(mapSettings.UserId === props.userId) {
-      setMapLayout(savedLayout);
-    }
-        
-    // const canvasLayout = savedLayout.map(tile => {tile.idx = uuidv4(); tile.image_src = tile.Tile.image_url;});
-    // const canvasTiles = stageRef.current.children[2].children;
-    // if(canvasTiles.length > 0 && (savedLayout === null || savedLayout.length === 0)) {
+    const savedSettings = JSON.parse(localStorage.getItem('dungen_map_settings')) || null;
 
-    // }
-  }, []);
-
-  useEffect(() => {
-    if(mapSettings.UserId === props.userId) {
-      localStorage.setItem('dungen_map_tiles', JSON.stringify(mapLayout));
+    if(savedSettings !== null && savedSettings.id !== null && props.mapId === null) {
+      setMapLayout([]);
+      setMapPins([]);
+      setGrid(gridDefaults);
+      setStagePosition(stagePositionDefault)
     }
-  }, [mapLayout]);
+
+  }, [props])
+
+  // useEffect(() => {
+  //   if(mapSettings.UserId === props.userId) {
+  //     localStorage.setItem('dungen_map_tiles', JSON.stringify(mapLayout));
+  //   }
+  // }, [mapLayout]);
 
   /**
    * SETTING HEIGHT & WIDTH OF STAGE
@@ -161,8 +162,8 @@ export default function MapCanvas(props) {
       setStageParentRef(stageParentRef);
       setGrid({
         ...grid,
-        containerWidth: window.innerWidth,
-        containerHeight: window.innerHeight
+        containerWidth: window.innerWidth - 380, // 380 = width of superdrawer
+        containerHeight: window.innerHeight - 75, // 75 = navbar height
       });
 
       if(mapSettings !== null) {
@@ -178,12 +179,19 @@ export default function MapCanvas(props) {
    * e.g. to environment or # of rows/columns
    */
   useEffect(() => {
+    const rows = mapSettings.rows !== null ? mapSettings.rows : 20;
+    const columns = mapSettings.columns !== null ? mapSettings.columns : 40
+
     setGrid({
       ...grid,
-      rows: mapSettings.rows !== null ? mapSettings.rows : 30,
-      columns: mapSettings.columns !== null ? mapSettings.columns : 50,
-      infinite: mapSettings.infinite
-    })
+      rows: rows,
+      columns: columns,
+      infinite: mapSettings.infinite,
+      startX: 0,
+      startY: 0,
+      endX: (grid.tileSize * columns) - grid.tileSize,
+      endY: (grid.tileSize * rows) - grid.tileSize,
+    });
 
     createGrid();
     updateStagePosition();
@@ -219,16 +227,6 @@ export default function MapCanvas(props) {
   // }, [mapLayout]);
 
   const updateStagePosition = () => {
-    // const savedStagePosition = localStorage.getItem('dungen_stageposition') !== undefined ? JSON.parse(localStorage.getItem('dungen_stageposition')) : null;
-
-    // if(savedStagePosition !== null) {
-    //   setStagePosition(savedStagePosition);
-      
-    //   if(savedStagePosition.x !== savedStagePosition.recenterX || savedStagePosition.y !== savedStagePosition.recenterY) {
-    //     setGridCentered(false);
-    //   }
-
-    // }
     
     if(!mapData.infinite) {
       const gridWidth = grid.tileSize * grid.columns;
@@ -252,12 +250,13 @@ export default function MapCanvas(props) {
       }
       setStagePosition(newStagePosition);
       localStorage.setItem('dungen_stageposition', JSON.stringify(newStagePosition));
+
     }
     createGrid();
   }
 
   const createGrid = () => {
-    const gridInit = grid.infinite ? updateGridProps(stagePosition) : { ...grid, startX: 0, startY: 0, endX: grid.tileSize * grid.columns, endY: grid.tileSize * grid.rows };
+    const gridInit = grid.infinite ? grid : { ...grid, startX: 0, startY: 0, endX: grid.tileSize * grid.columns, endY: grid.tileSize * grid.rows };
     
     var i = 0;
 
@@ -320,31 +319,31 @@ export default function MapCanvas(props) {
     }
   }
   
-  const updateGridProps = (position = null) => {
-    if(position === null) { position = stagePosition; }
-    let { containerWidth, containerHeight } = grid;
-    if(mapData.infinite) {
-      containerWidth = window.innerWidth - 380;
-      containerHeight = window.innerHeight - 75;
-    }
+  // const updateGridProps = (position = null) => {
+  //   if(position === null) { position = stagePosition; }
+  //   // let { containerWidth, containerHeight } = grid;
+  //   // if(mapData.infinite) {
+  //   //   containerWidth = window.innerWidth - 380;
+  //   //   containerHeight = window.innerHeight - 75;
+  //   // }
 
-    const startX = Math.floor((-position.x - containerWidth) / grid.tileSize) * grid.tileSize;
-    const endX = Math.floor((-position.x + containerWidth * 2) / grid.tileSize) * grid.tileSize;
-    const startY = Math.floor((-position.y - containerHeight) / grid.tileSize) *  grid.tileSize;
-    const endY = Math.floor((-position.y + containerHeight * 2) / grid.tileSize) * grid.tileSize;
+  //   // const startX = 0;
+  //   // const startY = 0;
+  //   // const endX = (grid.tileSize * grid.rows) + stagePosition.x;
+  //   // const endY = (grid.tileSize * grid.columns) + stagePosition.y;
 
-    const gridInit = {
-      ...grid,
-      startX: startX,
-      endX: endX,
+  //   // const gridInit = {
+  //   //   ...grid,
+  //   //   startX: 0,
+  //   //   endX: 0,
 
-      startY: startY,
-      endY: endY,
-    };
+  //   //   startY: 0,
+  //   //   endY: 0,
+  //   // };
 
-    setGrid(gridInit);
-    return gridInit;
-  };
+  //   // setGrid(gridInit);
+  //   // return gridInit;
+  // };
 
   /**
    * GENERAL FUNCTIONS
@@ -413,14 +412,17 @@ export default function MapCanvas(props) {
   const handleGridDragOver = (e) => {
     e.preventDefault();
     // Math.round(pos.x / grid.tileSize) * grid.tileSize
-    checkTileIntersects({ x: Math.round(e.pageX / grid.tileSize) * grid.tileSize, y: (Math.round(e.pageY / grid.tileSize) * grid.tileSize) - grid.tileSize });
+    checkTileIntersects({ 
+      x: Math.round(e.pageX / grid.tileSize) * grid.tileSize, 
+      y: (Math.round(e.pageY / grid.tileSize) * grid.tileSize) - grid.tileSize 
+    });
   }
 
   const handleGridDragEnd = (e) => {
     if(tilesLocked && (e.currentTarget.x() !== 0 || e.currentTarget.y() !== 0)) {
       setStagePosition({...stagePosition, x: e.currentTarget.x(), y: e.currentTarget.y()});
       setGridCentered(false);
-      updateGridProps(e.currentTarget.position());
+      // updateGridProps(e.currentTarget.position());
     }
   };
 
@@ -489,34 +491,45 @@ export default function MapCanvas(props) {
   };
 
   const handleTileDragMove = (e) => {
-    checkTileIntersects({ x: e.target.x() + stagePosition.x, y: e.target.y() + stagePosition.y });
+    checkTileIntersects({ 
+      x: e.target.x() + stagePosition.x, 
+      y: e.target.y() + stagePosition.y
+    });
   }
 
   const checkTileIntersects = (pos) => {
     const { x, y } = tilePos(pos);
 
-    // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
-    const layerChildren = stageRef.current.children[2].children;
+    // basically, if the x && y coordinates are within the defined grid space, check for intersections
+    // otherwise, the tile simply can't be placed there
+    console.log("tile intersects", grid.startX, grid.endX)
+    if( x >= grid.startX && x <= grid.endX && y >= grid.startY && y <= grid.endY ) {
+      // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
+      const layerChildren = stageRef.current.children[2].children;
 
-    if(layerChildren.length === 1) {
-      setLastLegitSquare({x: x, y: y});
-      setShadowTileParams({
-        ...shadowTileParams,
-        x: x,
-        y: y,
-      });
-
-    } else {
-      const filteredChildren = layerChildren.filter(child => child.attrs.x === x && child.attrs.y === y)
-      if(filteredChildren.length === 0) {
+      if(layerChildren.length === 1) {
         setLastLegitSquare({x: x, y: y});
         setShadowTileParams({
           ...shadowTileParams,
           x: x,
           y: y,
         });
+
+      } else {
+        const filteredChildren = layerChildren.filter(child => child.attrs.x === x && child.attrs.y === y)
+        if(filteredChildren.length === 0) {
+          setLastLegitSquare({x: x, y: y});
+          setShadowTileParams({
+            ...shadowTileParams,
+            x: x,
+            y: y,
+          });
+        }
       }
     }
+
+    
+
   }
 
   const handleTileDragEnd = (e) => {
@@ -598,7 +611,7 @@ export default function MapCanvas(props) {
 
     let target = e.target;
     if(target.attrs.className === 'tile-image') {
-      target = target.parent;
+      target = target.getParent();
       setContextMenuActive(true);
     }
 
@@ -619,9 +632,11 @@ export default function MapCanvas(props) {
 
   const handleTileControlAction = (e) => {
     let action = e.target.closest("button") !== null ? e.target.closest("button").dataset.action : null;
+    let tile = activeTile .attrs.className === "tile-image-group" ? activeTile.children[0] : activeTile.attrs.className === "tile-image" ? activeTile : null;
 
-    if(action !== null) {
-      let tile = activeTile.attrs.className === "tile-image" ? activeTile.getParent() : activeTile;
+    if(action !== null && tile !== null) {
+      
+      console.log("tile action", tile);
       let rotation = tile.attrs.rotation !== undefined ? tile.attrs.rotation : 0;
       let scale = tile.attrs.scaleX !== undefined ? {x: tile.attrs.scaleX, y: tile.attrs.scaleY} : {x: 1, y: 1};
 
