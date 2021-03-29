@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function SearchBar({keyword, setKeyword}) {
+export default function SearchBar({keyword, onChange}) {
   const classes = useStyles();
 
   return (
@@ -41,19 +41,19 @@ export default function SearchBar({keyword, setKeyword}) {
       className={classes.root} 
       noValidate 
       autoComplete="off" 
-      onSubmit={(event) => setKeyword(event.target.value)} 
+      // onSubmit={(event) => updateInput(event.target.value)} 
     >
       <TextField 
         id="filled-basic" 
         label="Search" 
         variant="filled" 
-        onChange={(event) => setKeyword(event.target.value)} 
+        onChange={(event) => onChange(event.target.value)} 
         value={keyword} 
         className={classes.input} 
       />
       <div>
         <Button
-          onClick={(event) => setKeyword(event.target.value)}
+          // onClick={(event) => updateInput(event.target.value)}
           variant="contained"
           color="primary"
           className={classes.button}

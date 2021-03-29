@@ -26,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BrowseUsers(props) {
   const [users, setUsers] = useState([])
+  const [input, setInput] = useState(''); //this is search term
+  const [filteredUsers, setFilteredUsers] = useState([]); //these get filtered for search
   const [loadState, setLoadState] = useState(false)
   const [followedUsers, setFollowedUsers] = useState([])
   const [follows, setFollows] = useState([]);
@@ -44,7 +46,7 @@ export default function BrowseUsers(props) {
     API.getAllUsers()
       .then(res => {
         setUsers(res.data);
-        console.log('user data', res.data)
+        setFilteredUsers(res.data);
         setLoadState(true);
       }).catch(err => {
         console.log(err);
@@ -65,17 +67,25 @@ export default function BrowseUsers(props) {
     })
   }
 
+  const updateInput = (input) => {
+    const filtered = users.filter(user => {
+      return user.userName.toLowerCase().includes(input.toLowerCase())
+    });
+    setFilteredUsers(filtered);
+    setInput(input);
+  }
+
   return (
     <Container >
       <Typography variant='h4' style={{ textAlign: 'center', marginTop: 20, fontSize: 50, fontWeight: 'bold' }}>
         User Browser
       </Typography>
       <Divider/>
-      <SearchBar />
+      <SearchBar input={input} onChange={updateInput} />
       <Divider style={{marginBottom: 20}}/>
       <Grid container className={classes.root} spacing={2} >
-        {users.length > 0 ?
-          users.map(user => (
+        {filteredUsers.length > 0 ?
+          filteredUsers.map(user => (
             <Grid item md={12}>
               <UserCard key={user.id} id={user.id} userName={user.userName} currentUser={props.users.id} token={props.users.token}/>
               {/* followUser={followUser} */}

@@ -52,8 +52,10 @@ export default function BrowseMaps(props) {
       })
   }
 
-  const updateInput = () => {
-    const filtered = maps.filter(map => map.name.toLowerCase().includes(input.toLowerCase()));
+  const updateInput = (input) => {
+    const filtered = maps.filter(map => {
+      return map.name.toLowerCase().includes(input.toLowerCase())
+    });
     setFilteredMaps(filtered);
     setInput(input);
   }
@@ -63,9 +65,13 @@ export default function BrowseMaps(props) {
       <Typography variant='h4' style={{textAlign: 'center', marginTop: 20, fontSize: 50, fontWeight: 'bold'}}>
         Map Browser
       </Typography>
+
       <Divider/>
+
       <SearchBar input={input} onChange={updateInput} />
+
       <Divider/>
+
       <Container className={classes.savedMapCard} maxWidth={false}>
         {filteredMaps.length > 0 ?
           filteredMaps.map(map => (
