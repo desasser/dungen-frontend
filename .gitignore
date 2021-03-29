@@ -26,3 +26,6 @@ yarn-error.log*
 # VS Code settings
 .vscode
 /.vscode
+
+# Font awesome
+.npmrc

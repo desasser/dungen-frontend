@@ -64,9 +64,9 @@ const API = {
   getFollows: (userId) => {
     return axios.get(`${URL_PREFIX}/api/follows/${userId}`)
   },
-  saveMap: title => {
+  saveMap: name => {
     // console.log(map);
-    return axios.post(`${URL_PREFIX}/api/newMap`, title)
+    return axios.post(`${URL_PREFIX}/api/newMap`, name)
   },
   getMapTilesForMap: mapId => {
     return axios.get(`${URL_PREFIX}/api/maptiles/${mapId}`);
