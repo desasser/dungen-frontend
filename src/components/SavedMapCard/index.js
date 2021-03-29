@@ -77,7 +77,7 @@ export default function SavedMapCard(props) {
   }
 
   return (
-    <Card className={classes.root}>
+    <Card className={`${classes.root} searchable`}>
       <CardActionArea href={props.isOwner ? `/builder/${props.id}` : `/render/${props.id}`}>
         <CardMedia
           className={classes.media}
