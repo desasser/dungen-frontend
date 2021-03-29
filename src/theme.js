@@ -1,11 +1,18 @@
 import { Button } from '@material-ui/core';
-import { createMuiTheme }  from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
   overrides: {
     MuiInput: {
-        color: 'white',
-      },
+      underline: {
+        color: 'white'
+      }
+    },
+    MuiFilledInput: {
+      underline: {
+        color: 'white'
+      }
+    },
     MuiInputLabel: {
       root: {
         color: 'white',
@@ -14,11 +21,11 @@ const theme = createMuiTheme({
   },
   palette: {
     primary: {
-      main:'#03131e',
+      main: '#03131e',
       mainGradient: "radial-gradient(ellipse at 20% 30%, #f8b24c, #03131e",
       contrastText: '#f8b24c'
     },
-    secondary: { 
+    secondary: {
       main: '#f8b24c',
       contrastText: '#f3e3e4'
     },
@@ -45,25 +52,25 @@ const theme = createMuiTheme({
     h6: {
       fontFamily: 'Immortal, Arial Black, Arial'
     },
-    subtitle1 : {
+    subtitle1: {
       fontFamily: 'Arial'
     },
-    subtitle2 : {
+    subtitle2: {
       fontFamily: 'Arial'
     },
-    body1 : {
+    body1: {
       fontFamily: 'Arial'
     },
-    body2 : {
+    body2: {
       fontFamily: 'Arial'
     },
-    button : {
+    button: {
       fontFamily: 'Arial'
     },
-    caption : {
+    caption: {
       fontFamily: 'Arial'
     },
-    overline : {
+    overline: {
       fontFamily: 'Arial'
     },
   }

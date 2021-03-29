@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import UserCard from '../../components/UserCard';
+import SearchBar from '../../components/SearchBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Typography, Divider, Grid } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -69,6 +70,8 @@ export default function BrowseUsers(props) {
       <Typography variant='h4' style={{ textAlign: 'center', marginTop: 20, fontSize: 50, fontWeight: 'bold' }}>
         User Browser
       </Typography>
+      <Divider/>
+      <SearchBar />
       <Divider style={{marginBottom: 20}}/>
       <Grid container className={classes.root} spacing={2} >
         {users.length > 0 ?

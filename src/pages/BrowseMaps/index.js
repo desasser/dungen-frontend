@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SavedMapCard from '../../components/SavedMapCard';
+import SearchBar from '../../components/SearchBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Typography, Divider } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -31,6 +32,9 @@ export default function BrowseMaps(props) {
   const [maps, setMaps] = useState([])
   const [loadState, setLoadState] = useState(false)
   const classes = useStyles();
+  const [searchState, setSearchState] = useState({
+    query: ''
+  });
 
   useEffect(() => {
     loadMaps()
@@ -52,6 +56,8 @@ export default function BrowseMaps(props) {
       <Typography variant='h4' style={{textAlign: 'center', marginTop: 20, fontSize: 50, fontWeight: 'bold'}}>
         Map Browser
       </Typography>
+      <Divider/>
+      <SearchBar />
       <Divider/>
       <Container className={classes.savedMapCard} maxWidth={false}>
         {maps.length > 0 ?

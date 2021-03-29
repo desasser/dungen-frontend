@@ -35,6 +35,12 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
     },
     color: theme.palette.secondary.main,
+  },
+  iconColor: {
+    color: theme.palette.secondary.contrastText,
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    },
   }
 }));
 
@@ -104,11 +110,11 @@ export default function SavedMapCard(props) {
         <CardActions style={{ justifyContent: 'flex-end' }}>
           {isFavorite ?
             (
-            <IconButton aria-label="delete" onClick={handleFavorite}>
+            <IconButton aria-label="favorite" onClick={handleFavorite} className={classes.iconColor}>
               <StarBorderIcon />
             </IconButton>
             ) : (
-            <IconButton aria-label="delete" onClick={handleUnfavorite}>
+            <IconButton aria-label="unfavorite" onClick={handleUnfavorite} className={classes.iconColor}>
               <StarIcon />
             </IconButton>
             )
