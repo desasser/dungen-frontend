@@ -160,63 +160,84 @@ export default function MapBuilder(props) {
   const logIn = props.users.isLoggedIn;
   // console.log(logIn);
 
-  const [savedMap, setSavedMap] = useState(localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null);
-
   useEffect(() => {
-    // if(id === undefined && savedMap !== null && savedMap.id !== null) {
-    //   history.push(`/builder/${savedMap.id}`)
-    // }
-
-    let starterMapData = {
-      name: "",
-      rows: 30,
-      columns: 50,
-      tileSize: 100,
-      infinite: false,
-      EnvironmentId: 1,
-      MapTiles: [],
-      MapEncounters: [],
-      pinsVisible: true,
-      public: false,
-      UserId: props.users.id,
-      id: null
-    }
-
+    console.log(id);
     if (id !== "undefined" && id !== undefined && id !== null) {
       API.getSingleMap(id)
         .then((res) => {
           if (res.data !== "") {
-            starterMapData = {
-              ...starterMapData,
-              name: res.data.name,
-              rows: res.data.rows,
-              columns: res.data.columns,
-              infinite: res.data.rows === null || res.data.columns === null ? true : false,
-              EnvironmentId: res.data.EnvironmentId,
-              MapTiles: res.data.MapTiles,
-              MapEncounters: res.data.MapEncounters,
-              public: res.data.public,
-              id: res.data.id
-            }
-          }
+            const savedMapSettings = JSON.parse(localStorage.getItem('dungen_map_settings')) || null;
+            
+            if(savedMapSettings !== null && savedMapSettings.updatedLocallyAt < res.data.updatedAt) {
+              const dt = new Date();
+              const year = dt.getFullYear();
+              const month = (dt.getMonth() + 1).toString().padStart(2, '0');
+              const day = dt.getDate().toString().padStart(2, '0');
+              const hour = dt.getHours().toString().padStart(2, '0');
+              const min = dt.getMinutes().toString().padStart(2, '0');
+              const sec = dt.getSeconds().toString().padStart(2, '0');
 
-          if((savedMap !== null && savedMap.id !== id) || savedMap === null) {
-            localStorage.setItem('dungen_map', JSON.stringify(starterMapData))
-            setSavedMap(starterMapData);
+              let dateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+
+              const mapSettings = {
+                name: res.data.name,
+                rows: res.data.rows,
+                columns: res.data.columns,
+                infinite: res.data.rows === null || res.data.columns === null ? true : false,
+                EnvironmentId: res.data.EnvironmentId,
+                public: res.data.public,
+                id: parseInt(res.data.id),
+                UserId: res.data.UserId,
+              }
+
+              localStorage.setItem('dungen_map_settings', JSON.stringify({...mapSettings, updatedLocallyAt: dateTime}));
+              localStorage.setItem('dungen_map_tiles', JSON.stringify(res.data.MapTiles !== undefined ? res.data.MapTiles : []));
+              localStorage.setItem('dungen_map_encounters', JSON.stringify(res.data.MapEncounters !== undefined ? res.data.MapEncounters : []));
+
+              let savedGrid = localStorage.getItem('dungen_map_grid') !== undefined ? JSON.parse(localStorage.getItem('dungen_map_grid')) : null
+              if(savedGrid !== null) {
+                savedGrid = {
+                  ...savedGrid,
+                  rows: mapSettings.rows,
+                  columns: mapSettings.columns,
+                  infinite: mapSettings.infinite,
+                  containerWidth: mapSettings.columns * savedGrid.tileSize,
+                  containerHeight: mapSettings.rows * savedGrid.tileSize,
+                  startX: mapSettings.columns * savedGrid.tileSize * -1,
+                  startY: mapSettings.rows * savedGrid.tileSize * -1,
+                  endX: mapSettings.columns * savedGrid.tileSize,
+                  endY: mapSettings.rows * savedGrid.tileSize,
+                }
+
+                localStorage.setItem('dungen_map_grid', JSON.stringify(savedGrid));
+              }
+
+              const xOffset = ((window.innerWidth - 380) - (savedGrid.tileSize * savedGrid.columns)) / 2;
+              const yOffset = ((window.innerHeight - 75) - (savedGrid.tileSize * savedGrid.rows)) / 2;
+              const gridWidth = savedGrid.tileSize * savedGrid.columns;
+              const gridHeight = savedGrid.tileSize * savedGrid.rows;
+
+              let newStagePosition = {x: 0, y: 0, recenterX: 0, recenterY: 0}
+
+              if(window.innerWidth - 380 > gridWidth) {
+                newStagePosition = {...newStagePosition, x: xOffset, recenterX: xOffset}
+              } else {
+                newStagePosition = { ...newStagePosition, x: 0, recenterX: 0 }
+              }
+
+              if(window.innerHeight - 75 > gridHeight) {
+                newStagePosition = {...newStagePosition, y: yOffset, recenterY: yOffset}
+              } else {
+                newStagePosition = { ...newStagePosition, y: 0, recenterY: 0 }
+              }
+
+              localStorage.setItem('dungen_stageposition', JSON.stringify(newStagePosition))
+
+            }
           }
         })
         .catch(err => console.error(err));
-        
-    } else if((savedMap !== null && savedMap.id !== id) || savedMap === null) {
-      localStorage.setItem('dungen_map', JSON.stringify(starterMapData))
-      setSavedMap(starterMapData);
     }
-
-    if(savedMap.UserId === "" && props.users.id !== "") {
-      setSavedMap({...savedMap, UserId: props.users.id})
-      localStorage.setItem('dungen_map', JSON.stringify({...savedMap, UserId: props.users.id}));
-    }
-
   }, []);
 
   const toggleSavedState = () => {
@@ -231,14 +252,14 @@ export default function MapBuilder(props) {
    * MAP CANVAS + MAP CONTROLS FUNCTIONS
    */
   // TILES RESEVOIR
-  const handleDraggableItem = (e) => {
-    const tileData = {
-      TileId: e.target.dataset.tileid,
-      image_src: e.target.src
-      // image_src: e.target.style.backgroundImage.substring(5, e.target.style.backgroundImage.length - 2)
-    }
-    e.dataTransfer.setData('dropped_tile', JSON.stringify(tileData));
-  };
+  // const handleDraggableItem = (e) => {
+  //   const tileData = {
+  //     TileId: e.target.dataset.tileid,
+  //     image_src: e.target.src
+  //     // image_src: e.target.style.backgroundImage.substring(5, e.target.style.backgroundImage.length - 2)
+  //   }
+  //   e.dataTransfer.setData('dropped_tile', JSON.stringify(tileData));
+  // };
 
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
@@ -247,11 +268,11 @@ export default function MapBuilder(props) {
   return !isMobile ? (
     <Box>
       <div>
-        <CanvasContextProvider user={props.users}>
-          <DatabaseContextProvider user={props.users}>
-            <SuperDrawer mapId={id} />
+        <CanvasContextProvider mapId={id} user={props.users}>
+          <DatabaseContextProvider mapId={id} user={props.users}>
+            <SuperDrawer />
           </DatabaseContextProvider>
-          <MapCanvas mapId={id} />
+          <MapCanvas mapId={id} user={props.users} />
         </CanvasContextProvider>
       </div >
       {/* SNACKBAR NOTIFICATIONS */}

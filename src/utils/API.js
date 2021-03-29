@@ -68,28 +68,33 @@ const API = {
     // console.log(map);
     return axios.post(`${URL_PREFIX}/api/newMap`, title)
   },
+  getMapTilesForMap: mapId => {
+    return axios.get(`${URL_PREFIX}/api/maptiles/${mapId}`);
+  },
   saveMapTile: tile => {
     // console.log(tile);
     return axios.post(`${URL_PREFIX}/api/maptile`, tile)
   },
   updateMap: map => {
+    // console.log("API map", map)
     return axios.put(`${URL_PREFIX}/api/updateMap`, map);
   },
   updateMapTile: tile => {
-    return axios.put(`${URL_PREFIX}/api/maptile}`, tile)
+    return axios.put(`${URL_PREFIX}/api/maptile`, tile)
   },
   deleteMap: (mapId, token) => {
     // console.log(URL_PREFIX);
     return axios.delete(`${URL_PREFIX}/api/deleteMap/${mapId}`, {
       headers: {
         authorization: `Bearer: ${token}`
-      }
+      },
     })
   },
   favoriteMap: (userData) => {
     return axios.put(`${URL_PREFIX}/api/favorite`, userData)
   },
   unfavoriteMap: (unfavoriteData) => {
+    console.log("API, unfavoriteData", unfavoriteData)
     return axios.delete(`${URL_PREFIX}/api/unfavorite`, {
       data: unfavoriteData
     })
@@ -99,6 +104,14 @@ const API = {
       headers: {
         authorization: `Bearer: ${token}`
       }
+    })
+  },
+  bulkDeleteMapTiles: (tileIdArray, token) => {
+    return axios.delete(`${URL_PREFIX}/api/bulkdeletemaptiles`, {
+      headers: {
+        authorization: `Bearer: ${token}`
+      },
+      data: tileIdArray
     })
   },
   deleteAllMapTilesForMap: (mapId, token) => {

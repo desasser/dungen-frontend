@@ -62,7 +62,7 @@ function StartMap(props) {
   const { mapSettings, setMapSettings } = settingsData;
   
   const dbContext = useContext(DatabaseContext);
-  const { saveMapToDB, updateMapInDB, mapData, mapSaved, setMapSaved } = dbContext;
+  const { saveMapToDB, updateMapInDB, mapSaved } = dbContext;
 
   const [environmentSelectList, setEnvironmentSelectList] = useState([]);
   
@@ -76,16 +76,15 @@ function StartMap(props) {
   }, []);
 
   useEffect(() => {
-    if(mapSaved !== null) {
-      history.push(`/builder/${mapSaved}`);
-      // setMapSaved(null);
-    }
+    localStorage.setItem('dungen_map_settings', JSON.stringify(mapSettings));
+  }, [mapSettings])
 
-    if(props.mapId !== undefined && props.mapId !== "undefined" && props.mapId !== null && props.mapId !== "null") {
-      mapData.id = props.mapId;
-      localStorage.setItem('dungen_map', JSON.stringify(mapData));
+  useEffect(() => {
+    if(mapSaved !== null) {
+      setMapSettings({...mapSettings, id: mapSaved})
+      history.push(`/builder/${mapSaved}`);
     }
-  }, [mapSaved, props.mapId]);
+  }, [mapSaved]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -100,17 +99,19 @@ function StartMap(props) {
     setMapSettings({
       ...mapSettings,
       [event.target.name]: event.target.checked,
-      rows: !mapSettings.infinite ? null : parseInt(mapSettings.rows),
-      columns: !mapSettings.infinite ? null : parseInt(mapSettings.columns),
+      rows: mapSettings.infinite ? null : parseInt(mapSettings.rows),
+      columns: mapSettings.infinite ? null : parseInt(mapSettings.columns),
     });
   };
 
   const handleSettingsSubmit = (e) => {
     e.preventDefault();
-    if(mapSettings.id === null && mapSettings.UserId === null) {
-      updateMapInDB(mapSettings);
-    } else {
-      saveMapToDB(mapSettings);
+
+    if(mapSettings.id !== null && mapSettings.UserId !== null) {
+      updateMapInDB();
+
+    } else if(mapSettings.UserId !== null) {
+      saveMapToDB();
     }
   }
 
@@ -240,8 +241,8 @@ function StartMap(props) {
           Save Map
         </Typography>
       </Button>
-      <input type="hidden" name="id" value={mapData.id} />
-      <input type="hidden" name="UserId" value={mapData.UserId} />
+      <input type="hidden" name="id" value={mapSettings.id} />
+      <input type="hidden" name="UserId" value={mapSettings.UserId} />
     </FormControl>
   );
 }
