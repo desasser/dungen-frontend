@@ -22,7 +22,7 @@ const CanvasContextProvider = (props) => {
     EnvironmentId: 1,
     public: false,
     id: null,
-    UserId:UserId
+    UserId: UserId
   }
 
   const stagePositionDefault = { x: 0, y: 0, recenterX: 0, recenterY: 0 }
@@ -86,7 +86,6 @@ const CanvasContextProvider = (props) => {
   })
 
   useEffect(() => {
-    // console.log("canvascontext loaded with props:", props)
     const savedSettings = JSON.parse(localStorage.getItem('dungen_map_settings')) || null;
     const savedLayout = JSON.parse(localStorage.getItem('dungen_map_tiles')) || null;
     const savedEncounters = JSON.parse(localStorage.getItem('dungen_map_encounters')) || null;
@@ -95,8 +94,8 @@ const CanvasContextProvider = (props) => {
 
     // if the props mapId === the id saved in localStorage AND the user IDs match,
     // load from localStorage
-    if(MapId === savedSettings.id && UserId === savedSettings.UserId) {
-      savedSettings.UserId = UserId;
+    if(savedSettings !== null && MapId === savedSettings.id) {
+      // savedSettings.UserId = props.user.id;
       localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
 
       if(savedLayout !== null) { setMapLayout(savedLayout); }
@@ -106,8 +105,8 @@ const CanvasContextProvider = (props) => {
 
       setMapSettings(savedSettings);
     }
-
-    if( isNaN(MapId) ) {
+    
+    if( isNaN(MapId) && (savedSettings === null || savedSettings.id !== null) ) {
       setMapSettings(settingsDefaults);
       setGrid(gridDefaults);
       setMapLayout([]);
@@ -199,7 +198,7 @@ const CanvasContextProvider = (props) => {
     setActivePin(null);
   }
 
-  const renderImage = () => {
+  const renderImage = (updateDB=true) => {
     let uri = "";
     // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
     let target = stageRef.current.children[2];
@@ -232,7 +231,7 @@ const CanvasContextProvider = (props) => {
 
     localStorage.setItem('dungen_map_image', uri);
 
-    if(mapSettings.id !== null) {
+    if(updateDB && mapSettings.id !== null) {
       API.updateMap({ id: mapSettings.id, image_url: uri })
       .then(updatedMap => {
         // console.log("saved image", updatedMap);
@@ -240,8 +239,9 @@ const CanvasContextProvider = (props) => {
         // return uri;
       })
       .catch(err => console.error(err));
-
     }
+
+    return uri;
   }
 
   const canvasData = {

@@ -59,7 +59,7 @@ function StartMap(props) {
   const history = useHistory();
 
   const { settingsData } = useContext(CanvasContext);
-  const { mapSettings, setMapSettings } = settingsData;
+  const { mapSettings, setMapSettings, renderImage } = settingsData;
   
   const dbContext = useContext(DatabaseContext);
   const { saveMapToDB, updateMapInDB, mapSaved } = dbContext;
@@ -102,6 +102,8 @@ function StartMap(props) {
 
   const handleSettingsSubmit = (e) => {
     e.preventDefault();
+
+    renderImage(false);
 
     if(mapSettings.id !== null && mapSettings.UserId !== null) {
       updateMapInDB();
