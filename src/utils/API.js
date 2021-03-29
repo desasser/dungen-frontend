@@ -1,7 +1,7 @@
 const axios = require("axios")
-
+//local url communication
 const URL_PREFIX = "http://localhost:3030"
-// When ready, the deployed site will use the following:
+//When ready, the deployed site will use the following:
 // const URL_PREFIX = "https://quiet-caverns-20153.herokuapp.com"
 
 const API = {
