@@ -106,11 +106,13 @@ export default function RenderedMap(props) {
 
   const mapTitleRef = React.useRef(null);
 
-  const [mapData, setMapData] = React.useState({ img_url: "", mapTitle: "", mapId: null })
+  const [mapData, setMapData] = React.useState({ image_url: "", mapTitle: "", mapId: null })
 
   const [rendered, setRendered] = useState(false);
 
-  const savedMap = localStorage.getItem('dungen_map') !== undefined ? JSON.parse(localStorage.getItem('dungen_map')) : null;
+  const savedSettings = JSON.parse(localStorage.getItem('dungen_map_settings')) || null;
+
+  const savedURI = localStorage.getItem('dungen_map_image');
 
   let { id } = useParams();
 
@@ -120,23 +122,16 @@ export default function RenderedMap(props) {
       API.renderMap(id)
       .then(mapData => {
         console.log("mapdata", mapData.data);
-        setMapData(mapData.data);
+        setMapData(mapData.data)
         setRendered(true);
-
-        API.updateMap({id: mapData.data.mapId, image_url: mapData.data.image_url})
-        .then(results => {
-          console.log("UPDATED MAP WITH IMAGE", results);
-        })
-        .catch(err => console.error(err));
       })
       .catch(err => console.error(err));
-    } else {
-      const savedURI = localStorage.getItem('dungen_map_image');
 
+    } else {
       if(savedURI !== null) {
-        if(savedMap !== null && savedMap.name !== "" && mapTitleRef.current) {
-          setMapData({ ...mapData, mapTitle: savedMap.name });
-          mapTitleRef.current = savedMap.name
+        if(savedSettings !== null && savedSettings.name !== "" && mapTitleRef.current) {
+          setMapData({ ...mapData, mapTitle: savedSettings.name });
+          mapTitleRef.current = savedSettings.name
         }
         
         setMapData({ ...mapData, image_url: savedURI});

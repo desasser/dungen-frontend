@@ -55,7 +55,7 @@ function App() {
 
   const userAuth = () => {
     API.getAuthToken(token).then(res => {
-      console.log("got the token!")
+      // console.log("got the token!")
       setUserState({
         id: res.data.id,
         userName: res.data.userName,
@@ -63,9 +63,9 @@ function App() {
         isLoggedIn: true
       })
     }).catch(err => {
-      console.log(err)
+      // console.log(err)
       localStorage.removeItem("token");
-      console.log("not properly Authed")
+      // console.log("not properly Authed")
       setLoginState({
         userName: "",
         password: ""
@@ -82,7 +82,7 @@ function App() {
       ...loginState,
       [name]: value
     })
-    console.log(loginState)
+    // console.log(loginState)
   }
 
   // const redirect = ()=>history.push("/dashboard")
@@ -93,13 +93,13 @@ function App() {
   //Using the "HandleSubmit" as temple
   const handleSubmit = event => {
     event.preventDefault()
-    console.log("this is the login page.")
+    // console.log("this is the login page.")
     console.log(event)
 
     if (formSwitch.login === true) {
       API.login(loginState).then(res => {
-        console.log("so far so good on the API login call.");
-        console.log(res.data);
+        // console.log("so far so good on the API login call.");
+        // console.log(res.data);
         localStorage.setItem("token", res.data.token)
         setUserState({
           id: res.data.id,
@@ -118,8 +118,8 @@ function App() {
       })
     } else {
       API.signup(loginState).then(res => {
-        console.log("so far so good on the API login call.");
-        console.log(res.data);
+        // console.log("so far so good on the API login call.");
+        // console.log(res.data);
         localStorage.setItem("token", res.data.token)
         setUserState({
           id: res.data.id,
