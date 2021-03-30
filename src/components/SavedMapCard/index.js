@@ -93,7 +93,7 @@ export default function SavedMapCard(props) {
   }
 
   return (
-    <Card className={`classes.root searchable`} style={{border: props.isOwner ? "2px solid #f8b24c" : "none"}}>
+    <Card className={`${classes.root} searchable`} style={{border: props.isOwner ? "2px solid #f8b24c" : "none"}}>
       <CardActionArea href={props.isOwner ? `/builder/${props.id}` : `/render/${props.id}`}>
         <CardMedia
           className={classes.media}
@@ -105,7 +105,7 @@ export default function SavedMapCard(props) {
             {props.name}
           </Typography>
           <Typography variant="body2" component="p">
-            Created by: {mapOwner}
+            {mapOwner !== null && `Created by: ${mapOwner}`}
           </Typography>
         </CardContent>
       </CardActionArea>

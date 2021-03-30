@@ -94,7 +94,7 @@ const CanvasContextProvider = (props) => {
 
     // if the props mapId === the id saved in localStorage AND the user IDs match,
     // load from localStorage
-    if(savedSettings !== null && MapId === savedSettings.id) {
+    if( (savedSettings !== null && MapId === savedSettings.id) || (savedSettings.id === null && savedSettings.UserId === "") ) {
       // savedSettings.UserId = props.user.id;
       localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
 
