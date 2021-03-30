@@ -75,7 +75,7 @@ export default function BrowseMaps(props) {
       <Container className={classes.savedMapCard} maxWidth={false}>
         {filteredMaps.length > 0 ?
           filteredMaps.map(map => (
-            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} currentUser={props.users.id} token={props.users.token} isOwner={false}/>
+            <SavedMapCard key={map.id} id={map.id} name={map.name} image={map.image_url} currentUser={props.users.id} token={props.users.token} isOwner={map.UserId === parseInt(props.users.id)} favedBy={map.Favorite} owner={map.User.userName} />
           )) : (
             (!loadState ? (
               <CircularProgress size='5em' color='primary' style={{ marginTop: '50px' }} />

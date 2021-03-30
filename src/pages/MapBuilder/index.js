@@ -161,7 +161,6 @@ export default function MapBuilder(props) {
   // console.log(logIn);
 
   useEffect(() => {
-    console.log(id);
     if (id !== "undefined" && id !== undefined && id !== null) {
       API.getSingleMap(id)
         .then((res) => {

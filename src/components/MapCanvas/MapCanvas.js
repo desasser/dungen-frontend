@@ -182,7 +182,7 @@ export default function MapCanvas(props) {
     const rows = mapSettings.rows !== null ? mapSettings.rows : 20;
     const columns = mapSettings.columns !== null ? mapSettings.columns : 40
 
-    setGrid({
+    const newGrid = {
       ...grid,
       rows: rows,
       columns: columns,
@@ -191,10 +191,16 @@ export default function MapCanvas(props) {
       startY: 0,
       endX: (grid.tileSize * columns) - grid.tileSize,
       endY: (grid.tileSize * rows) - grid.tileSize,
-    });
+    };
+
+    setGrid(newGrid);
 
     createGrid();
     updateStagePosition();
+
+    const newLayout = mapLayout.filter(tile => (tile.x * grid.tileSize) >= newGrid.startX && (tile.x * grid.tileSize) <= newGrid.endX && (tile.y * grid.tileSize) >= newGrid.startY && (tile.y * grid.tileSize) <= newGrid.endY );
+    // console.log(newLayout);
+    setMapLayout(newLayout);
 
   }, [mapSettings]);
 
@@ -369,13 +375,16 @@ export default function MapCanvas(props) {
   }
 
   const handleMouseMoveOverStage = () => {
+    // console.log("activePin?", activePin);
     if(activePin !== null) {
       const mousePos = stageRef.current.getPointerPosition();
 
       setShadowPinParams({
         ...shadowPinParams,
-        left: mousePos.x - 20,
-        top: mousePos.y - 48
+        left: mousePos.x,
+        top: mousePos.y
+        // left: mousePos.x - 20,
+        // top: mousePos.y - 48
       })
     }
   }
@@ -502,7 +511,7 @@ export default function MapCanvas(props) {
 
     // basically, if the x && y coordinates are within the defined grid space, check for intersections
     // otherwise, the tile simply can't be placed there
-    console.log("tile intersects", grid.startX, grid.endX)
+    // console.log("tile intersects", grid.startX, grid.endX)
     if( x >= grid.startX && x <= grid.endX && y >= grid.startY && y <= grid.endY ) {
       // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
       const layerChildren = stageRef.current.children[2].children;
@@ -635,47 +644,49 @@ export default function MapCanvas(props) {
     let tile = activeTile .attrs.className === "tile-image-group" ? activeTile.children[0] : activeTile.attrs.className === "tile-image" ? activeTile : null;
 
     if(action !== null && tile !== null) {
-      
-      console.log("tile action", tile);
-      let rotation = tile.attrs.rotation !== undefined ? tile.attrs.rotation : 0;
-      let scale = tile.attrs.scaleX !== undefined ? {x: tile.attrs.scaleX, y: tile.attrs.scaleY} : {x: 1, y: 1};
-
-      if(scale.x === -1) {
-        if(e.target.closest("button").dataset.action === "rotateRight") {
-          action = "rotateLeft"
-
-        } else if(e.target.closest("button").dataset.action === "rotateLeft") {
-          action = "rotateRight"
-        }
-      }
-
-      if(action === "rotateRight") {
-        if(rotation === 270) {
-          rotation = 0;
-        } else {
-          rotation += 90;
-        }
-      }
-
-      if(action === "rotateLeft") {
-        if(rotation === 0) {
-          rotation = 270;
-        } else {
-          rotation -= 90;
-        }
-      }
-
-      if(action === "mirror") {
-        const scaleX = scale.x * -1;
-        const scaleY = scale.y * -1;
-        scale = {x: rotation === 0 || rotation === 180 ? scaleX : scale.x, y: rotation === 90 || rotation === 270 ? scaleY : scale.y}
-      }
-
       let newLayout = [...mapLayout];
 
       if(action !== "delete") {
+        let rotation = tile.attrs.rotation !== undefined ? tile.attrs.rotation : 0;
+        let scale = tile.attrs.scaleX !== undefined && tile.attrs.scaleY !== undefined ? {x: tile.attrs.scaleX, y: tile.attrs.scaleY} : {x: 1, y: 1};
+        console.log("STARTING rotation & scale", rotation, scale)
+        
+        // if(scale.x === -1) {
+        //   console.log("scale.x === -1, rotateRight = rotateLeft / rotateLeft = rotateRight")
+        //   if(e.target.closest("button").dataset.action === "rotateRight") {
+        //     action = "rotateLeft"
+
+        //   } else if(e.target.closest("button").dataset.action === "rotateLeft") {
+        //     action = "rotateRight"
+        //   }
+        // }
+
+        if(action === "rotateRight") {
+          if(rotation === 270) {
+            rotation = 0;
+          } else {
+            rotation += 90;
+          }
+        }
+
+        if(action === "rotateLeft") {
+          if(rotation === 0) {
+            rotation = 270;
+          } else {
+            rotation -= 90;
+          }
+        }
+
+        if(action === "mirror") {
+          const scaleX = scale.x * -1;
+          const scaleY = scale.y * -1;
+          scale = {x: rotation === 0 || rotation === 180 ? scaleX : scale.x, y: rotation === 90 || rotation === 270 ? scaleY : scale.y}
+        }
+        
+        console.log("NEW rotation & scale", rotation, scale)
+
         for(var i = 0; i < newLayout.length; i++) {
-          if(newLayout[i].idx === activeTile.attrs.id) {
+          if(newLayout[i].idx === activeTile.attrs.id || (newLayout[i].id !== undefined && newLayout[i].id === activeTile.attrs.id)) {
             newLayout[i].rotation = rotation;
             newLayout[i].scale = scale;
           }
@@ -683,6 +694,7 @@ export default function MapCanvas(props) {
       } else {
         newLayout = mapLayout.filter(tile => tile.idx !== undefined ? tile.idx !== activeTile.attrs.id : tile.id !== activeTile.attrs.id);
         setContextMenuActive(false);
+
       }
 
       setMapLayout(newLayout);
@@ -793,17 +805,43 @@ export default function MapCanvas(props) {
             )}
             {/* PINS */}
             {mapPins.map(pin => {
-              // let x = pin.x; let y = pin.y;
-              // if(draggingPin.x === 0 && draggingPin.y === 0) {
-              //   x = pin.x;
-              //   y = pin.y - (grid.tileSize / 5);
-              // }
+              let x = pin.x; let y = pin.y - (grid.tileSize / 5);
               return (
-                <Path
+                // <Path
+                //   className="map-pin"
+                //   id={pin.id !== undefined ? pin.id : pin.idx}
+                //   x={pin.x} 
+                //   y={pin.y} 
+                //   fill={pin.fill}
+                //   draggable={!tilesLocked}
+                //   strokeWidth={0}
+                //   data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
+                //   visible={pinsVisible}
+                //   onClick={(e) => handlePinOnClick(e)}
+                //   onDragStart={(e) => handlePinDragStart(e)}
+                //   onDragEnd={(e) => handlePinDragEnd(e)}
+                //   onMouseEnter={(e) => handleMouseEnter(e, 'pin', 'pointer')}
+                //   onMouseLeave={handleMouseLeave}
+                // />
+              <Spring
+                key={pin.idx}
+                // native
+                from={{ 
+                  opacity: 1,
+                  x: x,
+                  y: y,
+                }}
+                to={{ y: pin.y, opacity: 1, x: pin.x }}
+                config={{velocity: 1, friction: 21, mass: 2, delay: 100}}
+                // config={{mass: 2, tension: 270, friction: 40, clamp: false, velocity: 2}}
+                draggable={!tilesLocked}
+              >
+                {props => (
+                  <animated.Path
                   className="map-pin"
-                  id={pin.id !== undefined ? pin.id : pin.idx}
-                  x={pin.x} 
-                  y={pin.y} 
+                  id={pin.idx}
+                  x={props.x} 
+                  y={props.y} 
                   fill={pin.fill}
                   draggable={!tilesLocked}
                   strokeWidth={0}
@@ -815,38 +853,8 @@ export default function MapCanvas(props) {
                   onMouseEnter={(e) => handleMouseEnter(e, 'pin', 'pointer')}
                   onMouseLeave={handleMouseLeave}
                 />
-              // <Spring
-              //   key={pin.idx}
-              //   // native
-              //   from={{ 
-              //     opacity: draggingPin ? 0 : 1,
-              //     x: pin.x,
-              //     y: pin.y,
-              //   }}
-              //   to={{ y: pin.y, opacity: 1, x: pin.x }}
-              //   config={{velocity: 1, friction: 21, mass: 2, delay: 100}}
-              //   // config={{mass: 2, tension: 270, friction: 40, clamp: false, velocity: 2}}
-              //   draggable={!tilesLocked}
-              // >
-              //   {props => (
-              //     <animated.Path
-              //     className="map-pin"
-              //     id={pin.idx}
-              //     x={props.x} 
-              //     y={props.y} 
-              //     fill={pin.fill}
-              //     draggable={!tilesLocked}
-              //     strokeWidth={0}
-              //     data="M0,27 Q0,28 10,15 A15,15 0,1,0 -10,15 Q0,28 0,27" 
-              //     visible={pinsVisible}
-              //     onClick={(e) => handlePinOnClick(e)}
-              //     onDragStart={(e) => handlePinDragStart(e)}
-              //     onDragEnd={(e) => handlePinDragEnd(e)}
-              //     onMouseEnter={(e) => handleMouseEnter(e, 'pin', 'pointer')}
-              //     onMouseLeave={handleMouseLeave}
-              //   />
-              //   )}
-              // </Spring>
+                )}
+              </Spring>
               )
             })}
           </Layer>

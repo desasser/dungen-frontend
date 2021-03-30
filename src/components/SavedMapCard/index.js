@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -46,9 +46,25 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SavedMapCard(props) {
   const classes = useStyles();
-  const [isFavorite, setFavorite] = useState({
-    isFavorited: false
-  })
+  const [isFavorite, setFavorite] = useState(false);
+  const [mapOwner, setMapOwner] = useState(null);
+  const [isOwner, setIsOwner] = useState(false); // or set to props.isOwner
+
+  useEffect(() => {
+    if(props.favedBy !== undefined) {
+      const favedBy = props.favedBy.map(user => user.id)
+      setFavorite( favedBy.includes(parseInt(props.currentUser)) );
+    } 
+    // this only works because from the SavedMaps/Your Maps/MapCase page,
+    // the card is NOT getting props.favedBy
+    else {
+      setIsOwner(true);
+    }
+
+    if(props.owner !== undefined) {
+      setMapOwner(props.owner);
+    }
+  }, []);
 
   const handleFavorite = () => {
     setFavorite(prevState => !prevState);
@@ -77,7 +93,7 @@ export default function SavedMapCard(props) {
   }
 
   return (
-    <Card className={`${classes.root} searchable`}>
+    <Card className={`classes.root searchable`} style={{border: props.isOwner ? "2px solid #f8b24c" : "none"}}>
       <CardActionArea href={props.isOwner ? `/builder/${props.id}` : `/render/${props.id}`}>
         <CardMedia
           className={classes.media}
@@ -89,12 +105,12 @@ export default function SavedMapCard(props) {
             {props.name}
           </Typography>
           <Typography variant="body2" component="p">
-            This is a space for a summary that the user can choose to write about their map if they want to.
+            Created by: {mapOwner}
           </Typography>
         </CardContent>
       </CardActionArea>
 
-      {props.isOwner ? (
+      {isOwner ? (
         <CardActions style={{ justifyContent: 'center' }}>
           <Button size="small" href={`/builder/${props.id}`} className={classes.btnStyle}>
             Edit
@@ -108,7 +124,7 @@ export default function SavedMapCard(props) {
         </CardActions>
       ) : (
         <CardActions style={{ justifyContent: 'flex-end' }}>
-          {isFavorite ?
+          {!isFavorite ?
             (
             <IconButton aria-label="favorite" onClick={handleFavorite} className={classes.iconColor}>
               <StarBorderIcon />

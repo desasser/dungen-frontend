@@ -6,7 +6,8 @@ export const CanvasContext = createContext();
 
 const CanvasContextProvider = (props) => {
   // props: receives mapId & user from page MapBuilder
-  const userId = props.user.id;
+  const MapId = parseInt(props.mapId);
+  const UserId = props.user.id;
 
   const [stageRef, setStageRef] = useState(null);
   const [stageParentRef, setStageParentRef] = useState(null);
@@ -21,7 +22,7 @@ const CanvasContextProvider = (props) => {
     EnvironmentId: 1,
     public: false,
     id: null,
-    UserId: props.user.id
+    UserId: UserId
   }
 
   const stagePositionDefault = { x: 0, y: 0, recenterX: 0, recenterY: 0 }
@@ -33,10 +34,10 @@ const CanvasContextProvider = (props) => {
     columns: settingsDefaults.columns, // 50 tiles wide
     containerWidth: tileSize * settingsDefaults.columns,
     containerHeight: tileSize * settingsDefaults.rows,
-    startX: (tileSize * settingsDefaults.columns * -tileSize) - tileSize - stagePositionDefault.x,
-    startY: (tileSize * settingsDefaults.rows * -tileSize) - tileSize  - stagePositionDefault.y,
-    endX: (tileSize * settingsDefaults.columns * tileSize) - tileSize  - stagePositionDefault.x,
-    endY: (tileSize * settingsDefaults.rows * tileSize) - tileSize  - stagePositionDefault.y
+    startX: 0,
+    startY: 0,
+    endX: tileSize * settingsDefaults.columns - tileSize,
+    endY: tileSize * settingsDefaults.rows - tileSize
   }
 
   // const [mapSettings, setMapSettings] = useState( JSON.parse(localStorage.getItem('dungen_map_settings')) || settingsDefaults );
@@ -85,29 +86,35 @@ const CanvasContextProvider = (props) => {
   })
 
   useEffect(() => {
-    console.log("canvascontext loaded with props:", props)
-    
-    loadFromLocalStorage();
-
-  }, [props]);
-
-  const loadFromLocalStorage = () => {
     const savedSettings = JSON.parse(localStorage.getItem('dungen_map_settings')) || null;
     const savedLayout = JSON.parse(localStorage.getItem('dungen_map_tiles')) || null;
     const savedEncounters = JSON.parse(localStorage.getItem('dungen_map_encounters')) || null;
     const savedGrid = JSON.parse(localStorage.getItem('dungen_map_grid')) || null;
     const savedStagePosition = JSON.parse(localStorage.getItem('dungen_stageposition')) || null;
 
-    savedSettings.UserId = userId;
-    localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
+    // if the props mapId === the id saved in localStorage AND the user IDs match,
+    // load from localStorage
+    if(savedSettings !== null && MapId === savedSettings.id) {
+      // savedSettings.UserId = props.user.id;
+      localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
 
-    if(savedLayout !== null) { setMapLayout(savedLayout); }
-    if(savedEncounters !== null) { setMapPins(savedEncounters); }
-    if(savedGrid !== null) { setGrid(savedGrid); }
-    if(savedStagePosition !== null) { setStagePosition(savedStagePosition); }
+      if(savedLayout !== null) { setMapLayout(savedLayout); }
+      if(savedEncounters !== null) { setMapPins(savedEncounters); }
+      if(savedGrid !== null) { setGrid(savedGrid); }
+      if(savedStagePosition !== null) { setStagePosition(savedStagePosition); }
 
-    setMapSettings(savedSettings);
-  }
+      setMapSettings(savedSettings);
+    }
+    
+    if( isNaN(MapId) && (savedSettings === null || savedSettings.id !== null) ) {
+      setMapSettings(settingsDefaults);
+      setGrid(gridDefaults);
+      setMapLayout([]);
+      setMapPins([]);
+      setStagePosition(stagePositionDefault);
+    }
+
+  }, [props]);
 
   useEffect(() => {
     updateLocalStorage();
@@ -191,7 +198,7 @@ const CanvasContextProvider = (props) => {
     setActivePin(null);
   }
 
-  const renderImage = () => {
+  const renderImage = (updateDB=true) => {
     let uri = "";
     // 0 === coordgrid, 1 === shadow tile, 2 === map tiles + pins
     let target = stageRef.current.children[2];
@@ -222,19 +229,19 @@ const CanvasContextProvider = (props) => {
       
     }
 
-    if(mapSettings.id !== null) {
+    localStorage.setItem('dungen_map_image', uri);
+
+    if(updateDB && mapSettings.id !== null) {
       API.updateMap({ id: mapSettings.id, image_url: uri })
       .then(updatedMap => {
-        localStorage.setItem('dungen_map_image', uri);
-        return uri;
+        // console.log("saved image", updatedMap);
+        // localStorage.setItem('dungen_map_image', uri);
+        // return uri;
       })
       .catch(err => console.error(err));
-
-    } else {
-      localStorage.setItem('dungen_map_image', uri);
-      return uri;
-      
     }
+
+    return uri;
   }
 
   const canvasData = {
