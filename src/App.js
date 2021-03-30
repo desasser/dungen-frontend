@@ -163,9 +163,9 @@ function App() {
                 {users.isLoggedIn ? <SavedMaps users={users} /> : null}
               </Route>
             ) : (
-              <Redirect to="/503" >
+              <Route exact path="/503" >
                 {snailState ? <Nope /> : null}
-              </Redirect>
+              </Route>
             )}
 
             <Route exact path="/builder">
