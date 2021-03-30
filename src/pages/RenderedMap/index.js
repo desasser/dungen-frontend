@@ -8,10 +8,10 @@ import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
 import API from '../../utils/API';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   largeMap: {
     backgroundColor: 'white',
-    outline: '#8eb1c7 15px solid',
+    outline: `${theme.palette.primary.main} 15px solid`,
     maxWidth: '80%',
     // backgroundImage: `url("http://paratime.ca/images/fantasy/dungeon-055.jpg")`,
     backgroundRepeat: 'no-repeat',
@@ -56,16 +56,17 @@ const useStyles = makeStyles({
     margin: "0 1rem"
   },
   actionBtn: {
-    '&:hover': {
-      color: 'white',
-      backgroundColor: '#eb4511'
-    },
-    width: 100,
-    height: 60,
-    backgroundColor: 'white',
-    color: '#eb4511',
-    margin: 20,
-    fontSize: '18px',
+    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.primary.main,
+    boxShadow: theme.shadows[5],
+    fontFamily: 'Immortal',
+    fontSize: '24px',
+    position: 'relative',
+    left: '9%',
+    '&:hover' : {
+      color:'white',
+      backgroundColor: theme.palette.primary.main,
+    }
   },
   routerBtn: {
     '&:hover': {
@@ -83,8 +84,9 @@ const useStyles = makeStyles({
     fontFamily: 'Immortal',
     fontSize: '50px',
     marginTop: 20,
+    textAlign: 'center'
   },
-})
+}))
 
 const FancyLinearProgress = withStyles((theme) => ({
   root: {
@@ -148,9 +150,9 @@ export default function RenderedMap(props) {
   return (
     <Container>
       <Typography variant='h2' className={classes.title} ref={mapTitleRef}>
-        {mapData.mapTitle}
+        Map Preview
       </Typography>
-      <Container className={classes.largeMap} >
+      <Container className={classes.largeMap}>
         {/* TODO: Add ternary operator to check if the image has finished rendering or not */}
         {!rendered ? <FancyLinearProgress /> : <img src={mapData.image_url} alt={mapData.mapTitle} />}
       </Container>
