@@ -82,9 +82,6 @@ export default function LoginModal(props) {
     navigator.userAgent
   );
 
-  // console.log('check me out!', navigator.userAgent);
-  // console.log('mobile?', isMobile);
-
   return (
     <>
       <Typography variant='h5' type="button" className={!isMobile ? classes.navLink : classes.menuItem} onClick={handleOpen} style={{cursor: 'pointer'}}>

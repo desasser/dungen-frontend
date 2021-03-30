@@ -64,7 +64,6 @@ export default function Splash() {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   );
-  console.log('mobile?', isMobile);
 
   const classes = useStyles({isMobile: isMobile});
 
