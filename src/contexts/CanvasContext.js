@@ -6,7 +6,7 @@ export const CanvasContext = createContext();
 
 const CanvasContextProvider = (props) => {
   // props: receives mapId & user from page MapBuilder
-  const MapId = parseInt(props.mapId);
+  const MapId = props.mapId !== undefined ? parseInt(props.mapId) : null;
   const UserId = props.user.id;
 
   const [stageRef, setStageRef] = useState(null);
@@ -92,24 +92,86 @@ const CanvasContextProvider = (props) => {
     const savedGrid = JSON.parse(localStorage.getItem('dungen_map_grid')) || null;
     const savedStagePosition = JSON.parse(localStorage.getItem('dungen_stageposition')) || null;
 
-    // if the props mapId === the id saved in localStorage AND the user IDs match,
-    // load from localStorage
-    
-    if( (savedSettings !== null && MapId === savedSettings.id && savedSettings.UserId !== UserId) || (savedSettings.id === null && savedSettings.UserId === "") ) {
+    if(MapId !== null) {
+      API.getSingleMap(MapId)
+      .then((res) => {
+        if (res.data !== "") {
+          if(savedSettings !== null && ( (savedSettings.id === MapId && savedSettings.updatedLocallyAt < res.data.updatedAt) || savedSettings.id === null) ) {
+
+            const dateTime = getDateTimestamp();
+
+            const mapSettings = {
+              name: res.data.name,
+              rows: res.data.rows,
+              columns: res.data.columns,
+              infinite: res.data.rows === null || res.data.columns === null ? true : false,
+              EnvironmentId: res.data.EnvironmentId,
+              public: res.data.public,
+              id: parseInt(res.data.id),
+              UserId: res.data.UserId,
+              updatedLocallyAt: dateTime
+            }
+
+            setMapSettings(mapSettings);
+            setMapLayout(res.data.MapTiles);
+
+            if(savedGrid !== null) {
+              const newGrid = {
+                ...savedGrid,
+                rows: mapSettings.rows,
+                columns: mapSettings.columns,
+                infinite: mapSettings.infinite,
+                containerWidth: mapSettings.columns * savedGrid.tileSize,
+                containerHeight: mapSettings.rows * savedGrid.tileSize,
+                startX: (savedGrid.tileSize * mapSettings.columns - savedGrid.tileSize) * -1,
+                startY: (savedGrid.tileSize * mapSettings.rows - savedGrid.tileSize) * -1,
+                endX: (savedGrid.tileSize * mapSettings.columns - savedGrid.tileSize),
+                endY: (savedGrid.tileSize * mapSettings.rows - savedGrid.tileSize),
+              }
+
+              setGrid(newGrid);
+            }
+
+            const xOffset = ((window.innerWidth - 380) - (savedGrid.tileSize * savedGrid.columns)) / 2;
+            const yOffset = ((window.innerHeight - 75) - (savedGrid.tileSize * savedGrid.rows)) / 2;
+            const gridWidth = savedGrid.tileSize * savedGrid.columns;
+            const gridHeight = savedGrid.tileSize * savedGrid.rows;
+
+            let newStagePosition = {x: 0, y: 0, recenterX: 0, recenterY: 0}
+
+            if(window.innerWidth > gridWidth) {
+              newStagePosition = {...newStagePosition, x: xOffset, recenterX: xOffset}
+            } else {
+              newStagePosition = { ...newStagePosition, x: 0, recenterX: 0 }
+            }
+
+            if(window.innerHeight > gridHeight) {
+              newStagePosition = {...newStagePosition, y: yOffset, recenterY: yOffset}
+            } else {
+              newStagePosition = { ...newStagePosition, y: 0, recenterY: 0 }
+            }
+
+            setStagePosition(newStagePosition);
+
+          }
+        }
+      })
+      .catch(err => console.error(err));
+    } else if( savedSettings !== null && savedSettings.id === null && MapId === null && (savedSettings.UserId === UserId || savedSettings.UserId === "" || UserId === "") ) {
       if(UserId !== "") {
         savedSettings.UserId = props.user.id;
         localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
       }
 
-      if(savedLayout !== null && savedLayout.length > 0) { setMapLayout(savedLayout); }
+      // if(savedLayout !== null && savedLayout.length > 0) { setMapLayout(savedLayout); }
       if(savedEncounters !== null && savedLayout.length > 0) { setMapPins(savedEncounters); }
       if(savedGrid !== null && savedLayout.length > 0) { setGrid(savedGrid); }
-      if(savedStagePosition !== null && savedLayout.length > 0) { setStagePosition(savedStagePosition); }
+      if(savedStagePosition !== null) { setStagePosition(savedStagePosition); }
 
       setMapSettings(savedSettings);
     }
     
-    // if( isNaN(MapId) && savedSettings.id !== null ) {
+    // if( MapId === null && savedSettings.id !== null ) {
     //   setMapSettings(settingsDefaults);
     //   setGrid(gridDefaults);
     //   setMapLayout([]);
@@ -127,6 +189,15 @@ const CanvasContextProvider = (props) => {
   const updateLocalStorage = () => {
     setMapData({...mapSettings, ...grid, MapTiles: mapLayout, MapEncounters: mapPins, pinsVisible});
 
+    const dateTime = getDateTimestamp;
+
+    localStorage.setItem('dungen_map_settings', JSON.stringify({...mapSettings, updatedLocallyAt: dateTime}));
+    localStorage.setItem('dungen_map_grid', JSON.stringify(grid))
+    localStorage.setItem('dungen_map_tiles', JSON.stringify(mapLayout))
+    localStorage.setItem('dungen_map_encounters', JSON.stringify(mapPins))
+  }
+
+  const getDateTimestamp = () => {
     const dt = new Date();
     const year = dt.getFullYear();
     const month = (dt.getMonth() + 1).toString().padStart(2, '0');
@@ -135,12 +206,7 @@ const CanvasContextProvider = (props) => {
     const min = dt.getMinutes().toString().padStart(2, '0');
     const sec = dt.getSeconds().toString().padStart(2, '0');
 
-    let dateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-
-    localStorage.setItem('dungen_map_settings', JSON.stringify({...mapSettings, updatedLocallyAt: dateTime}));
-    localStorage.setItem('dungen_map_grid', JSON.stringify(grid))
-    localStorage.setItem('dungen_map_tiles', JSON.stringify(mapLayout))
-    localStorage.setItem('dungen_map_encounters', JSON.stringify(mapPins))
+    return `${year}-${month}-${day} ${hour}:${min}:${sec}`;
   }
 
   const recenterGrid = () => {
@@ -297,7 +363,7 @@ const CanvasContextProvider = (props) => {
     activePin, setActivePin, handlePinStatus, grid, stageRef, stagePosition, viewState, toggleViewState
   }
 
-  const settingsData = { settingsDefaults, mapSettings, setMapSettings, renderImage, setMapLayout }
+  const settingsData = { settingsDefaults, mapSettings, setMapSettings, mapLayout, grid, renderImage, setMapLayout, setStagePosition, stageRef }
 
   const tabData = { tilesLocked, setTilesLocked }
 

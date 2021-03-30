@@ -59,7 +59,7 @@ function StartMap(props) {
   const history = useHistory();
 
   const { settingsData } = useContext(CanvasContext);
-  const { mapSettings, setMapSettings, renderImage } = settingsData;
+  const { mapSettings, setMapSettings, mapLayout, setMapLayout, grid, renderImage, setStagePosition, stageRef } = settingsData;
   
   const dbContext = useContext(DatabaseContext);
   const { saveMapToDB, updateMapInDB, mapSaved } = dbContext;
@@ -89,6 +89,25 @@ function StartMap(props) {
       ...mapSettings,
       [name]: name === "rows" || name === "columns" ? parseInt(value) : value,
     });
+
+    // if((name === "rows" || name === "columns") && !mapSettings.infinite) {
+    //   const rows = name === "rows" ? parseInt(value) : mapSettings.rows;
+    //   const columns = name === "columns" ? parseInt(value) : mapSettings.columns;
+
+    //   const xOffset = ((window.innerWidth - 380) - (grid.tileSize * grid.columns)) / 2;
+    //   const yOffset = ((window.innerHeight - 75) - (grid.tileSize * grid.rows)) / 2;
+
+    //   setStagePosition({ x: xOffset, y: yOffset, recenterX: xOffset, recenterY: yOffset })
+    //   if(stageRef.current) {
+    //     stageRef.current.position({x: xOffset, y: yOffset})
+    //   }
+
+    //   if(mapLayout.length > 0) {
+    //     const newLayout = mapLayout.filter(tile => (tile.x * grid.tileSize) >= 0 && (tile.x * grid.tileSize) <= (grid.tileSize * columns - grid.tileSize) && (tile.y * grid.tileSize) >= 0 && (tile.y * grid.tileSize) <= (grid.tileSize * rows - grid.tileSize) );
+    //     // console.log("newlayout", newLayout);
+    //     setMapLayout(newLayout);
+    //   }
+    // }
   };
 
   const handleCheck = (event) => {

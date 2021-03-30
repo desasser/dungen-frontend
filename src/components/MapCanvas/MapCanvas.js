@@ -137,7 +137,7 @@ export default function MapCanvas(props) {
   useEffect(() => {
     const savedSettings = JSON.parse(localStorage.getItem('dungen_map_settings')) || null;
 
-    if(savedSettings !== null && savedSettings.id !== null && props.mapId === null) {
+    if(savedSettings !== null && savedSettings.id !== null && props.mapId === undefined) {
       setMapLayout([]);
       setMapPins([]);
       setGrid(gridDefaults);
@@ -146,11 +146,9 @@ export default function MapCanvas(props) {
 
   }, [props])
 
-  // useEffect(() => {
-  //   if(mapSettings.UserId === props.userId) {
-  //     localStorage.setItem('dungen_map_tiles', JSON.stringify(mapLayout));
-  //   }
-  // }, [mapLayout]);
+  useEffect(() => {
+    updateStagePosition()
+  }, [mapLayout]);
 
   /**
    * SETTING HEIGHT & WIDTH OF STAGE
@@ -189,18 +187,14 @@ export default function MapCanvas(props) {
       infinite: mapSettings.infinite,
       startX: 0,
       startY: 0,
-      endX: (grid.tileSize * columns) - grid.tileSize,
-      endY: (grid.tileSize * rows) - grid.tileSize,
+      endX: grid.tileSize * grid.columns - grid.tileSize,
+      endY: grid.tileSize * grid.rows - grid.tileSize,
     };
 
     setGrid(newGrid);
 
     createGrid();
     updateStagePosition();
-
-    const newLayout = mapLayout.filter(tile => (tile.x * grid.tileSize) >= newGrid.startX && (tile.x * grid.tileSize) <= newGrid.endX && (tile.y * grid.tileSize) >= newGrid.startY && (tile.y * grid.tileSize) <= newGrid.endY );
-    // console.log(newLayout);
-    setMapLayout(newLayout);
 
   }, [mapSettings]);
 
@@ -256,7 +250,6 @@ export default function MapCanvas(props) {
       }
       setStagePosition(newStagePosition);
       localStorage.setItem('dungen_stageposition', JSON.stringify(newStagePosition));
-
     }
     createGrid();
   }
@@ -637,6 +630,10 @@ export default function MapCanvas(props) {
 
       setContextMenuActive(true);
     }
+
+    if(target.attrs.className === "map-pin") {
+      target.remove();
+    }
   };
 
   const handleTileControlAction = (e) => {
@@ -649,7 +646,7 @@ export default function MapCanvas(props) {
       if(action !== "delete") {
         let rotation = tile.attrs.rotation !== undefined ? tile.attrs.rotation : 0;
         let scale = tile.attrs.scaleX !== undefined && tile.attrs.scaleY !== undefined ? {x: tile.attrs.scaleX, y: tile.attrs.scaleY} : {x: 1, y: 1};
-        console.log("STARTING rotation & scale", rotation, scale)
+        // console.log("STARTING rotation & scale", rotation, scale)
         
         // if(scale.x === -1) {
         //   console.log("scale.x === -1, rotateRight = rotateLeft / rotateLeft = rotateRight")
@@ -683,7 +680,7 @@ export default function MapCanvas(props) {
           scale = {x: rotation === 0 || rotation === 180 ? scaleX : scale.x, y: rotation === 90 || rotation === 270 ? scaleY : scale.y}
         }
         
-        console.log("NEW rotation & scale", rotation, scale)
+        // console.log("NEW rotation & scale", rotation, scale)
 
         for(var i = 0; i < newLayout.length; i++) {
           if(newLayout[i].idx === activeTile.attrs.id || (newLayout[i].id !== undefined && newLayout[i].id === activeTile.attrs.id)) {
