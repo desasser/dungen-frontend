@@ -94,9 +94,9 @@ const CanvasContextProvider = (props) => {
 
     // if the props mapId === the id saved in localStorage AND the user IDs match,
     // load from localStorage
-    if( (savedSettings !== null && MapId === savedSettings.id) || (savedSettings.id === null && savedSettings.UserId === "") ) {
+    if( (savedSettings !== null && MapId === savedSettings.id && savedSettings.UserId !== UserId) || (savedSettings.id === null && savedSettings.UserId === "") ) {
       // savedSettings.UserId = props.user.id;
-      localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
+      // localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
 
       if(savedLayout !== null) { setMapLayout(savedLayout); }
       if(savedEncounters !== null) { setMapPins(savedEncounters); }
@@ -267,7 +267,7 @@ const CanvasContextProvider = (props) => {
     centerGrid: { 
       props: {onClick: recenterGrid}, 
       args: {gridCentered: gridCentered}, 
-      text: gridCentered ? "Grid is centered" : "Center Grid" 
+      text: gridCentered ? "Grid centered" : "Center Grid" 
     }, 
     clearMap: {
       props: {onClick: clearMap},
@@ -296,8 +296,10 @@ const CanvasContextProvider = (props) => {
 
   const settingsData = { settingsDefaults, mapSettings, setMapSettings, renderImage, setMapLayout }
 
+  const tabData = { tilesLocked, setTilesLocked }
+
   return (
-    <CanvasContext.Provider value={{ canvasData, controlsData, settingsData, handleDraggableItem }}>
+    <CanvasContext.Provider value={{ canvasData, controlsData, settingsData, tabData, handleDraggableItem }}>
       {props.children}
     </CanvasContext.Provider>
   )
