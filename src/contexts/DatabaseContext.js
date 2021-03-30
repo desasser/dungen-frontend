@@ -48,7 +48,9 @@ const DatabaseContextProvider = (props) => {
 
         API.saveMapTile(tile)
         .then(savedMapTile => {
-          savedLayout[i].MapTileId = savedMapTile.data.id;
+          if(savedLayout[i] !== undefined) {
+            savedLayout[i].MapTileId = savedMapTile.data.id;
+          }
         })
         .catch(err => console.error(err));
       }
