@@ -15,7 +15,7 @@ import API from '../../utils/API';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: 300,
+    width: 300,
     margin: '20px',
     display: 'flex',
     flexFlow: 'column nowrap',
@@ -93,12 +93,13 @@ export default function SavedMapCard(props) {
   }
 
   return (
-    <Card className={`classes.root searchable`} style={{border: props.isOwner ? "2px solid #f8b24c" : "none"}}>
+    <Card className={`${classes.root} searchable`} style={{border: props.isOwner ? "2px solid #f8b24c" : "none"}}>
       <CardActionArea href={props.isOwner ? `/builder/${props.id}` : `/render/${props.id}`}>
         <CardMedia
           className={classes.media}
           image={props.image}
           alt="a saved map"
+          style={{backgroundColor: 'rgba(255,255,255,0.7'}}
         />
         <CardContent >
           <Typography gutterBottom variant="h5" className={classes.cardTitle}>
