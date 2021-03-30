@@ -237,8 +237,16 @@ export default function MenuAppBar(props) {
     history.push('/')
   }
 
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
   const handleXSClick = (event) => {
     setAnchorXSEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const handleXSClose = () => {
@@ -295,7 +303,7 @@ export default function MenuAppBar(props) {
               <MenuItem onClick={handleXSClose}>
                 <Link to='/dashboard' className={classes.menuItemStyle}>
                   <Typography variant='h6'>
-                    Saved Maps
+                    Mapcase
                   </Typography>
                 </Link>
               </MenuItem>
@@ -325,7 +333,7 @@ export default function MenuAppBar(props) {
                     />
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
-                  <Link className={classes.menuItemStyle}>
+                  <Link to='/' className={classes.menuItemStyle}>
                     <Typography variant='h6'>
                       Logout
                   </Typography>
@@ -345,20 +353,37 @@ export default function MenuAppBar(props) {
                   Builder
                 </Typography>
               </Link>
-              <Link to="/browsemaps" className={classes.navLink}>
-                <Typography variant='h6'>
-                  Maps
-                </Typography>
-              </Link>
-              <Link to="/browseusers" className={classes.navLink}>
-                <Typography variant='h6'>
-                  Users
-                </Typography>
-              </Link>
+              <Typography aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} className={classes.navLink} variant='h6' style={{cursor: 'pointer'}}>
+                  Browse
+              </Typography>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose}>
+                  <Link to="/browsemaps" className={classes.navLink}>
+                    <Typography variant='h6'>
+                      Maps
+                    </Typography>
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                  <Link to="/browseusers" className={classes.navLink}>
+                    <Typography variant='h6'>
+                      Users
+                    </Typography>
+                  </Link>
+                </MenuItem>
+              </Menu>
+
+
               {props.user.isLoggedIn ?
                 <Link to="/dashboard" className={classes.navLink}>
                   <Typography variant='h6' >
-                    Saved Maps
+                    Mapcase
                 </Typography>
                 </Link>
                 :

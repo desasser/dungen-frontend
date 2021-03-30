@@ -1,6 +1,8 @@
 const GeneralFunctions = {
   // https://codepen.io/davidhalford/pen/ywEva?editors=0010
   contrastColor: (hex) => {
+    if (hex === undefined) return;
+
     hex = hex.replace("#", "");
     /*
 			From this W3C document: http://www.webmasterworld.com/r.cgi?f=88&d=9769&url=http://www.w3.org/TR/AERT#color-contrast

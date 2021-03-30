@@ -5,11 +5,12 @@ import API from '../utils/API'
 export const DatabaseContext = createContext();
 
 const DatabaseContextProvider = (props) => {
+  // props: receives mapId & user from page MapBuilder
   const token = localStorage.getItem("token")
   const [userId, setUserId] = useState(props.user.id)
 
   const { settingsData } = useContext(CanvasContext);
-  const { renderImage } = settingsData;
+  const { renderImage, setMapLayout } = settingsData;
 
   const [mapSaved, setMapSaved] = useState(null);
 
@@ -18,10 +19,11 @@ const DatabaseContextProvider = (props) => {
   let savedEncounters = localStorage.getItem('dungen_map_encounters') !== undefined ? JSON.parse(localStorage.getItem('dungen_map_encounters')) : null;
 
   useEffect(() => {
-    if(savedSettings.UserId === "" && userId !== "") {
-      savedSettings.UserId = userId
+    if(savedSettings !== null && savedSettings.UserId === "" && userId !== "") {
+      savedSettings.UserId = userId;
+
+      localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
     }
-    localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
   }, [])
 
   const saveMapToDB = () => {
@@ -30,16 +32,16 @@ const DatabaseContextProvider = (props) => {
     savedEncounters = localStorage.getItem('dungen_map_encounters') !== undefined ? JSON.parse(localStorage.getItem('dungen_map_encounters')) : null;
 
     savedSettings.image_url = localStorage.getItem('dungen_map_image') || "";
+    // console.log("map to save", savedSettings);
 
     API.saveMap(savedSettings)
     .then(res => {
-
       for(var i = 0; i < savedLayout.length; i++) {
-        const tile = {
+        let tile = {
           x: savedLayout[i].x,
           y: savedLayout[i].y,
           rotation: savedLayout[i].rotation,
-          mirror: JSON.stringify(savedLayout[i].scale),
+          mirror: typeof savedLayout[i].mirror === "string" ? savedLayout[i].mirror : JSON.stringify(savedLayout[i].scale),
           TileId: parseInt(savedLayout[i].TileId),
           MapId: parseInt(res.data.id)
         }
@@ -63,7 +65,7 @@ const DatabaseContextProvider = (props) => {
     savedEncounters = localStorage.getItem('dungen_map_encounters') !== undefined ? JSON.parse(localStorage.getItem('dungen_map_encounters')) : null;
 
     savedSettings.image_url = localStorage.getItem('dungen_map_image') || "";
-    console.log("db context, image_url", savedSettings.image_url);
+    // console.log("db context, image_url", savedSettings.image_url);
 
     API.updateMap(savedSettings)
     .then(res => {
@@ -82,13 +84,13 @@ const DatabaseContextProvider = (props) => {
               x: savedLayout[i].x,
               y: savedLayout[i].y,
               rotation: savedLayout[i].rotation,
-              mirror: typeof savedLayout[i].mirror !== "string" ? JSON.stringify(savedLayout[i].scale) : savedLayout[i].mirror,
+              mirror: typeof savedLayout[i].mirror === "string" ? savedLayout[i].mirror : JSON.stringify(savedLayout[i].scale),
               TileId: parseInt(savedLayout[i].TileId),
               MapId: parseInt(mapId)
             }
     
-            if(savedLayout[i].id !== null) {
-              tile.id = savedLayout[i].id;
+            if(savedLayout[i].id !== undefined || savedLayout[i].MapTileId !== null) {
+              tile.id = savedLayout[i].id !== undefined ? savedLayout[i].id : savedLayout[i].MapTileId;
               keepTheseTiles.push(parseInt(tile.id));
 
               API.updateMapTile(tile)
@@ -106,6 +108,7 @@ const DatabaseContextProvider = (props) => {
                 savedLayout[i].MapTileId = savedMapTile.data.id;
                 keepTheseTiles.push(parseInt(savedMapTile.data.id));
                 localStorage.setItem('dungen_map_tiles', JSON.stringify(savedLayout));
+                setMapLayout(savedLayout);
               })
               .catch(err => console.error(err));
             }
