@@ -94,25 +94,28 @@ const CanvasContextProvider = (props) => {
 
     // if the props mapId === the id saved in localStorage AND the user IDs match,
     // load from localStorage
-    if(savedSettings !== null && MapId === savedSettings.id) {
-      // savedSettings.UserId = props.user.id;
-      localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
+    
+    if( (savedSettings !== null && MapId === savedSettings.id && savedSettings.UserId !== UserId) || (savedSettings.id === null && savedSettings.UserId === "") ) {
+      if(UserId !== "") {
+        savedSettings.UserId = props.user.id;
+        localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
+      }
 
-      if(savedLayout !== null) { setMapLayout(savedLayout); }
-      if(savedEncounters !== null) { setMapPins(savedEncounters); }
-      if(savedGrid !== null) { setGrid(savedGrid); }
-      if(savedStagePosition !== null) { setStagePosition(savedStagePosition); }
+      if(savedLayout !== null && savedLayout.length > 0) { setMapLayout(savedLayout); }
+      if(savedEncounters !== null && savedLayout.length > 0) { setMapPins(savedEncounters); }
+      if(savedGrid !== null && savedLayout.length > 0) { setGrid(savedGrid); }
+      if(savedStagePosition !== null && savedLayout.length > 0) { setStagePosition(savedStagePosition); }
 
       setMapSettings(savedSettings);
     }
     
-    if( isNaN(MapId) && (savedSettings === null || savedSettings.id !== null) ) {
-      setMapSettings(settingsDefaults);
-      setGrid(gridDefaults);
-      setMapLayout([]);
-      setMapPins([]);
-      setStagePosition(stagePositionDefault);
-    }
+    // if( isNaN(MapId) && savedSettings.id !== null ) {
+    //   setMapSettings(settingsDefaults);
+    //   setGrid(gridDefaults);
+    //   setMapLayout([]);
+    //   setMapPins([]);
+    //   setStagePosition(stagePositionDefault);
+    // }
 
   }, [props]);
 
@@ -267,7 +270,7 @@ const CanvasContextProvider = (props) => {
     centerGrid: { 
       props: {onClick: recenterGrid}, 
       args: {gridCentered: gridCentered}, 
-      text: gridCentered ? "Grid is centered" : "Center Grid" 
+      text: gridCentered ? "Grid centered" : "Center Grid" 
     }, 
     clearMap: {
       props: {onClick: clearMap},
@@ -296,8 +299,10 @@ const CanvasContextProvider = (props) => {
 
   const settingsData = { settingsDefaults, mapSettings, setMapSettings, renderImage, setMapLayout }
 
+  const tabData = { tilesLocked, setTilesLocked }
+
   return (
-    <CanvasContext.Provider value={{ canvasData, controlsData, settingsData, handleDraggableItem }}>
+    <CanvasContext.Provider value={{ canvasData, controlsData, settingsData, tabData, handleDraggableItem }}>
       {props.children}
     </CanvasContext.Provider>
   )

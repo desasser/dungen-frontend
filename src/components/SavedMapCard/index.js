@@ -106,7 +106,7 @@ export default function SavedMapCard(props) {
             {props.name}
           </Typography>
           <Typography variant="body2" component="p">
-            Created by: {mapOwner}
+            {mapOwner !== null && `Created by: ${mapOwner}`}
           </Typography>
         </CardContent>
       </CardActionArea>
