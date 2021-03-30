@@ -333,7 +333,7 @@ export default function MenuAppBar(props) {
                     />
                   </Link>
                 </MenuItem> : <MenuItem onClick={logout}>
-                  <Link className={classes.menuItemStyle}>
+                  <Link to='/' className={classes.menuItemStyle}>
                     <Typography variant='h6'>
                       Logout
                   </Typography>

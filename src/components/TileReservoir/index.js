@@ -111,7 +111,6 @@ export default function TileReservoir({ handleMapData }) {
         onChange={handleChangeTileSet}
         className={classes.selectMenu}
         MenuProps={{
-          // classes: { paper: classes.dropdownStyle },
           variant: 'menu'
         }}
       >
