@@ -94,25 +94,28 @@ const CanvasContextProvider = (props) => {
 
     // if the props mapId === the id saved in localStorage AND the user IDs match,
     // load from localStorage
+    
     if( (savedSettings !== null && MapId === savedSettings.id && savedSettings.UserId !== UserId) || (savedSettings.id === null && savedSettings.UserId === "") ) {
-      // savedSettings.UserId = props.user.id;
-      // localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
+      if(UserId !== "") {
+        savedSettings.UserId = props.user.id;
+        localStorage.setItem('dungen_map_settings', JSON.stringify(savedSettings));
+      }
 
-      if(savedLayout !== null) { setMapLayout(savedLayout); }
-      if(savedEncounters !== null) { setMapPins(savedEncounters); }
-      if(savedGrid !== null) { setGrid(savedGrid); }
-      if(savedStagePosition !== null) { setStagePosition(savedStagePosition); }
+      if(savedLayout !== null && savedLayout.length > 0) { setMapLayout(savedLayout); }
+      if(savedEncounters !== null && savedLayout.length > 0) { setMapPins(savedEncounters); }
+      if(savedGrid !== null && savedLayout.length > 0) { setGrid(savedGrid); }
+      if(savedStagePosition !== null && savedLayout.length > 0) { setStagePosition(savedStagePosition); }
 
       setMapSettings(savedSettings);
     }
     
-    if( isNaN(MapId) && (savedSettings === null || savedSettings.id !== null) ) {
-      setMapSettings(settingsDefaults);
-      setGrid(gridDefaults);
-      setMapLayout([]);
-      setMapPins([]);
-      setStagePosition(stagePositionDefault);
-    }
+    // if( isNaN(MapId) && savedSettings.id !== null ) {
+    //   setMapSettings(settingsDefaults);
+    //   setGrid(gridDefaults);
+    //   setMapLayout([]);
+    //   setMapPins([]);
+    //   setStagePosition(stagePositionDefault);
+    // }
 
   }, [props]);
 

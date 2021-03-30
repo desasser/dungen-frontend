@@ -256,7 +256,7 @@ export default function MapBuilder(props) {
       <div>
         <CanvasContextProvider mapId={id} user={props.users}>
           <DatabaseContextProvider mapId={id} user={props.users}>
-            <SuperDrawer saved={saved} toggleSavedState={toggleSavedState} auth={auth} />
+            <SuperDrawer />
           </DatabaseContextProvider>
           <MapCanvas mapId={id} user={props.users} />
         </CanvasContextProvider>
