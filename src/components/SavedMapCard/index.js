@@ -94,7 +94,7 @@ export default function SavedMapCard(props) {
 
   return (
     <Card className={`${classes.root} searchable`} style={{border: props.isOwner ? "2px solid #f8b24c" : "none"}}>
-      <CardActionArea href={props.isOwner ? `/builder/${props.id}` : `/render/${props.id}`}>
+      <CardActionArea href={isOwner ? `/builder/${props.id}` : `/render/${props.id}`}>
         <CardMedia
           className={classes.media}
           image={props.image}
